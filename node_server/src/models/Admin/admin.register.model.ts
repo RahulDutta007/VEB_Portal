@@ -7,7 +7,7 @@ import { GENDER } from "../../constants/gender";
 import { MARITAL_STATUS } from "../../constants/marital.status";
 import { UPLOAD_TYPE } from "../../constants/upload.types";
 
-const UserAdminSchema: Schema<AdminSchema> = new Schema(
+const AdminRegisterSchema: Schema<AdminSchema> = new Schema(
 	{
 		admin_id: {
 			type: String,
@@ -142,5 +142,5 @@ const UserAdminSchema: Schema<AdminSchema> = new Schema(
 	GENERAL_SCHEMA_OPTIONS
 );
 
-const UserAdminModel = model("UserAdmin", UserAdminSchema);
-export default UserAdminModel;
+const AdminRegisterModel = model("AdminRegister", AdminRegisterSchema);
+export default AdminRegisterModel;
