@@ -46,11 +46,11 @@ const adminRegisterValidator = Joi.object({
 	upload_type: Joi.string().required().valid(UPLOAD_TYPE.bulk, UPLOAD_TYPE.manual, UPLOAD_TYPE.migrated).messages({
 		message: "Please provide correct upload type!"
 	}),
-	created_by: Joi.string().optional().allow(null),
+	created_by: Joi.string().hex().length(24),
 	created_date: Joi.date().optional().allow(null),
 	is_created: Joi.boolean().optional().allow(null),
 	writing_number: Joi.number().optional().allow(null),
-	enroller_id: Joi.string().optional().allow(null)
+	enroller_id: Joi.string().hex().length(24),
 });
 
 export default adminRegisterValidator;
