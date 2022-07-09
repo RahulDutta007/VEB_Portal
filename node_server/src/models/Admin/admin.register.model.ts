@@ -1,13 +1,13 @@
 import { number } from "joi";
 import { model, Schema } from "mongoose";
-import { AdminSchema } from "../../@types/interface/admin.interface";
+import { IAdminSchema } from "../../@types/interface/admin.interface";
 import { GENERAL_SCHEMA_OPTIONS } from "../../constants/model/schemaOption";
 import { ROLES } from "../../constants/roles";
 import { GENDER } from "../../constants/gender";
 import { MARITAL_STATUS } from "../../constants/marital.status";
 import { UPLOAD_TYPE } from "../../constants/upload.types";
 
-const AdminRegisterSchema: Schema<AdminSchema> = new Schema(
+const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 	{
 		admin_id: {
 			type: String,
@@ -119,7 +119,7 @@ const AdminRegisterSchema: Schema<AdminSchema> = new Schema(
 			enum: [UPLOAD_TYPE.bulk, UPLOAD_TYPE.manual, UPLOAD_TYPE.migrated]
 		},
 		created_by: {
-			type: Schema.Types.ObjectId,
+			type: String,
 			default: null
 		},
 		created_date: {
@@ -135,12 +135,12 @@ const AdminRegisterSchema: Schema<AdminSchema> = new Schema(
 			default: null
 		},
 		enroller_id: {
-			type: Schema.Types.ObjectId,
+			type: String,
 			default: null
 		}
 	},
 	GENERAL_SCHEMA_OPTIONS
 );
 
-const AdminRegisterModel = model("AdminRegister", AdminRegisterSchema);
+const AdminRegisterModel = model("UserAdmin", AdminRegisterSchema);
 export default AdminRegisterModel;

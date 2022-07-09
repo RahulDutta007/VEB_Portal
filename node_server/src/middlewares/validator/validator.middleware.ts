@@ -13,8 +13,8 @@ const validator = (validationSchema: ObjectSchema, parseProperty: string | null)
 				payload = JSON.parse(req.body[parseProperty]);
 			} else {
 				payload = req.body;
-				payload.created_by = new mongoose.Types.ObjectId(req.body.created_by);
-				payload.enroller_id = new mongoose.Types.ObjectId(req.body.enroller_admin);
+				//payload.created_by = new mongoose.Types.ObjectId(req.body.created_by);
+				//payload.enroller_id = new mongoose.Types.ObjectId(req.body.enroller_admin);
 			}
 			const { error } = validationSchema.validate(payload);
 			if (error) {

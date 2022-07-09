@@ -3,8 +3,9 @@ import { Role } from "../enum/roles.enum";
 import { Gender } from "../enum/gender.enum";
 import { MaritalStatus } from "../enum/marital.status.enum";
 import { UploadType } from "../enum/upload.type.enum";
+import { IObjectId } from "./objectId.interface";
 
-export interface AdminSchema {
+export interface IAdminSchema {
 	admin_id: string;
 	first_name: string;
 	last_name: string;
@@ -32,9 +33,11 @@ export interface AdminSchema {
 	is_employer_chat_support: boolean | null;
 	hire_date: SchemaDefinitionProperty<Date | null>;
 	upload_type: UploadType | null;
-	created_by: Types.ObjectId | null;
+	created_by: string | null;
 	created_date: SchemaDefinitionProperty<Date | null>;
 	is_created: boolean | null;
 	writing_number: number | null;
-	enroller_id: Types.ObjectId | null;
+	enroller_id: string | null;
 }
+
+export interface IAdminUser extends IAdminSchema, IObjectId { }

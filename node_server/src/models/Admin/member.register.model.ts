@@ -1,13 +1,13 @@
 import { number } from "joi";
 import { model, Schema } from "mongoose";
-import { AdminSchema } from "../../@types/interface/admin.interface";
+import { IAdminSchema } from "../../@types/interface/admin.interface";
 import { GENERAL_SCHEMA_OPTIONS } from "../../constants/model/schemaOption";
 import { ROLES } from "../../constants/roles";
 import { GENDER } from "../../constants/gender";
 import { MARITAL_STATUS } from "../../constants/marital.status";
 import { UPLOAD_TYPE } from "../../constants/upload.types";
 
-const MemberRegisterSchema: Schema<AdminSchema> = new Schema(
+const MemberRegisterSchema: Schema<IAdminSchema> = new Schema(
 	{
 		admin_id: {
 			type: String,
