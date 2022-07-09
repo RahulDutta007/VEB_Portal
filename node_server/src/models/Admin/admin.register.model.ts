@@ -142,5 +142,5 @@ const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 	GENERAL_SCHEMA_OPTIONS
 );
 
-const AdminRegisterModel = model("UserAdmin", AdminRegisterSchema);
-export default AdminRegisterModel;
+const AdminModel = model("UserAdmin", AdminRegisterSchema);
+export default AdminModel;

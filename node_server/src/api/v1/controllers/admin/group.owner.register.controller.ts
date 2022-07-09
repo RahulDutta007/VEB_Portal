@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import MESSAGE from "../../../../constants/message";
-import AdminRegisterModel from "../../../../models/Admin/admin.register.model";
+import AdminModel from "../../../../models/Admin/admin.register.model";
 import service from "../../../../services";
 import { ROLES } from "../../../../constants/roles";
 import { UPLOAD_TYPE } from "../../../../constants/upload.types";
@@ -45,7 +45,7 @@ export const GroupOwnerRegister = async (req: Request, res: Response) => {
 		}
 
 		// Email of a group owner cannot be duplicated.
-		const isDuplicateGroupOwnerEmail = await service.auth.isDuplicateGroupOwnerEmailService(AdminRegisterModel, email);
+		const isDuplicateGroupOwnerEmail = await service.auth.isDuplicateGroupOwnerEmailService(AdminModel, email);
 
 		if (isDuplicateGroupOwnerEmail) {
 			return res.status(StatusCodes.BAD_REQUEST).json({
@@ -59,7 +59,7 @@ export const GroupOwnerRegister = async (req: Request, res: Response) => {
 			const SSN = req.body.SSN;
 
 			// Dublicate SSN checking in Group Owner and Member Model
-			const isDuplicateSSN = await service.auth.isDuplicateSSNService(AdminRegisterModel, String(SSN));
+			const isDuplicateSSN = await service.auth.isDuplicateSSNService(AdminModel, String(SSN));
 
 			if (isDuplicateSSN) {
 				return res.status(StatusCodes.BAD_REQUEST).json({
@@ -82,7 +82,7 @@ export const GroupOwnerRegister = async (req: Request, res: Response) => {
 			created_by: null
 		};
 
-		const GroupAdminInstance: IAdminUser & IObjectId = await service.query.insert(AdminRegisterModel, payload);
+		const GroupAdminInstance: IAdminUser & IObjectId = await service.query.insert(AdminModel, payload);
 		return res.status(StatusCodes.OK).json({
 			message: MESSAGE.post.succ,
 			result: GroupAdminInstance

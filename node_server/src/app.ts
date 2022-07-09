@@ -17,5 +17,6 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use("/api/v1/test", require("./api/v1/routes/test/test.routes"));
 app.use("/api/v1/auth/group-owner/admin", require("./api/v1/routes/admin/group.owner.routes"));
+app.use("/api/v1/auth", require("./api/v1/routes/login.routes"));
 
 export default app;
