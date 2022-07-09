@@ -126,7 +126,7 @@ const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 			type: Date,
 			default: null
 		},
-		is_created: {
+		is_registered: {
 			type: Boolean,
 			default: null
 		},

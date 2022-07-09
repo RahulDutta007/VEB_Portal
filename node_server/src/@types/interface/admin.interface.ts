@@ -35,7 +35,7 @@ export interface IAdminSchema {
 	upload_type: UploadType | null;
 	created_by: string | null;
 	created_date: SchemaDefinitionProperty<Date | null>;
-	is_created: boolean | null;
+	is_registered: boolean | null;
 	writing_number: number | null;
 	enroller_id: string | null;
 }

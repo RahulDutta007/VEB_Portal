@@ -4,20 +4,14 @@ import { GENDER } from "../../../../constants/gender";
 import { MARITAL_STATUS } from "../../../../constants/marital.status";
 import { UPLOAD_TYPE } from "../../../../constants/upload.types";
 
-const adminRegisterValidator = Joi.object({
+
+export const adminCreationValidator = Joi.object({
 	admin_id: Joi.string().required(),
 	first_name: Joi.string().min(3).max(30).required(),
 	last_name: Joi.string().min(3).max(30).required(),
 	middle_name: Joi.string().optional().allow(null),
 	user_name: Joi.string().min(3).max(30).alphanum().min(3).max(30).required(),
-	password: Joi.string()
-		.pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{7,})"))
-		.required()
-		.messages({
-			"string.pattern.base":
-				"Password length must be at least 7 characters and contain at least one lowercase letter, one uppercase letter, one number and one special character"
-		}),
-	role: Joi.string().required().valid(ROLES.admin, ROLES.enroller_admin, ROLES.agent).messages({
+	role: Joi.string().required().valid(ROLES.enroller_admin, ROLES.agent).messages({
 		message: "Unauthorized Role!"
 	}),
 	email: Joi.string().email().required(),
@@ -52,5 +46,3 @@ const adminRegisterValidator = Joi.object({
 	writing_number: Joi.number().optional().allow(null),
 	enroller_id: Joi.string().optional().allow(null)
 });
-
-export default adminRegisterValidator;

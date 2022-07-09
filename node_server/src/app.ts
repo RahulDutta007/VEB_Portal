@@ -16,7 +16,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use("/api/v1/test", require("./api/v1/routes/test/test.routes"));
-app.use("/api/v1/auth/group-owner/admin", require("./api/v1/routes/admin/group.owner.routes"));
+app.use("/api/v1/auth/group-owner/admin", require("./api/v1/routes/admin/group.owner.signup.routes"));
 app.use("/api/v1/auth", require("./api/v1/routes/login.routes"));
+app.use("/api/v1/auth/group-owner/enroller", require("./api/v1/routes/admin/admin.creation.routes"));
 
 export default app;
