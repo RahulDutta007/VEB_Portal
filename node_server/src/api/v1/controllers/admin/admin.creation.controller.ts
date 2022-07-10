@@ -14,6 +14,7 @@ export const adminCreation = async (req: Request, res: Response) => {
 		const { role, email } = req.body;
 		const createdRole = role.toUpperCase();
 		const creatorRole = req.user.role.toUpperCase(); // Extrating this role from the JWT
+		console.log(111, (creatorRole !== ROLES.admin && creatorRole !== ROLES.enroller_admin) && createdRole == ROLES.agent)
 		const { _id } = req.user; // Accessing _id from JWT
 		let date_of_birth = null,
 			hire_date = null,
@@ -28,7 +29,7 @@ export const adminCreation = async (req: Request, res: Response) => {
 		}
 
 		//Group owner and enroller can only create agent
-		if ((creatorRole !== ROLES.admin || creatorRole !== ROLES.enroller_admin) && createdRole == ROLES.agent) {
+		if (!(creatorRole == ROLES.admin || creatorRole !== ROLES.enroller_admin) && createdRole == ROLES.agent) {
 			return res.status(StatusCodes.BAD_REQUEST).json({
 				message: MESSAGE.custom("Group owner and enroller can only create agent")
 			});

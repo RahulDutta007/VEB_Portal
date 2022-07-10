@@ -7,7 +7,7 @@ import { validators } from "../../validators";
 const router = express.Router();
 
 router
-	.route("/creation")
+	.route("/")
 	.post(validator(validators.adminCreationValidator, null), groupOwnerAuth, adminCreation);
 
 module.exports = router;
