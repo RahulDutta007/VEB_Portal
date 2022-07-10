@@ -6,7 +6,7 @@ import AdminModel from "../../models/Admin/admin.register.model";
 import { ROLES } from "../../constants/roles";
 import { ObjectId } from "mongoose";
 
-const groupOwnerAuth = async (req: Request, res: Response, next: NextFunction) => {
+const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		if (!req.headers.authorization) {
 			return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -59,4 +59,4 @@ const getUserInfo = async (role: string, _id: ObjectId) => {
 	});
 }
 
-export default groupOwnerAuth;
+export default verifyToken;
