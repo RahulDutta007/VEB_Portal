@@ -7,6 +7,6 @@ import { validators } from "../../validators";
 const router = express.Router();
 
 router.route("/signup").post(validator(validators.adminRegisterValidator, null), GroupOwnerRegister);
-router.route("/").post(validator(validators.adminRegisterValidator, null), AdminRegister);
+router.route("/").patch(validator(validators.adminRegisterValidator, null), AdminRegister);
 
 module.exports = router;

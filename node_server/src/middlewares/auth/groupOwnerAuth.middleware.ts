@@ -4,6 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import MESSAGE from "../../constants/message";
 import AdminModel from "../../models/Admin/admin.register.model";
 import { ROLES } from "../../constants/roles";
+import { ObjectId } from "mongoose";
 
 const groupOwnerAuth = async (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -39,20 +40,9 @@ const groupOwnerAuth = async (req: Request, res: Response, next: NextFunction) =
 		req.user["write_access"] = false;
 
 		if (req.user.role === ROLES.admin) {
-			const { _id } = req.user;
 			req.user.write_access = req.user.read_access = true;
-			const data = await AdminModel.findOne({
-				$and: [{ _id }, { role: ROLES.admin }]
-			});
-			req.user.info = data;
-		} else if (req.user.role === ROLES.enroller_admin) {
-			const { _id } = req.user;
-			const data = await AdminModel.findOne({
-				$and: [{ _id }, { role: ROLES.enroller_admin }]
-			});
-
-			req.user.info = data;
 		}
+		req.user.info = await getUserInfo(req.user.role, req.user._id);
 		next();
 	} catch (error) {
 		return res.status(400).json({
@@ -62,5 +52,11 @@ const groupOwnerAuth = async (req: Request, res: Response, next: NextFunction) =
 		});
 	}
 };
+
+const getUserInfo = async (role: string, _id: ObjectId) => {
+	return await AdminModel.findOne({
+		$and: [{ _id }, { role }]
+	});
+}
 
 export default groupOwnerAuth;
