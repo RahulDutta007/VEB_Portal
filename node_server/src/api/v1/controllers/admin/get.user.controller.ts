@@ -20,13 +20,17 @@ export const FindUsername = async (req: Request, res: Response) => {
 		if (UserInstance) {
 			return res.status(StatusCodes.OK).json({
 				message: MESSAGE.get.succ,
-				result: `Username: ${UserInstance.user_name} already exist`
+				result: {
+					isRegistered: true
+				}
 			});
 		}
 		else {
 			return res.status(StatusCodes.OK).json({
 				message: MESSAGE.get.succ,
-				result: `Username: ${user_id} does not exist`
+				result: {
+					isRegistered: false
+				}
 			});
 		}
 
@@ -55,13 +59,17 @@ export const FindEmail = async (req: Request, res: Response) => {
 		if (UserInstance) {
 			return res.status(StatusCodes.OK).json({
 				message: MESSAGE.get.succ,
-				result: `Email: ${UserInstance.email} already exist`
+				result: {
+					isRegistered: true
+				}
 			});
 		}
 		else {
 			return res.status(StatusCodes.OK).json({
 				message: MESSAGE.get.succ,
-				result: `Email: ${email} does not exist`
+				result: {
+					isRegistered: false
+				}
 			});
 		}
 

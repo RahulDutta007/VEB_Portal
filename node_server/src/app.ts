@@ -18,7 +18,6 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/v1/test", require("./api/v1/routes/test/test.routes"));
 app.use("/api/v1/auth/group-owner/enroller/creation", require("./api/v1/routes/admin/admin.creation.routes"));
 app.use("/api/v1/auth/group-owner", require("./api/v1/routes/admin/admin.register.routes"));
-app.use("/api/v1/auth/group-owner", require("./api/v1/routes/admin/admin.register.routes"));
 app.use("/api/v1/auth", require("./api/v1/routes/admin/user.management.routes"));
 
 export default app;
