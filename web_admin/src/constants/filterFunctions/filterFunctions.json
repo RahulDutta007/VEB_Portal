@@ -1,0 +1,8 @@
+{
+	"contains": "contains",
+	"not_contains": "not_contains",
+	"equals": "equals",
+	"not_equals": "not_equals",
+	"starts_with": "starts_with",
+	"ends_with": "ends_with"
+}

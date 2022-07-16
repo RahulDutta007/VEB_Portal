@@ -1,0 +1,82 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500&display=swap");
+
+* {
+	margin: 0;
+	font-family: "Quicksand", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.admin-sidebar .profile-avatar {
+	padding: 40px;
+}
+
+.admin-sidebar .welcome-container {
+	text-align: center;
+	margin-top: -60px;
+	padding-top: 40px;
+	padding-bottom: 40px;
+}
+.admin-sidebar .welcome-text {
+	color: #000;
+	margin-top: 30px;
+	color: #e0e0e0;
+	font-size: 1.3rem;
+	cursor: pointer;
+}
+
+.admin-sidebar .dashboard-type-text {
+	color: #000;
+	margin-top: -20px;
+	margin-bottom: 20px;
+	color: #e0e0e0;
+	font-weight: bold;
+	font-size: 1.4rem;
+}
+
+.admin-sidebar .avatar-text {
+	color: #558b2f;
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+
+.admin-sidebar .appbar-header {
+	text-align: center;
+	font-weight: bold;
+	color: #4e4e4e;
+	font-size: 1.3rem;
+}
+
+.admin-sidebar .toolbar {
+	background-color: #eeeeee;
+}
+
+.admin-sidebar .toolbar-grow {
+	flex-grow: 1;
+}
+
+.admin-sidebar .toolbar-icon {
+	color: #4e4e4e !important;
+}
+
+.admin-sidebar .toolbar-icon-badge .MuiBadge-colorPrimary {
+	background-color: #85ce36 !important;
+}
+
+.admin-sidebar .list-item-accordion {
+    color: #e0e0e0 !important;
+    background-color: transparent;
+    border-width: 0px !important;
+    box-shadow: revert;
+    letter-spacing: 0.1em;
+}
+
+.admin-sidebar .MuiAccordionSummary-content {
+	margin: 0px !important;
+}
+
+.admin-sidebar .list-item-accordion:hover {
+	background-color: #85ce36 !important;
+	color: #4e4e4e !important;
+	font-weight: bold;
+}

@@ -1,0 +1,10 @@
+{
+	"Verification Key not provided": "Verification Key not provided",
+	"OTP not Provided": "OTP not Provided",
+	"Check not Provided": "Check not Provided",
+	"OTP was not sent to this particular email or phone number": "OTP was not sent to this particular email or phone number",
+	"OTP matched": "OTP matched",
+	"OTP did not match": "OTP did not match",
+	"OTP expired": "OTP expired",
+	"OTP already used": "OTP already used"
+}
