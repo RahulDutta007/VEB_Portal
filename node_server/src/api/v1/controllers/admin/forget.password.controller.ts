@@ -40,26 +40,26 @@ export const GetToken = async (req: Request, res: Response) => {
 // @desc User Forget Password (verify token and reset password)
 // @route POST /api/v1/forget-password/verify-token/:token
 // @access Public
-// exports.verifyToken = async (req: Request, res: Response) => {
-//   let token = await jwt.verify(req.params.token, process.env.password_Secret);
-//   let timeCheck = new Date(token.expireDate) > new Date();
-//   if (timeCheck) {
-//     let user = await userModel.findById(token._id);
-//     if (!user) return res.json({ status: 404, text: `No Member Found ` });
-//     const check_new_password = await bcrypt.compare(req.body.password, user.password);
-//     if (check_new_password) {
-//       return res.status(500).json({
-//         message: "New password cannot be same as old password"
-//       })
-//     }
-//     const salt = await bcrypt.genSalt(10)
-//     let password = await bcrypt.hash(req.body.password, salt)
-//     user = await userModel.findByIdAndUpdate(token._id, { password: password });
-//     return res.json({ status: 200, token, isAccess: timeCheck, text: "Password Updated" });
-//   }
+export const verifyToken = async (req: Request, res: Response) => {
+  let token = <jwt.JwtPayload>jwt.verify(req.params.token, 'Z5C39DA2BA906BE3786B28DD700D0D9C2093D6934676J87R0A67378AB9F70BEC32');
+  let timeCheck = new Date(token.expireDate) > new Date();
+  if (timeCheck) {
+    let user = await service.query.fetchOne(EmployeeRegisterModel, { member_id: token.member_id })
+    if (!user._doc) return res.json({ status: 404, text: `No Member Found ` });
+    const check_new_password = await bcrypt.compare(req.body.password, user.password);
+    if (check_new_password) {
+      return res.status(500).json({
+        message: "New password cannot be same as old password"
+      })
+    }
+    const salt = await bcrypt.genSalt(10)
+    let password = await bcrypt.hash(req.body.password, salt)
+    user = await EmployeeRegisterModel.findByIdAndUpdate(user._id, { password: password });
+    return res.json({ status: 200, token, isAccess: timeCheck, text: "Password Updated" });
+  }
 
 
-// }
+}
 
 
 
