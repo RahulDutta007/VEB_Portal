@@ -56,7 +56,12 @@ const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 		},
 		marital_status: {
 			type: String,
-			enum: [MARITAL_STATUS.single, MARITAL_STATUS.married, MARITAL_STATUS.divorced, MARITAL_STATUS.common_law_marriage]
+			enum: [
+				MARITAL_STATUS.single,
+				MARITAL_STATUS.married,
+				MARITAL_STATUS.divorced,
+				MARITAL_STATUS.common_law_marriage
+			]
 		},
 		address_line_1: {
 			type: String,

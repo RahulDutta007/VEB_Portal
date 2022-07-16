@@ -53,7 +53,6 @@ export const GroupOwnerRegister = async (req: Request, res: Response) => {
 			});
 		}
 
-
 		// if SSN is given
 		if (req.body.SSN) {
 			const SSN = req.body.SSN;

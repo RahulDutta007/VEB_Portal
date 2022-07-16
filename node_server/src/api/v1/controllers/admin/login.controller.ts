@@ -21,8 +21,7 @@ export const login = async (req: Request, res: Response) => {
 			model = AdminModel;
 			//} else if (role === ROLES.employee || role === ROLES.dependent) {
 			//model = memberModel;
-		}
-		else {
+		} else {
 			return res.status(StatusCodes.BAD_REQUEST).json({
 				message: MESSAGE.custom("Unauthorised Role!")
 			});

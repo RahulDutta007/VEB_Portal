@@ -57,6 +57,6 @@ const getUserInfo = async (role: string, _id: ObjectId) => {
 	return await AdminModel.findOne({
 		$and: [{ _id }, { role }]
 	});
-}
+};
 
 export default verifyToken;

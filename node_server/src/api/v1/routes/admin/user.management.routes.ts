@@ -10,7 +10,9 @@ import { validators } from "../../validators";
 const router = express.Router();
 
 router.route("/login").post(validator(validators.loginValidator, null), login);
-router.route("/change-password").patch(validator(validators.changePasswordValidator, null), verifyToken, ChangePassword);
+router
+	.route("/change-password")
+	.patch(validator(validators.changePasswordValidator, null), verifyToken, ChangePassword);
 router.route("/forgot-password").post(validator(validators.forgetPasswordValidator, null), GetToken);
 router.route("/find-user-name").get(verifyToken, FindUsername);
 router.route("/find-email").get(verifyToken, FindEmail);

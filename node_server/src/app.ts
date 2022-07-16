@@ -1,4 +1,4 @@
-export { };
+export {};
 import express, { Request, Response, NextFunction } from "express";
 
 const app = express();

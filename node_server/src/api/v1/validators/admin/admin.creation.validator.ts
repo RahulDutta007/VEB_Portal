@@ -4,7 +4,6 @@ import { GENDER } from "../../../../constants/gender";
 import { MARITAL_STATUS } from "../../../../constants/marital.status";
 import { UPLOAD_TYPE } from "../../../../constants/upload.types";
 
-
 export const adminCreationValidator = Joi.object({
 	admin_id: Joi.string().required(),
 	first_name: Joi.string().min(3).max(30).required(),
@@ -20,9 +19,17 @@ export const adminCreationValidator = Joi.object({
 	gender: Joi.string().required().valid(GENDER.male, GENDER.female, GENDER.others).messages({
 		message: "Please provide correct gender!"
 	}),
-	marital_status: Joi.string().required().valid(MARITAL_STATUS.single, MARITAL_STATUS.married, MARITAL_STATUS.divorced, MARITAL_STATUS.common_law_marriage).messages({
-		message: "Please provide correct marital status!"
-	}),
+	marital_status: Joi.string()
+		.required()
+		.valid(
+			MARITAL_STATUS.single,
+			MARITAL_STATUS.married,
+			MARITAL_STATUS.divorced,
+			MARITAL_STATUS.common_law_marriage
+		)
+		.messages({
+			message: "Please provide correct marital status!"
+		}),
 	address_line_1: Joi.string().optional().allow(null),
 	group_number: Joi.number().optional().allow(null),
 	address_line_2: Joi.string().optional().allow(null),

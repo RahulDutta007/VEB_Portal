@@ -24,8 +24,7 @@ export const FindUsername = async (req: Request, res: Response) => {
 					isRegistered: true
 				}
 			});
-		}
-		else {
+		} else {
 			return res.status(StatusCodes.OK).json({
 				message: MESSAGE.get.succ,
 				result: {
@@ -33,9 +32,7 @@ export const FindUsername = async (req: Request, res: Response) => {
 				}
 			});
 		}
-
-	}
-	catch (err) {
+	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({
 			message: MESSAGE.get.fail,
 			err
@@ -63,8 +60,7 @@ export const FindEmail = async (req: Request, res: Response) => {
 					isRegistered: true
 				}
 			});
-		}
-		else {
+		} else {
 			return res.status(StatusCodes.OK).json({
 				message: MESSAGE.get.succ,
 				result: {
@@ -72,9 +68,7 @@ export const FindEmail = async (req: Request, res: Response) => {
 				}
 			});
 		}
-
-	}
-	catch (err) {
+	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({
 			message: MESSAGE.get.fail,
 			err

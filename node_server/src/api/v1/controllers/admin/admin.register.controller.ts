@@ -4,7 +4,6 @@ import MESSAGE from "../../../../constants/message";
 import service from "../../../../services";
 import AdminModel from "../../../../models/Admin/admin.register.model";
 
-
 //log creation + dynamic notification + dynamic email left
 export const AdminRegister = async (req: Request, res: Response) => {
 	try {
@@ -42,7 +41,7 @@ export const AdminRegister = async (req: Request, res: Response) => {
 		// 	return res.status(StatusCodes.BAD_REQUEST).json({
 		// 		message: MESSAGE.custom("Username is already registered!")
 		// 	});
-		// }		
+		// }
 
 		// converting into MongoDB format of Date of birth, if given
 		if (req.body.date_of_birth) {
@@ -61,7 +60,6 @@ export const AdminRegister = async (req: Request, res: Response) => {
 					message: MESSAGE.custom(`${role} is already registered!`)
 				});
 			} else {
-
 				// if SSN is given
 				if (req.body.SSN) {
 					const SSN = req.body.SSN;
@@ -120,9 +118,7 @@ export const AdminRegister = async (req: Request, res: Response) => {
 					message: MESSAGE.put.succ,
 					result: ownerInstance
 				});
-
 			}
-
 		} else {
 			return res.status(StatusCodes.BAD_REQUEST).json({
 				message: MESSAGE.custom(`${role} has not been created yet!`)

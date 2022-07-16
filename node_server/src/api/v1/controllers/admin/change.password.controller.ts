@@ -4,7 +4,6 @@ import MESSAGE from "../../../../constants/message";
 import service from "../../../../services";
 import AdminModel from "../../../../models/Admin/admin.register.model";
 
-
 //log creation + dynamic notification + dynamic email left
 export const ChangePassword = async (req: Request, res: Response) => {
 	try {
@@ -17,7 +16,7 @@ export const ChangePassword = async (req: Request, res: Response) => {
 			});
 		}
 
-		// Compare Password		
+		// Compare Password
 		const passwordCompare: boolean = await service.auth.comparePassword(password, req.user.info.password);
 		// Check if password is correct
 		if (!passwordCompare) {
@@ -52,9 +51,7 @@ export const ChangePassword = async (req: Request, res: Response) => {
 		return res.status(StatusCodes.OK).json({
 			message: MESSAGE.put.succ
 		});
-
-	}
-	catch (err) {
+	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({
 			message: MESSAGE.put.fail,
 			err

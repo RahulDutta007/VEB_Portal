@@ -26,9 +26,17 @@ const adminRegisterValidator = Joi.object({
 	gender: Joi.string().required().valid(GENDER.male, GENDER.female, GENDER.others).messages({
 		message: "Please provide correct gender!"
 	}),
-	marital_status: Joi.string().required().valid(MARITAL_STATUS.single, MARITAL_STATUS.married, MARITAL_STATUS.divorced, MARITAL_STATUS.common_law_marriage).messages({
-		message: "Please provide correct marital status!"
-	}),
+	marital_status: Joi.string()
+		.required()
+		.valid(
+			MARITAL_STATUS.single,
+			MARITAL_STATUS.married,
+			MARITAL_STATUS.divorced,
+			MARITAL_STATUS.common_law_marriage
+		)
+		.messages({
+			message: "Please provide correct marital status!"
+		}),
 	address_line_1: Joi.string().optional().allow(null),
 	group_number: Joi.number().optional().allow(null),
 	address_line_2: Joi.string().optional().allow(null),

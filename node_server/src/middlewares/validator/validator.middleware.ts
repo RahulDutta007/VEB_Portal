@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { ObjectSchema } from "joi";
 import MESSAGE from "../../constants/message";
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const validator = (validationSchema: ObjectSchema, parseProperty: string | null) => {
 	return async (req: Request, res: Response, next: NextFunction) => {

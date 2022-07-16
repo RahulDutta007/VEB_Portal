@@ -5,4 +5,4 @@ export interface ITestSchema {
 	last_name: string;
 }
 
-export interface ITest extends ITestSchema, IObjectId { }
+export interface ITest extends ITestSchema, IObjectId {}

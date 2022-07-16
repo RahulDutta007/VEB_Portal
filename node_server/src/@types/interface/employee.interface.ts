@@ -23,4 +23,4 @@ export interface IEmployeeSchema {
 	date: Date | null;
 }
 
-export interface IEmployeeUser extends IEmployeeSchema, IObjectId { }
+export interface IEmployeeUser extends IEmployeeSchema, IObjectId {}

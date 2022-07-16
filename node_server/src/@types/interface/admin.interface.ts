@@ -40,4 +40,4 @@ export interface IAdminSchema {
 	enroller_id: string | null;
 }
 
-export interface IAdminUser extends IAdminSchema, IObjectId { }
+export interface IAdminUser extends IAdminSchema, IObjectId {}
