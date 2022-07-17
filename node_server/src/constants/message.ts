@@ -24,7 +24,8 @@ const MESSAGE = {
 	},
 	error: "Error",
 	none: "No such data",
-	custom: (msg: string) => msg
+	custom: (msg: string) => msg,
+	email: "Sent email successfully"
 };
 
 export default MESSAGE;

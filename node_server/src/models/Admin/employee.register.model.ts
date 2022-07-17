@@ -20,6 +20,9 @@ const MemberRegisterSchema: Schema<IEmployeeSchema> = new Schema(
 		employee_number: {
 			type: Number
 		},
+		password: {
+			type: String
+		},
 		group_number: {
 			type: Number
 		},
