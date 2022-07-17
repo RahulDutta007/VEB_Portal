@@ -1,4 +1,4 @@
-import { IObjectId } from "./objectId.interface";
+import { IObjectId } from "./interface/objectId.interface";
 
 export interface ITestSchema {
 	first_name: string;
