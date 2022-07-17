@@ -1,0 +1,156 @@
+export type AssignedGroup = {
+	announcement_id?: string;
+	health_link_id?: string;
+	user_id?: string;
+	group_number: number;
+	group_id: string;
+	assigned: boolean;
+	access: "read" | "write";
+};
+
+export type AssignedLocation = {
+	announcement_id?: string;
+	health_link_id?: string;
+	user_id?: string;
+	group_id: string;
+	group_number: number;
+	location_name: string;
+	location_id: string;
+	access: "read" | "write";
+	assigned: boolean;
+};
+
+export type AssignmentStatus = {
+	user_id: string;
+	all_groups: boolean;
+	all_locations: boolean;
+};
+
+export type LocationSchema = {
+	_id: string;
+	group_number: number;
+	location_number: number;
+	location_name: string;
+	date: Date | string;
+	ADDR1: string | null;
+	ADDR2: string | null;
+	CITY: string | null;
+	STATE: string | null;
+	ZIPCODE: number;
+	CONTACT: string | null;
+	EMAIL: string | null;
+	PHONE: string | null;
+	FAX: string | null;
+	BEGDT: string | null;
+	ENDDT: string | null;
+	RENEWLDT: string | null;
+	LASTUPDT: string | null;
+	BALFWD: number;
+	PAYMENTS: number;
+	LSTPMTDT: string | null;
+	ADJMENTS: number;
+	LSTADJDT: string | null;
+	EMPSBLD: number;
+	PBSURCPERC: number;
+	PBDISCPERC: number;
+	PDTHRUDT: string | null;
+	AGNADJYTD: number;
+	EFTBEGDT: string | null;
+	EFTENDDT: string | null;
+	BNKROUTNOT: string | null;
+	BNKACCTNOT: string | null;
+	EFTLSTDT: string | null;
+	EFTLSTAMT: number;
+	EFTTOTALT: number;
+	LSTCHGDT: string | null;
+	LSTCHGOPER: number;
+	INTLADDRFLAG: string | null;
+	EFTFLAG: string | null;
+	GTDRATEFLAG: string | null;
+	PBEFFDT: string | null;
+	MTHSBILLED: number;
+	EFTDESTACCTNO: number;
+	BNKNAMET: string | null;
+	EMAILCONPWD: string | null;
+	PBEFTPROCREDIT: string | null;
+	PB2RPTOVRD: string | null;
+	PB2RATEOVRD: string | null;
+	LASTUPDTOPER: number;
+};
+
+export type GroupBranding = {
+	group_number: number;
+	logo: Record<string, unknown> | null | File;
+	favicon: Record<string, unknown> | null | File;
+};
+
+export type Group = {
+	populated_group_logo: number;
+	name: string | null;
+	MST_number: number;
+	group_number: number;
+	TAX_ID: number | null;
+	physical_name: string | null;
+	address_1: string | null;
+	address_2: string | null;
+	city: string | null;
+	state: string | null;
+	ZIP: string | null;
+	email: string | null;
+	phone: string | null;
+	fax: string | null;
+	medical_coverage: string | null;
+	dental_coverage: string | null;
+	vision_coverage: string | null;
+	drug_coverage: string | null;
+	miscellaneous_coverage: string | null;
+	life_coverage: string | null;
+	LTD_coverage: string | null;
+	STD_coverage: string | null;
+	medical_bank: number | null;
+	vision_bank: number | null;
+	dental_bank: number | null;
+	drug_bank: number | null;
+	miscellaneous_bank: number | null;
+	expense_bank: number | null;
+	LTD_bank: number | null;
+	STD_bank: number | null;
+	flex_bank: number | null;
+	group_key: number | null;
+	master_key: number | null;
+	rest_SSN: string | null;
+	HRA_begin_date: Date | null;
+	OON_PPO: number | null;
+	OON_reprise: string | null;
+	M_reporting: string | null;
+	OON_auto_medical: string | null;
+	OON_auto_dental: string | null;
+	OON_auto_visit: string | null;
+	OON_auto_drug: string | null;
+	OON_auto_miscellaneous: string | null;
+	OON_auto_mental_nervous: string | null;
+	physical_address_1: string | null;
+	physical_address_2: string | null;
+	physical_city: string | null;
+	physical_state: string | null;
+	physical_zip_code: string | null;
+	name_2: string | null;
+	physical_name_2: string | null;
+};
+
+export type GroupsAndLocations = {
+	assigned_group_info?: AssignedGroup;
+	assigned_locations: LocationSchema[];
+	unassigned_locations: LocationSchema[];
+	name: string;
+	_id: string;
+	group_info?: {
+		name: string;
+		_id: string;
+	};
+	group_number: number;
+	user_id: string;
+	group_id: string;
+	assigned: boolean;
+	access: "read" | "write";
+};
