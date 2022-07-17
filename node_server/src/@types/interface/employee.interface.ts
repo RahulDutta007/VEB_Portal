@@ -7,6 +7,7 @@ import { IObjectId } from "../objectId.interface";
 
 export interface IEmployeeSchema {
 	member_id: string;
+	password: string;
 	email: string;
 	employee_number: number;
 	group_number: number;
@@ -17,10 +18,10 @@ export interface IEmployeeSchema {
 	employement_status: string | null;
 	term_date: SchemaDefinitionProperty<Date | null>;
 	reason: Gender | null;
-	updated_by: String | null;
+	updated_by: string | null;
 	created_by: string | null;
 	created_date: number | null;
 	date: Date | null;
 }
 
-export interface IEmployeeUser extends IEmployeeSchema, IObjectId {}
+export interface IEmployeeUser extends IEmployeeSchema, IObjectId { }

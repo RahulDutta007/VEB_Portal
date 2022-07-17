@@ -3,7 +3,7 @@ import adminRegisterValidator from "./admin/admin.register.validators";
 import { loginValidator } from "./admin/login.validator";
 import { adminCreationValidator } from "./admin/admin.creation.validator";
 import { changePasswordValidator } from "./admin/change.password.validator";
-import { forgetPasswordValidator } from "./admin/forgot.password.validator";
+import { forgetPasswordValidator, verifyPasswordValidator } from "./admin/forgot.password.validator";
 
 export const validators = {
 	testValidator,
@@ -11,5 +11,6 @@ export const validators = {
 	loginValidator,
 	adminCreationValidator,
 	changePasswordValidator,
-	forgetPasswordValidator
+	forgetPasswordValidator,
+	verifyPasswordValidator
 };
