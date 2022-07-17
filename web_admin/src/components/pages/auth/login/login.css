@@ -1,0 +1,130 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500&display=swap");
+* {
+	margin: 0;
+	font-family: "Quicksand", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.login .container-outer {
+	text-align: center;
+	background-image: url("../../../../assets/53-light-purple-gradient.jpg");
+	position: absolute;
+	background-size: cover;
+	background-position: center;
+	min-height: 100%;
+	min-width: 100%;
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+}
+
+.login .container-inner {
+	display: flex;
+	flex: 1;
+	justify-content: center;
+	align-items: center;
+}
+
+/* .login .container-outer {
+    background-color: #e8eaf6;
+    background-image: url('../../../../assets/53-light-purple-gradient.jpg');
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+} */
+
+.login .card-container {
+	padding: 30px;
+	display: flex;
+	/* flex: 1; */
+	align-items: center;
+	justify-content: center;
+}
+
+.login .logo-container {
+	margin-bottom: 5px;
+}
+
+.login .MuiGrid-root {
+	display: flex !important;
+	flex-direction: row !important;
+	justify-content: center !important;
+}
+
+.login .form-container {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+}
+
+.login .login-button-container {
+	margin-top: 50px;
+}
+
+.login .form-field-input {
+	margin-top: 30px;
+}
+
+.login .logo {
+	width: 250px;
+	height: 100px;
+}
+
+.login .MuiFormLabel-root {
+	font-family: "Quicksand", sans-serif;
+	font-size: 1.05rem;
+}
+
+.login .MuiInputBase-input {
+	font-family: "Quicksand", sans-serif;
+}
+
+.login .forgot-password-container {
+	margin-top: 30px;
+	text-decoration: none;
+	color: #616161;
+}
+
+.login .sign-up-container {
+	margin-top: 50px;
+	margin-bottom: -40px;
+	text-align: right;
+	margin-right: -30px;
+}
+
+@media only screen and (max-width: 450px) {
+	.login .card-container {
+		padding: 0;
+	}
+	.login .card-content {
+		padding: 0;
+	}
+	.login .form-container {
+		margin-top: -30px;
+		padding: 0px 20px;
+	}
+	.login .form-field-input {
+		/* margin-top: 15px; */
+	}
+	.login .MuiInputBase-input {
+		/* padding: 15px; */
+	}
+	.login .forgot-password-container {
+		margin-top: 15px;
+		font-size: 0.8rem;
+	}
+	.login .login-button-container {
+		margin-top: 20px;
+	}
+	.login .sign-up-container {
+		margin-bottom: 0px;
+		margin-right: 20px;
+		margin-top: 20px;
+	}
+}

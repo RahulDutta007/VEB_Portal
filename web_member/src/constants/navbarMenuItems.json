@@ -1,0 +1,33 @@
+[
+	{
+		"caption": "Home",
+		"icon_class": "fas fa-hand-holding-usd",
+		"link": "/claims"
+	},
+	{
+		"caption": "Benefits",
+		"icon_class": "fas fa-handshake",
+		"link": "/"
+	},
+	{
+		"caption": "Enrollments",
+		"icon_class": "fas fa-exchange-alt",
+		"link": "/"
+	},
+	{
+		"caption": "Brochures",
+		"icon_class": "far fa-edit",
+		"link": "/"
+	},
+	{
+		"caption": "Tickets",
+		"icon_class": "far fa-edit",
+		"link": "/"
+	},
+	{
+		"caption": "Agents",
+		"icon_class": "far fa-edit",
+		"link": "/"
+	}
+
+]
