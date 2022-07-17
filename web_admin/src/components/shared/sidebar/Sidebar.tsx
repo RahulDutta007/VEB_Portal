@@ -16,21 +16,22 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Accordion, AccordionSummary, Avatar, AccordionDetails } from "@mui/material";
-import { UI_THEME } from "../../../../constants/UITheme/UITheme";
+import { UI_THEME } from "../../../constants/UITheme/UITheme";
 import Badge, { BadgeProps } from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { keyframes } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UIContext } from "../../../contexts";
+import SIDEBAR_OPTIONS from "../../../constants/sidebarOptions";
+import { Tab } from "../../../@types/sidebarOptions.types";
+
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import "./sidebar.css";
-import { useContext } from "react";
-import { UIContext } from "../../../../contexts";
-import SIDEBAR_OPTIONS from "../../../../constants/sidebarOptions";
-import { Tab } from "../../../../@types/sidebarOptions.types";
 
 const rippleKeyFrame = keyframes`
 	0% {

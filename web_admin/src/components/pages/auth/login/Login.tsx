@@ -1,5 +1,5 @@
 const Login = (): JSX.Element => {
-	return <>Login</>;
+	return <>login</>;
 };
 
 export default Login;

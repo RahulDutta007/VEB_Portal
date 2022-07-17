@@ -1,0 +1,23 @@
+export type PaycheckTime = "Past" | "Present" | "Future";
+export type PayFrequency = "Weekly" | "Monthly";
+export type RateType = "Flat Rate" | "Hourly Rate";
+export type EmployeeClass = "PT - Part Time" | "FT - Full Time" | "PTIN - Part Time Insurance Eligible";
+export type BuyUpEligibility = "Yes" | "No";
+export type Paycheck = {
+	employee_object_id: string;
+	employee_id: string;
+	alternate_id: string;
+	start_date: string;
+	end_date: string;
+	hire_date: string;
+	active: boolean;
+	paycheck_time: PaycheckTime;
+	pay_frequency: PayFrequency;
+	rate_type: RateType;
+	hourly_base_pay_rate: number;
+	weekly_base_rate: number;
+	monthly_base_rate: number;
+	employee_class: EmployeeClass;
+	buy_up_eligibility: BuyUpEligibility;
+	location_name: string;
+};
