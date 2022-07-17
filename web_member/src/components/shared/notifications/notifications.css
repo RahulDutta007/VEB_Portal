@@ -1,0 +1,65 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&family=Space+Mono&display=swap");
+.notifications {
+	padding: 15px;
+	width: 350px;
+	height: 500px;
+	overflow: auto;
+}
+
+.notifications::-webkit-scrollbar {
+	width: 5px !important;
+}
+
+.notifications::-webkit-scrollbar-track {
+	background: #c5c3c5;
+}
+
+.notifications::-webkit-scrollbar-thumb {
+	background: #888;
+}
+
+.notifications .header {
+	display: flex;
+	justify-content: space-between;
+}
+
+.notifications b {
+	color: #5e5e5e;
+}
+
+.notifications .header span {
+	font-size: 18px;
+	font-weight: 900;
+	color: #616161;
+}
+
+.notifications .header a {
+	text-decoration: none;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.notifications a:hover {
+	text-decoration: underline;
+}
+
+.notifications .MuiListItemText-primary {
+	font-family: "Quicksand", sans-serif !important;
+	font-size: 0.9rem !important;
+}
+
+.notifications .MuiListItemText-primary b {
+	color: #5e5e5e;
+}
+
+.notification-header {
+	margin-bottom: 8px !important;
+}
+
+.notification-time-header {
+	font-family: "Source Sans Pro", sans-serif;
+	font-weight: 700 !important;
+	color: #757575 !important;
+	display: flex;
+	padding-left: 5px;
+}

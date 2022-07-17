@@ -40,7 +40,20 @@ const sidebarOptions: SidebarOptions = {
 			caption: "Reports",
 			route: "/",
 			icon: () => <CardMembershipIcon />,
-			subTabs: []
+			subTabs: [
+				{
+					caption: "Enrollment",
+					route: "/",
+					icon: () => <WorkIcon />,
+					subTabs: []
+				},
+				{
+					caption: "Enroller",
+					route: "/",
+					icon: () => <WorkIcon />,
+					subTabs: []
+				}
+			]
 		},
 		{
 			caption: "Settings",

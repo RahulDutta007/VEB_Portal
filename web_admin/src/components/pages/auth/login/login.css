@@ -1,35 +1,35 @@
 .logo-container {
-    margin-bottom: 5px;
+	margin-bottom: 5px;
 }
 
 .login-button-container {
-    margin-top: 50px;
+	margin-top: 50px;
 }
 
 .form-field-input {
-    margin-top: 30px !important;
+	margin-top: 30px !important;
 }
 
 .logo {
-    width: 250px;
-    height: 100px;
+	width: 250px;
+	height: 100px;
 }
 
 .forgot-password-container {
-    margin-top: 30px;
-    text-decoration: none;
-    color: #616161;
+	margin-top: 30px;
+	text-decoration: none;
+	color: #616161;
 }
 
 .sign-up-container {
-    margin-top: 50px;
-    margin-bottom: -40px;
-    text-align: right;
-    margin-right: -30px;
+	margin-top: 50px;
+	margin-bottom: -40px;
+	text-align: right;
+	margin-right: -30px;
 }
 
 @media only screen and (max-width: 450px) {
-    .login-button-container {
-        margin-top: 20px;
-    }
+	.login-button-container {
+		margin-top: 20px;
+	}
 }
