@@ -14,12 +14,12 @@ export const login = async (_payload) => {
 		const payload = JSON.stringify(_payload);
 		const endpoint = `${initialRoute}/login`;
 		const response = await post(endpoint, payload, headers);
-		console.log("1", response);
+
 		if (response) {
 			const {
 				data: { message }
 			} = response;
-			if (message === "Authentication Successful") {
+			if (message === "Authentication Successful!") {
 				const {
 					data: { message, result, token }
 				} = response;

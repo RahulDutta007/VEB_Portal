@@ -22,7 +22,6 @@ const post = async (endpoint, payload, headers) => {
 		const response = await axios.post(`${url}:${port}/api/${version}/${endpoint}`, payload, {
 			headers
 		});
-		console.log("222", response);
 		const { status } = response;
 		if (status === 200) {
 			return response;

@@ -1,6 +1,6 @@
 import React from "react";
 import { UIContextProvider } from "./contexts";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Login } from "./components/pages";
 import { GroupOwnerSidebar } from "./components/shared";
 
@@ -13,8 +13,10 @@ const App = (): JSX.Element => {
 				<BrowserRouter>
 					<Routes>
 						<Route path="/" element={<GroupOwnerSidebar />} />
-						<Route path="/login" element={<Login />} />
-						<Route path="/login" element={<Login />} />
+						<Route path="/login" element={
+							localStorage.getItem("@jwt") ? <Navigate to="/" replace /> : <Login />
+						}
+						/>
 					</Routes>
 				</BrowserRouter>
 			</UIContextProvider>
