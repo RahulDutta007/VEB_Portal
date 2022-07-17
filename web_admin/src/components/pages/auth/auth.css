@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500&display=swap");
+
+* {
+    margin: 0;
+    font-family: "Quicksand", sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container-outer {
+    text-align: center;
+    /* background-image: url("../../../../assets/53-light-purple-gradient.jpg"); */
+    background-image: url("../../../assets/53-light-purple-gradient.jpg");
+    position: absolute;
+    background-size: cover;
+    background-position: center;
+    min-height: 100%;
+    min-width: 100%;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-inner {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-container {
+    padding: 30px;
+    display: flex;
+    /* flex: 1; */
+    align-items: center;
+    justify-content: center;
+}
+
+.MuiGrid-root {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+}
+
+.form-container {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.MuiFormLabel-root {
+    font-family: "Quicksand", sans-serif;
+    font-size: 1.05rem;
+}
+
+.MuiInputBase-input {
+    font-family: "Quicksand", sans-serif;
+}
+
+@media only screen and (max-width: 450px) {
+    .card-container {
+        padding: 0;
+    }
+
+    .card-content {
+        padding: 0;
+    }
+
+    .form-container {
+        margin-top: -30px;
+        padding: 0px 20px;
+    }
+}

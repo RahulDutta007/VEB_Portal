@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { request } from "../../api";
-import { headers } from "../../../../config/config";
+import { headers } from "../../../config/config";
 import { MESSAGE } from "../../../../constants/api/message";
 import { AUTHORIZATION } from "../../../../constants/api/auth";
 

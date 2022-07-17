@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { request } from "../../api";
-import { headers } from "../../../../config/config";
+import { headers } from "../../../config/config";
 import { AUTHORIZATION } from "../../../../constants/api/auth";
 const { post, get, put, del } = request;
 const { Authorization, Bearer } = AUTHORIZATION;

@@ -1,24 +1,24 @@
 /* eslint-disable arrow-parens */
 import { request } from "../api";
-import { headers } from "../../../config/config";
+import { headers } from "../../config/config";
 import { MESSAGE } from "../../../constants/api/message";
 import { AUTHORIZATION } from "../../../constants/api/auth";
 const { post, get } = request;
 const { Authorization, Bearer } = AUTHORIZATION;
 
-const initialRoute = "users";
+const initialRoute = "auth";
 
 export const login = async (_payload) => {
 	try {
 		const payload = JSON.stringify(_payload);
 		const endpoint = `${initialRoute}/login`;
 		const response = await post(endpoint, payload, headers);
-
+		console.log("1", response);
 		if (response) {
 			const {
 				data: { message }
 			} = response;
-			if (message === "Authentication Successful") {
+			if (message === "Authentication Successful!") {
 				const {
 					data: { message, result, token }
 				} = response;

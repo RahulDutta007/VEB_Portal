@@ -23,7 +23,7 @@ export const login = async (req: Request, res: Response) => {
 			//model = memberModel;
 		} else {
 			return res.status(StatusCodes.BAD_REQUEST).json({
-				message: MESSAGE.custom("Unauthorised Role!")
+				message: MESSAGE.custom("Unauthorized Role!")
 			});
 		}
 
@@ -90,7 +90,6 @@ export const login = async (req: Request, res: Response) => {
 				message: MESSAGE.none
 			});
 		}
-
 		return res.status(StatusCodes.OK).json({
 			message: MESSAGE.custom("Authentication Successful!"),
 			result: loginInstance,

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { url, port, version } from "../../config/config";
+import { url, port, version } from "../config/config";
 
 const get = async (endpoint, headers, params = {}) => {
 	try {
