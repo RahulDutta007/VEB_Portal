@@ -1,7 +1,7 @@
 {
 	"prettier.singleQuote": false,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"editor.formatOnSave": false,
+	"editor.formatOnSave": true,
 	// The number of spaces a tab is equal to.
 	"editor.tabSize": 4,
 	// Insert spaces when pressing Tab.
