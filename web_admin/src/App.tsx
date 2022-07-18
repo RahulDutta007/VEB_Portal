@@ -13,9 +13,9 @@ const App = (): JSX.Element => {
 				<BrowserRouter>
 					<Routes>
 						<Route path="/" element={<GroupOwnerSidebar />} />
-						<Route path="/login" element={
-							localStorage.getItem("@jwt") ? <Navigate to="/" replace /> : <Login />
-						}
+						<Route
+							path="/login"
+							element={localStorage.getItem("@jwt") ? <Navigate to="/" replace /> : <Login />}
 						/>
 					</Routes>
 				</BrowserRouter>

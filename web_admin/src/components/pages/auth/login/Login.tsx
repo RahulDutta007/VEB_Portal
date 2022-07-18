@@ -222,7 +222,9 @@ const Login = (): JSX.Element => {
 												{initCapitalize(ROLES.admin)}
 											</MenuItem>
 											<MenuItem
-												onClick={() => handleRoleSelectClose(initCapitalize(ROLES.enroller_admin))}
+												onClick={() =>
+													handleRoleSelectClose(initCapitalize(ROLES.enroller_admin))
+												}
 											>
 												{initCapitalize(ROLES.enroller_admin)}
 											</MenuItem>
@@ -340,4 +342,3 @@ const Login = (): JSX.Element => {
 };
 
 export default Login;
-
