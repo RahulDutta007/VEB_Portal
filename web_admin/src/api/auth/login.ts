@@ -1,19 +1,29 @@
 /* eslint-disable arrow-parens */
 import { request } from "../api";
 import { headers } from "../../config/config";
-import { MESSAGE } from "../../../constants/api/message";
-import { AUTHORIZATION } from "../../../constants/api/auth";
+import { MESSAGE } from "../../constants/api/message";
+import { AUTHORIZATION } from "../../constants/api/auth";
+import { Credential } from "../../@types/credential.types";
+import { Endpoint } from "../../@types/api/api.types";
 const { post, get } = request;
 const { Authorization, Bearer } = AUTHORIZATION;
 
 const initialRoute = "auth";
 
-export const login = async (_payload) => {
+type LoginPayload = Credential;
+
+/*
+	Replace any with response type, which is
+	group owner type here
+*/
+export const login = async (_payload: LoginPayload): Promise<any> => {
 	try {
 		const payload = JSON.stringify(_payload);
-		const endpoint = `${initialRoute}/login`;
+		const endpoint: Endpoint = `${initialRoute}/login`;
+		/*
+			Add response type here in next line
+		*/
 		const response = await post(endpoint, payload, headers);
-		console.log("1", response);
 		if (response) {
 			const {
 				data: { message }
@@ -26,7 +36,7 @@ export const login = async (_payload) => {
 			}
 		}
 		throw new Error();
-	} catch (error) {
+	} catch (error: any) {
 		if (error.response.status === 400) {
 			const { message } = error.response.data;
 
