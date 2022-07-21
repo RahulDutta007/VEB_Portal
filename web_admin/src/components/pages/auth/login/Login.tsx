@@ -30,10 +30,14 @@ import LockIcon from "@material-ui/icons/Lock";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import PersonIcon from "@material-ui/icons/Person";
+import { useLocation, useParams } from "react-router-dom";
 
 import "./login.css";
 
-const Login = (): JSX.Element => {
+const Login = (props: any): JSX.Element => {
+	const location = useLocation();
+	const { token } = useParams();
+	console.log("ss", token);
 	const [credential, setCredential] = useState<Credential>({
 		user_id: "",
 		role: "",
@@ -43,6 +47,10 @@ const Login = (): JSX.Element => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [validation, setValidation] = useState<Validation>();
 	const [loginDialogProps, setLoginDialogProps] = useState<DialogProps>();
+	const [forgetPasswordUser, setForgetPasswordUser] = useState<null | string>("");
+	const [newPassword, setNewPassword] = useState<null | string>("");
+	const [confirmPassword, setConfirmPassword] = useState<null | string>("");
+	const [statusMessage, setStatusMessage] = useState<null | string>("");
 	const _validation = useRef<Validation>();
 	const navigate = useNavigate();
 
@@ -88,6 +96,56 @@ const Login = (): JSX.Element => {
 		},
 		[credential]
 	);
+
+	const handleForgotPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { value } = event.target;
+		setForgetPasswordUser(value);
+	};
+
+	const handleNewPassowrdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { value } = event.target;
+		setNewPassword(value);
+	};
+
+	const handleConfirmPassowrdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { value } = event.target;
+		setConfirmPassword(value);
+	};
+
+	const handleSubmitForgetPassword = useCallback(async () => {
+		// event.preventDefault();
+		const payload = {
+			credential: forgetPasswordUser
+		};
+		// const status = await handleValidation();
+		const response = await trackPromise(api.auth.forgetPassword(payload));
+		console.log("55", response);
+		if (response) {
+			setStatusMessage("Sent a Link Email to email for reset password");
+			navigate("/login");
+		} else {
+			setStatusMessage("Error Occurred");
+			navigate("/login");
+		}
+	}, [forgetPasswordUser, navigate]);
+
+	const handleSubmitChangePassword = useCallback(async () => {
+		// event.preventDefault();
+		const payload = {
+			new_password: newPassword,
+			confirm_password: confirmPassword
+		};
+		// const status = await handleValidation();
+		const response = await trackPromise(api.auth.changeForgetPassword(payload, token));
+		console.log("55", response);
+		if (response) {
+			setStatusMessage("Password Changed Successfully");
+			navigate("/login");
+		} else {
+			setStatusMessage("Error Occurred");
+			navigate("/login");
+		}
+	}, [newPassword, confirmPassword, navigate, token]);
 
 	const handleRoleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		const { currentTarget } = event;
@@ -196,6 +254,7 @@ const Login = (): JSX.Element => {
 							<div className="logo-container">
 								<img src={Logo} className="logo" id="id" alt="Nexcaliber logo" />
 							</div>
+							<span>{statusMessage}</span>
 							<form onSubmit={handleSubmit} autoComplete="off" method="">
 								<FormControl className="form-container" id="form-container">
 									<div className="select-role-container" id="select-role-container">
@@ -240,90 +299,257 @@ const Login = (): JSX.Element => {
 											</div>
 										) : null}
 									</div>
-									<TextField
-										className="form-field-input"
-										id="user-name-input"
-										name="user_id"
-										label="Username/Email"
-										variant="outlined"
-										placeholder="Enter Username"
-										value={user_id}
-										onChange={handleChange}
-										helperText={validation?.user_id ? validation.user_id : null}
-										style={{ width: "100%", borderRadius: 50 }}
-										InputProps={{
-											startAdornment: (
-												<InputAdornment position="start">
-													<AccountCircle style={{ color: "#7cb342" }} />
-												</InputAdornment>
-											)
-										}}
-									/>
-									<TextField
-										className="form-field-input"
-										id="password-name-input"
-										name="password"
-										type={!showPassword ? "password" : "text"}
-										label="Password"
-										variant="outlined"
-										placeholder="Enter Password"
-										value={password}
-										onChange={handleChange}
-										helperText={validation?.password ? validation.password : null}
-										style={{ width: "100%" }}
-										InputProps={{
-											startAdornment: (
-												<InputAdornment position="start">
-													<LockIcon style={{ color: "#7cb342" }} />
-												</InputAdornment>
-											),
-											endAdornment: (
-												<InputAdornment position="end">
-													{!showPassword ? (
-														<IconButton onClick={handleShowPassword}>
-															<VisibilityOffIcon style={{ color: "#7cb342" }} />
-														</IconButton>
-													) : (
-														<IconButton onClick={handleShowPassword}>
-															<VisibilityIcon style={{ color: "#7cb342" }} />
-														</IconButton>
-													)}
-												</InputAdornment>
-											)
-										}}
-									/>
-									<Link
-										className="forgot-password-container"
-										id="forgot-password-container"
-										to="/forgot-password"
-									>
-										Forgot Password ?
-									</Link>
-									<Link
-										className="forgot-password-container"
-										id="forgot-password-container"
-										to="/forgot-user-id"
-									>
-										Forgot Username ?
-									</Link>
-									<div className="login-button-container" id="login-button-container">
-										<Button
-											className="button"
-											//onClick={handleSubmit}
-											variant="contained"
-											type="submit"
-											style={{
-												backgroundColor: "#9c27b0",
-												color: "#ffff"
+									{location.pathname === "/forgot-password" ? (
+										<TextField
+											className="form-field-input"
+											id="user-name-password"
+											name="user-name-password"
+											label="Username/Email"
+											variant="outlined"
+											placeholder="Enter Username/Email"
+											value={forgetPasswordUser}
+											onChange={handleForgotPassword}
+											helperText={validation?.user_id ? validation.user_id : null}
+											style={{ width: "100%", borderRadius: 50 }}
+											InputProps={{
+												startAdornment: (
+													<InputAdornment position="start">
+														<AccountCircle style={{ color: "#7cb342" }} />
+													</InputAdornment>
+												)
 											}}
-										>
-											<span className="button-label-with-icon" style={{ color: "#ffff" }}>
-												Login
-											</span>
-											<span>
-												<PersonIcon className="button-icon" style={{ color: "#ffff" }} />
-											</span>
-										</Button>
+										/>
+									) : location.pathname === "/forgot-user-id" ? (
+										<TextField
+											className="form-field-input"
+											id="user-name-usename"
+											name="user_id"
+											label="Username/Email"
+											variant="outlined"
+											placeholder="Enter Email"
+											value={user_id}
+											onChange={handleChange}
+											helperText={validation?.user_id ? validation.user_id : null}
+											style={{ width: "100%", borderRadius: 50 }}
+											InputProps={{
+												startAdornment: (
+													<InputAdornment position="start">
+														<AccountCircle style={{ color: "#7cb342" }} />
+													</InputAdornment>
+												)
+											}}
+										/>
+									) : (
+										<>
+											{token != undefined ? (
+												<>
+													<TextField
+														className="form-field-input"
+														id="new-password"
+														name="new_password"
+														label="New Password"
+														variant="outlined"
+														placeholder="Enter New Password"
+														value={newPassword}
+														onChange={handleNewPassowrdChange}
+														helperText={validation?.user_id ? validation.user_id : null}
+														style={{ width: "100%", borderRadius: 50 }}
+														InputProps={{
+															startAdornment: (
+																<InputAdornment position="start">
+																	<AccountCircle style={{ color: "#7cb342" }} />
+																</InputAdornment>
+															)
+														}}
+													/>
+													<TextField
+														className="form-field-input"
+														id="confirm-password"
+														name="confirm_password"
+														type={!showPassword ? "password" : "text"}
+														label="Confirm Password"
+														variant="outlined"
+														placeholder="Enter Confirm Password"
+														value={confirmPassword}
+														onChange={handleConfirmPassowrdChange}
+														helperText={validation?.password ? validation.password : null}
+														style={{ width: "100%" }}
+														InputProps={{
+															startAdornment: (
+																<InputAdornment position="start">
+																	<LockIcon style={{ color: "#7cb342" }} />
+																</InputAdornment>
+															),
+															endAdornment: (
+																<InputAdornment position="end">
+																	{!showPassword ? (
+																		<IconButton onClick={handleShowPassword}>
+																			<VisibilityOffIcon
+																				style={{ color: "#7cb342" }}
+																			/>
+																		</IconButton>
+																	) : (
+																		<IconButton onClick={handleShowPassword}>
+																			<VisibilityIcon
+																				style={{ color: "#7cb342" }}
+																			/>
+																		</IconButton>
+																	)}
+																</InputAdornment>
+															)
+														}}
+													/>
+												</>
+											) : (
+												<>
+													<>
+														<TextField
+															className="form-field-input"
+															id="user-name-input"
+															name="user_id"
+															label="Username/Email"
+															variant="outlined"
+															placeholder="Enter Username"
+															value={user_id}
+															onChange={handleChange}
+															helperText={validation?.user_id ? validation.user_id : null}
+															style={{ width: "100%", borderRadius: 50 }}
+															InputProps={{
+																startAdornment: (
+																	<InputAdornment position="start">
+																		<AccountCircle style={{ color: "#7cb342" }} />
+																	</InputAdornment>
+																)
+															}}
+														/>
+														<TextField
+															className="form-field-input"
+															id="password-name-input"
+															name="password"
+															type={!showPassword ? "password" : "text"}
+															label="Password"
+															variant="outlined"
+															placeholder="Enter Password"
+															value={password}
+															onChange={handleChange}
+															helperText={
+																validation?.password ? validation.password : null
+															}
+															style={{ width: "100%" }}
+															InputProps={{
+																startAdornment: (
+																	<InputAdornment position="start">
+																		<LockIcon style={{ color: "#7cb342" }} />
+																	</InputAdornment>
+																),
+																endAdornment: (
+																	<InputAdornment position="end">
+																		{!showPassword ? (
+																			<IconButton onClick={handleShowPassword}>
+																				<VisibilityOffIcon
+																					style={{ color: "#7cb342" }}
+																				/>
+																			</IconButton>
+																		) : (
+																			<IconButton onClick={handleShowPassword}>
+																				<VisibilityIcon
+																					style={{ color: "#7cb342" }}
+																				/>
+																			</IconButton>
+																		)}
+																	</InputAdornment>
+																)
+															}}
+														/>
+													</>
+													<>
+														<Link
+															className="forgot-password-container"
+															id="forgot-password-container"
+															to="/forgot-password"
+														>
+															Forgot Password ?
+														</Link>
+														<Link
+															className="forgot-password-container"
+															id="forgot-password-container"
+															to="/forgot-user-id"
+														>
+															Forgot Username ?
+														</Link>
+													</>
+												</>
+											)}
+										</>
+									)}
+									<div className="login-button-container" id="login-button-container">
+										{location.pathname === "/forgot-password" ? (
+											<Button
+												className="button"
+												onClick={handleSubmitForgetPassword}
+												variant="contained"
+												type="submit"
+												style={{
+													backgroundColor: "#9c27b0",
+													color: "#ffff"
+												}}
+											>
+												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
+													Validate User
+												</span>
+											</Button>
+										) : location.pathname === "/forgot-user-id" ? (
+											<Button
+												className="button"
+												//onClick={handleSubmit}
+												variant="contained"
+												type="submit"
+												style={{
+													backgroundColor: "#9c27b0",
+													color: "#ffff"
+												}}
+											>
+												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
+													Send Email
+												</span>
+											</Button>
+										) : token != undefined ? (
+											<Button
+												className="button"
+												onClick={handleSubmitChangePassword}
+												variant="contained"
+												type="submit"
+												style={{
+													backgroundColor: "#9c27b0",
+													color: "#ffff"
+												}}
+											>
+												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
+													Change Password
+												</span>
+												<span>
+													<PersonIcon className="button-icon" style={{ color: "#ffff" }} />
+												</span>
+											</Button>
+										) : (
+											<Button
+												className="button"
+												//onClick={handleSubmit}
+												variant="contained"
+												type="submit"
+												style={{
+													backgroundColor: "#9c27b0",
+													color: "#ffff"
+												}}
+											>
+												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
+													Login
+												</span>
+												<span>
+													<PersonIcon className="button-icon" style={{ color: "#ffff" }} />
+												</span>
+											</Button>
+										)}
 									</div>
 								</FormControl>
 							</form>

@@ -3,7 +3,7 @@
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	// The number of spaces a tab is equal to.
-	"editor.tabSize": 4,
+	"editor.tabSize": 2,
 	// Insert spaces when pressing Tab.
 	"editor.insertSpaces": false,
 	// When opening a file, `editor.tabSize` and `editor.insertSpaces` will be detected based on the file contents.

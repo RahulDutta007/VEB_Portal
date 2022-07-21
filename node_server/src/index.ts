@@ -32,9 +32,7 @@ if (cluster.isPrimary) {
 	});
 } else {
 	connectDb();
-
 	const PORT = process.env.PORT || 4000;
-
 	const server = httpServer.listen(PORT, () => {
 		console.log(`\x1b[33m \x1b[1m Server is running in ${process.env.NODE_ENV} mode on port ${PORT} \x1b[0m`);
 		io.on("connection", (socket: any) => {

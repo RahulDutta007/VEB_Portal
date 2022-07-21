@@ -20,10 +20,12 @@ export const GetToken = async (req: Request, res: Response) => {
 		const payload = { _id: UserInstance._doc.member_id, expireDate: new Date().getTime() + 15 * 60 * 1000 };
 		const token = jwt.sign(payload, "Z5C39DA2BA906BE3786B28DD700D0D9C2093D6934676J87R0A67378AB9F70BEC32");
 		let link = "";
-		if (process.env.NODE_ENV == "development") link = "http://142.93.222.151/api/v1";
-		if (process.env.NODE_ENV == "production") link = "http://142.93.222.151/api/v1";
+		if (process.env.NODE_ENV == "development") link = "http://localhost:3000";
+		if (process.env.NODE_ENV == "production") link = "http://localhost:3000";
 
-		sendEmailService(ForgotPasswordEmail.replace("${link}", link).replace("${token}", token), UserInstance._doc.email);
+		const text: string = ForgotPasswordEmail.replace("${link}", link).replace("${token}", token);
+
+		sendEmailService(text, UserInstance._doc.email);
 
 
 		// console.log("Message sent: %s", info.messageId);
