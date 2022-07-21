@@ -17,6 +17,9 @@ const App = (): JSX.Element => {
 							path="/login"
 							element={localStorage.getItem("@jwt") ? <Navigate to="/" replace /> : <Login />}
 						/>
+						<Route path="/forgot-password" element={<Login />} />
+						<Route path="/forgot-user-id" element={<Login />} />
+						<Route path="/forget-password/verify-token/:token" element={<Login />} />
 					</Routes>
 				</BrowserRouter>
 			</UIContextProvider>
