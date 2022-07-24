@@ -25,7 +25,7 @@ export const GetToken = async (req: Request, res: Response) => {
 
 		const text: string = ForgotPasswordEmail.replace("${link}", link).replace("${token}", token);
 
-		sendEmailService(text, UserInstance._doc.email);
+		sendEmailService(text, "Reset Passowrd", UserInstance._doc.email);
 
 
 		// console.log("Message sent: %s", info.messageId);

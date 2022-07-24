@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export const sendEmailService = async (text: string, email: any) => {
+export const sendEmailService = async (text: string, subject: string, email: any) => {
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -13,7 +13,7 @@ export const sendEmailService = async (text: string, email: any) => {
       // eslint-disable-next-line quotes
       from: '"Nexcaliber " <arnab1744.cs@gmail.com>',
       to: email, // list of receivers // use comma for multiple accounts
-      subject: "Reset Password", // Subject line
+      subject: subject, // Subject line
       html: text
     });
   } catch (err) {

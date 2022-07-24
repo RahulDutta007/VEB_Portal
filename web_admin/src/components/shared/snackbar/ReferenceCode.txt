@@ -1,5 +1,7 @@
 import { useState, useRef, useContext, useEffect, useCallback, Suspense } from "react";
-import { SnackbarProps } from "../../../../@types/snackbarAPI.types";
+import { LazySnackbarAPI } from "..";
+import { SnackbarProps } from "../../../../src/@types/snackbarAPI.types";
+import { api } from "../../../api";
 
 const Announcements = () => {
 	const [snackbarAPIProps, setSnackbarAPIProps] = useState<SnackbarProps>({
@@ -18,9 +20,9 @@ const Announcements = () => {
 
 	const deleteAnnouncement = useCallback(
 		async (_id: string) => {
-			const _announcements = await api.announcements.deleteAnnouncementById(_id);
+			const _announcements = [];
 			if (_announcements) {
-				setAnnouncements(Object.assign([], [..._announcements]));
+				_announcements(Object.assign([], [..._announcements]));
 
 				setSnackbarAPIProps(
 					Object.assign({}, snackbarAPIProps, {

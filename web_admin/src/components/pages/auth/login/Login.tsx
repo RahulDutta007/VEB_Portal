@@ -1,6 +1,6 @@
 import "../auth.css";
 import "./login.css";
-import React, { useCallback, useRef, useState } from "react";
+import React, { Suspense, useCallback, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Credential } from "../../../../@types/credential.types";
 import { DialogProps } from "../../../../@types/dialogProps.types";
@@ -33,6 +33,8 @@ import PersonIcon from "@material-ui/icons/Person";
 import { useLocation, useParams } from "react-router-dom";
 
 import "./login.css";
+import { LazySnackbarAPI, SnackbarAPI } from "../../../shared";
+import { SnackbarProps } from "../../../../@types/snackbarAPI.types";
 
 const Login = (props: any): JSX.Element => {
 	const location = useLocation();
@@ -48,9 +50,23 @@ const Login = (props: any): JSX.Element => {
 	const [validation, setValidation] = useState<Validation>();
 	const [loginDialogProps, setLoginDialogProps] = useState<DialogProps>();
 	const [forgetPasswordUser, setForgetPasswordUser] = useState<null | string>("");
+	const [forgetUserId, setForgetUserId] = useState<null | string>("");
 	const [newPassword, setNewPassword] = useState<null | string>("");
 	const [confirmPassword, setConfirmPassword] = useState<null | string>("");
 	const [statusMessage, setStatusMessage] = useState<null | string>("");
+	const [snackbarAPIProps, setSnackbarAPIProps] = useState<SnackbarProps>({
+		open: false,
+		severity: undefined,
+		message: "",
+		handleSnackbarClose: (event, reason) => {
+			if (reason === "clickaway") return;
+			setSnackbarAPIProps(
+				Object.assign({}, snackbarAPIProps, {
+					open: false
+				})
+			);
+		}
+	});
 	const _validation = useRef<Validation>();
 	const navigate = useNavigate();
 
@@ -119,15 +135,52 @@ const Login = (props: any): JSX.Element => {
 		};
 		// const status = await handleValidation();
 		const response = await trackPromise(api.auth.forgetPassword(payload));
-		console.log("55", response);
+		// console.log("55", response);
 		if (response) {
-			setStatusMessage("Sent a Link Email to email for reset password");
+			// setStatusMessage("Sent a Link Email to email for reset password");
 			navigate("/login");
+			setSnackbarAPIProps(
+				Object.assign({}, snackbarAPIProps, {
+					open: true,
+					message: "Sent a Link Email to email for reset password",
+					severity: "success"
+				})
+			);
 		} else {
 			setStatusMessage("Error Occurred");
 			navigate("/login");
 		}
-	}, [forgetPasswordUser, navigate]);
+	}, [forgetPasswordUser, navigate, snackbarAPIProps]);
+
+	const handleChangeForgetUserId = (event: React.ChangeEvent<HTMLInputElement>) => {
+		// event.preventDefault();
+		const { value } = event.target;
+		setForgetUserId(value);
+	};
+
+	const handleSubmitForgetUserId = useCallback(async () => {
+		// event.preventDefault();
+		const payload = {
+			email: forgetUserId
+		};
+		// const status = await handleValidation();
+		const response = await trackPromise(api.auth.changeForgetUserId(payload));
+		console.log("55", response);
+		if (response) {
+			// setStatusMessage("Sent email with forget user id");
+			navigate("/login");
+			setSnackbarAPIProps(
+				Object.assign({}, snackbarAPIProps, {
+					open: true,
+					message: "Sent email with forget user id",
+					severity: "success"
+				})
+			);
+		} else {
+			setStatusMessage("Error Occurred");
+			navigate("/login");
+		}
+	}, [forgetUserId, navigate, snackbarAPIProps]);
 
 	const handleSubmitChangePassword = useCallback(async () => {
 		// event.preventDefault();
@@ -141,11 +194,18 @@ const Login = (props: any): JSX.Element => {
 		if (response) {
 			setStatusMessage("Password Changed Successfully");
 			navigate("/login");
+			setSnackbarAPIProps(
+				Object.assign({}, snackbarAPIProps, {
+					open: true,
+					message: "Password has been changed successfully",
+					severity: "success"
+				})
+			);
 		} else {
 			setStatusMessage("Error Occurred");
 			navigate("/login");
 		}
-	}, [newPassword, confirmPassword, navigate, token]);
+	}, [newPassword, confirmPassword, navigate, token, snackbarAPIProps]);
 
 	const handleRoleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		const { currentTarget } = event;
@@ -255,6 +315,9 @@ const Login = (props: any): JSX.Element => {
 								<img src={Logo} className="logo" id="id" alt="Nexcaliber logo" />
 							</div>
 							<span>{statusMessage}</span>
+
+							<SnackbarAPI snackbarProps={snackbarAPIProps} />
+
 							<form onSubmit={handleSubmit} autoComplete="off" method="">
 								<FormControl className="form-container" id="form-container">
 									<div className="select-role-container" id="select-role-container">
@@ -322,13 +385,13 @@ const Login = (props: any): JSX.Element => {
 									) : location.pathname === "/forgot-user-id" ? (
 										<TextField
 											className="form-field-input"
-											id="user-name-usename"
+											id="forget-user-name"
 											name="user_id"
 											label="Username/Email"
 											variant="outlined"
 											placeholder="Enter Email"
-											value={user_id}
-											onChange={handleChange}
+											value={forgetUserId}
+											onChange={handleChangeForgetUserId}
 											helperText={validation?.user_id ? validation.user_id : null}
 											style={{ width: "100%", borderRadius: 50 }}
 											InputProps={{
@@ -501,7 +564,7 @@ const Login = (props: any): JSX.Element => {
 										) : location.pathname === "/forgot-user-id" ? (
 											<Button
 												className="button"
-												//onClick={handleSubmit}
+												onClick={handleSubmitForgetUserId}
 												variant="contained"
 												type="submit"
 												style={{

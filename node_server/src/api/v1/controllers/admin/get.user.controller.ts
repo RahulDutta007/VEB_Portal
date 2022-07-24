@@ -50,7 +50,7 @@ export const ForgotUserName = async (req: Request, res: Response) => {
 		}
 		const UserInstance = await findUser(email);
 		if (UserInstance) {
-			await sendEmailService(ForgotUserIdEmail.replace("${userId}", UserInstance._doc.member_id), email);
+			await sendEmailService(ForgotUserIdEmail.replace("${userId}", UserInstance._doc.member_id), "Retrieve UserId", email);
 			return res.status(StatusCodes.OK).json({
 				message: MESSAGE.email
 			});

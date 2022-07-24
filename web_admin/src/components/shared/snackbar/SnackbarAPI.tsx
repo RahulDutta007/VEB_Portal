@@ -1,6 +1,6 @@
 import { Snackbar, SnackbarCloseReason, Alert } from "@mui/material";
 import { SyntheticEvent } from "react";
-import { SnackbarAPIProps } from "../../../@types/components/snackbarProps.types";
+import { SnackbarAPIProps } from "../../../../src/@types/components/snackbarProps.types";
 
 const SnackbarAPI = ({ snackbarProps }: SnackbarAPIProps): JSX.Element => {
 	const { open, handleSnackbarClose, message, severity } = snackbarProps;
