@@ -51,5 +51,6 @@ export const adminCreationValidator = Joi.object({
 	created_date: Joi.date().optional().allow(null),
 	is_registered: Joi.boolean().optional().allow(null),
 	writing_number: Joi.number().optional().allow(null),
-	enroller_id: Joi.string().optional().allow(null)
+	enroller_id: Joi.string().optional().allow(null),
+	otp: Joi.number().optional().allow(null)
 });

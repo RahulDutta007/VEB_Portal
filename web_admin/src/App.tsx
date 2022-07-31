@@ -5,6 +5,7 @@ import { Login } from "./components/pages";
 import { GroupOwnerSidebar } from "./components/shared";
 
 import "./App.css";
+import SignUp from "./components/pages/auth/signUp/SignUp";
 
 const App = (): JSX.Element => {
 	return (
@@ -20,6 +21,7 @@ const App = (): JSX.Element => {
 						<Route path="/forgot-password" element={<Login />} />
 						<Route path="/forgot-user-id" element={<Login />} />
 						<Route path="/forget-password/verify-token/:token" element={<Login />} />
+						<Route path="/sign-up" element={<SignUp />} />
 					</Routes>
 				</BrowserRouter>
 			</UIContextProvider>

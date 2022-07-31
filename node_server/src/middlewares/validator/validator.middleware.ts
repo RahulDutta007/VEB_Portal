@@ -8,7 +8,7 @@ const validator = (validationSchema: ObjectSchema, parseProperty: string | null)
 	return async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			console.log("parseProperty", req.body);
-			let payload = req.body;
+			const payload = req.body;
 			const { error } = validationSchema.validate(payload);
 			if (error) {
 				throw error;

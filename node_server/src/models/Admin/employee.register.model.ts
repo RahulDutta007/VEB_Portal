@@ -56,6 +56,9 @@ const MemberRegisterSchema: Schema<IEmployeeSchema> = new Schema(
 		date: {
 			type: Date,
 			default: null
+		},
+		otp: {
+			type: Number
 		}
 	},
 	GENERAL_SCHEMA_OPTIONS

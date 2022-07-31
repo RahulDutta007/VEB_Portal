@@ -1,10 +1,21 @@
-import { login, forgetPassword, changeForgetPassword, changeForgetUserId } from "./auth/login";
+import {
+	login,
+	forgetPassword,
+	changeForgetPassword,
+	changeForgetUserId,
+	sendOTP,
+	findEmail,
+	verifyOTP
+} from "./auth/login";
 
 export const api = {
 	auth: {
 		login,
 		forgetPassword,
 		changeForgetPassword,
-		changeForgetUserId
+		changeForgetUserId,
+		sendOTP,
+		findEmail,
+		verifyOTP
 	}
 };

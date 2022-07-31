@@ -22,6 +22,7 @@ export interface IEmployeeSchema {
 	created_by: string | null;
 	created_date: number | null;
 	date: Date | null;
+	otp: number | null;
 }
 
 export interface IEmployeeUser extends IEmployeeSchema, IObjectId { }

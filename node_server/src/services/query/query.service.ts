@@ -27,3 +27,12 @@ export const fetchOne = async (model: Model<any>, filter: Record<string, unknown
 		throw err;
 	}
 };
+
+export const findOneAndUpdate = async (model: Model<any>, filter: Record<string, unknown>, update: Record<string, unknown>) => {
+	try {
+		const docInstance = await model.findOneAndUpdate(filter, update, { new: true, upsert: true });
+		return docInstance[0];
+	} catch (err) {
+		throw err;
+	}
+};

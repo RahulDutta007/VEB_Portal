@@ -47,6 +47,21 @@ const put = async (endpoint, payload, headers) => {
 	}
 };
 
+const patch = async (endpoint, payload, headers) => {
+	try {
+		const response = await axios.patch(`${url}:${port}/api/${version}/${endpoint}`, payload, {
+			headers
+		});
+		const { status } = response;
+		if (status === 200) {
+			return response;
+		}
+	} catch (error) {
+		console.log("error", error);
+		throw error;
+	}
+};
+
 const del = async (endpoint, headers) => {
 	try {
 		const response = await axios.delete(`${url}:${port}/api/${version}/${endpoint}`, {
@@ -67,5 +82,6 @@ export const request = {
 	get,
 	post,
 	put,
-	del
+	del,
+	patch
 };
