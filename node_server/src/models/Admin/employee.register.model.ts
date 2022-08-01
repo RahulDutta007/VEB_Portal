@@ -64,5 +64,5 @@ const MemberRegisterSchema: Schema<IEmployeeSchema> = new Schema(
 	GENERAL_SCHEMA_OPTIONS
 );
 
-const EmployeeRegisterModel = model("employeeregisters", MemberRegisterSchema);
+const EmployeeRegisterModel = model("useradmins", MemberRegisterSchema);
 export default EmployeeRegisterModel;

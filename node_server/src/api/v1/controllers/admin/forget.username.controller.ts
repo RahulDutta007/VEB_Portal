@@ -15,7 +15,7 @@ export const ForgetUserName = async (req: Request, res: Response) => {
     if (!UserInstance._doc)
       return res.json({ status: 404, text: `No Member Found With given information: ${req.body.credential}` });
 
-    sendEmailService(ForgotUserIdEmail.replace("${userId}", UserInstance._doc.member_id), "Retrieve UserId", UserInstance._doc.email);
+    sendEmailService(ForgotUserIdEmail.replace("${userId}", UserInstance._doc.admin_id), "Retrieve UserId", UserInstance._doc.email);
 
 
     // console.log("Message sent: %s", info.messageId);

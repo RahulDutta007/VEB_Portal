@@ -323,7 +323,7 @@ const Login = (props: any): JSX.Element => {
 									<div className="select-role-container" id="select-role-container">
 										<Button
 											onClick={handleRoleClick}
-											endIcon={<ExpandMoreIcon style={{ color: "#9c27b0" }} />}
+											endIcon={<ExpandMoreIcon className="auth-dropdown-icon" />}
 											style={{
 												backgroundColor: "#e0e0e0",
 												width: 200
@@ -377,7 +377,7 @@ const Login = (props: any): JSX.Element => {
 											InputProps={{
 												startAdornment: (
 													<InputAdornment position="start">
-														<AccountCircle style={{ color: "#7cb342" }} />
+														<AccountCircle className="icon-account-circle" />
 													</InputAdornment>
 												)
 											}}
@@ -397,7 +397,7 @@ const Login = (props: any): JSX.Element => {
 											InputProps={{
 												startAdornment: (
 													<InputAdornment position="start">
-														<AccountCircle style={{ color: "#7cb342" }} />
+														<AccountCircle className="auth-input-icon" />
 													</InputAdornment>
 												)
 											}}
@@ -420,7 +420,7 @@ const Login = (props: any): JSX.Element => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<AccountCircle style={{ color: "#7cb342" }} />
+																	<AccountCircle className="auth-input-icon" />
 																</InputAdornment>
 															)
 														}}
@@ -440,7 +440,7 @@ const Login = (props: any): JSX.Element => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<LockIcon style={{ color: "#7cb342" }} />
+																	<LockIcon className="auth-input-icon" />
 																</InputAdornment>
 															),
 															endAdornment: (
@@ -448,13 +448,13 @@ const Login = (props: any): JSX.Element => {
 																	{!showPassword ? (
 																		<IconButton onClick={handleShowPassword}>
 																			<VisibilityOffIcon
-																				style={{ color: "#7cb342" }}
+																				className="auth-input-icon"
 																			/>
 																		</IconButton>
 																	) : (
 																		<IconButton onClick={handleShowPassword}>
 																			<VisibilityIcon
-																				style={{ color: "#7cb342" }}
+																				className="auth-input-icon"
 																			/>
 																		</IconButton>
 																	)}
@@ -480,7 +480,7 @@ const Login = (props: any): JSX.Element => {
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
-																		<AccountCircle style={{ color: "#7cb342" }} />
+																		<AccountCircle className="auth-input-icon" />
 																	</InputAdornment>
 																)
 															}}
@@ -502,7 +502,7 @@ const Login = (props: any): JSX.Element => {
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
-																		<LockIcon style={{ color: "#7cb342" }} />
+																		<LockIcon className="auth-input-icon" />
 																	</InputAdornment>
 																),
 																endAdornment: (
@@ -510,13 +510,13 @@ const Login = (props: any): JSX.Element => {
 																		{!showPassword ? (
 																			<IconButton onClick={handleShowPassword}>
 																				<VisibilityOffIcon
-																					style={{ color: "#7cb342" }}
+																					className="auth-input-icon"
 																				/>
 																			</IconButton>
 																		) : (
 																			<IconButton onClick={handleShowPassword}>
 																				<VisibilityIcon
-																					style={{ color: "#7cb342" }}
+																					className="auth-input-icon"
 																				/>
 																			</IconButton>
 																		)}

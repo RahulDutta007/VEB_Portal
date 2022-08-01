@@ -839,8 +839,8 @@ const SignUp = () => {
 															),
 															endAdornment:
 																resendOTPButtonVisible &&
-																user.email.match(mailformat) &&
-																!OTPVerified ? (
+																	user.email.match(mailformat) &&
+																	!OTPVerified ? (
 																	<div
 																		style={{
 																			cursor:
@@ -878,9 +878,9 @@ const SignUp = () => {
 															helperText={
 																startTimer
 																	? timer.minutes +
-																	  ":" +
-																	  timer.seconds +
-																	  " before expiration"
+																	":" +
+																	timer.seconds +
+																	" before expiration"
 																	: ""
 															}
 															variant="outlined"
@@ -1151,8 +1151,8 @@ const SignUp = () => {
 															userNameExists
 																? "Username exists!"
 																: checkInvalidUserName
-																? "Username must be between 4 to 20 characters and alpha-numeric!"
-																: validation.user.user_name
+																	? "Username must be between 4 to 20 characters and alpha-numeric!"
+																	: validation.user.user_name
 														}
 														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
@@ -1416,7 +1416,7 @@ const SignUp = () => {
 									)}
 								</CardContent>
 								<CardActions>
-									<div className="sign-up-container" id="sign-up-container">
+									<div className="sign-in-container" id="sign-up-container">
 										<span>Already registered? </span>
 										<span>
 											<Link to="/login">Sign In</Link>

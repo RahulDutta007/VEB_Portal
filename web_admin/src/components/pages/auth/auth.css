@@ -59,6 +59,10 @@
     font-family: "Quicksand", sans-serif;
 }
 
+.auth-input-icon {
+    color: #7cb342;
+}
+
 @media only screen and (max-width: 450px) {
     .card-container {
         padding: 0;
@@ -71,5 +75,52 @@
     .form-container {
         margin-top: -30px;
         padding: 0px 20px;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 1024px) {
+    .container-outer {
+        background-image: linear-gradient(180deg, #9370DB, #F8ACC6);
+    }
+
+    .MuiPaper-elevation5 {
+        border: none;
+        box-shadow: none !important;
+    }
+
+    .card-container {
+        background-color: transparent !important;
+    }
+
+    .login .MuiFormLabel-root {
+        color: #FFFFFF;
+    }
+
+    .MuiInputBase-root {
+        color: #FFFFFF !important;
+    }
+
+    .MuiFormLabel-root.Mui-focused,
+    .MuiInputBase-root.Mui-focused {
+        color: #FFFFFF !important;
+        font-weight: 500;
+    }
+
+    .sign-up-container,
+    .sign-up-container>span>a {
+        color: #FFFFFF;
+    }
+
+    .MuiIconButton-root,
+    .auth-input-icon {
+        color: #FFFFFF;
+    }
+
+    .MuiOutlinedInput-notchedOutline {
+        border: 1px solid #FFFFFF !important;
+    }
+
+    .MuiPaper-elevation1 {
+        box-shadow: none !important;
     }
 }
