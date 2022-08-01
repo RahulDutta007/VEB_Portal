@@ -447,15 +447,11 @@ const Login = (props: any): JSX.Element => {
 																<InputAdornment position="end">
 																	{!showPassword ? (
 																		<IconButton onClick={handleShowPassword}>
-																			<VisibilityOffIcon
-																				className="auth-input-icon"
-																			/>
+																			<VisibilityOffIcon className="auth-input-icon" />
 																		</IconButton>
 																	) : (
 																		<IconButton onClick={handleShowPassword}>
-																			<VisibilityIcon
-																				className="auth-input-icon"
-																			/>
+																			<VisibilityIcon className="auth-input-icon" />
 																		</IconButton>
 																	)}
 																</InputAdornment>
@@ -509,15 +505,11 @@ const Login = (props: any): JSX.Element => {
 																	<InputAdornment position="end">
 																		{!showPassword ? (
 																			<IconButton onClick={handleShowPassword}>
-																				<VisibilityOffIcon
-																					className="auth-input-icon"
-																				/>
+																				<VisibilityOffIcon className="auth-input-icon" />
 																			</IconButton>
 																		) : (
 																			<IconButton onClick={handleShowPassword}>
-																				<VisibilityIcon
-																					className="auth-input-icon"
-																				/>
+																				<VisibilityIcon className="auth-input-icon" />
 																			</IconButton>
 																		)}
 																	</InputAdornment>

@@ -8,6 +8,7 @@ const { post, get, patch } = request;
 const { Authorization, Bearer } = AUTHORIZATION;
 
 const initialRoute = "auth";
+const adminRoute = "auth/group-owner/enroller/creation";
 
 export const login = async (_payload) => {
 	try {
@@ -238,6 +239,41 @@ export const sendOTP = async (_payload) => {
 export const verifyOTP = async (_payload, email) => {
 	try {
 		const endpoint = `${initialRoute}/verify-otp/${email}`;
+		const response = await post(endpoint, _payload, headers);
+
+		if (response) {
+			const { data } = response;
+			return data;
+		}
+	} catch (error) {
+		if (error.response.status === StatusCodes.BAD_REQUEST) {
+			const { message } = error.response.data;
+			if (message === "Unauthorised Role!") {
+				alert("Unauthorised Role!");
+			} else if (message === MESSAGE.none) {
+				alert("No Such Data!");
+			} else if (message === "Login Unsuccessful!") {
+				alert("Login Unsuccessful!");
+			} else alert("Other Errors of Status Code 400");
+		} else if (error.response.status === StatusCodes.UNAUTHORIZED) {
+			const { message } = error.response.data;
+
+			if (message === "Authentication Failed!") {
+				alert("Authentication Failed!");
+				// throw error;
+			} else {
+				throw error;
+				//alert("Other Errors of Status Code 401");
+			}
+		} else {
+			throw error;
+		}
+	}
+};
+
+export const createAdmin = async (_payload) => {
+	try {
+		const endpoint = `${adminRoute}`;
 		const response = await post(endpoint, _payload, headers);
 
 		if (response) {

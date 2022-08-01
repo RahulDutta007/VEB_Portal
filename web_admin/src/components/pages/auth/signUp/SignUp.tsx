@@ -38,7 +38,6 @@ import { useRef } from "react";
 import { LINK } from "../../../../config/config";
 import initCapitalize from "../../../../utils/commonFunctions/initCapitalize";
 import validateUserName from "../../../../utils/commonFunctions/validateUserName";
-
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SecurityIcon from "@material-ui/icons/Security";
@@ -64,6 +63,8 @@ import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
 import "./signUp.css";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { LazySnackbarAPI, SnackbarAPI } from "../../../shared";
+import { SnackbarProps } from "../../../../@types/snackbarAPI.types";
 
 const getSteps = () => ["Roles", "Personal Information", "Sign Up", "Completed"];
 
@@ -96,6 +97,19 @@ const SignUp = () => {
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [dateValue, setDateValue] = useState(moment());
+	const [snackbarAPIProps, setSnackbarAPIProps] = useState<SnackbarProps>({
+		open: false,
+		severity: undefined,
+		message: "",
+		handleSnackbarClose: (event, reason) => {
+			if (reason === "clickaway") return;
+			setSnackbarAPIProps(
+				Object.assign({}, snackbarAPIProps, {
+					open: false
+				})
+			);
+		}
+	});
 	const [documentDialogProps, setDocumentDialogProps] = useState({
 		openDialog: false,
 		title: "",
@@ -579,6 +593,16 @@ const SignUp = () => {
 					console.log("Reenterd SSN", reEnteredSSN);
 					console.log("SSN", user.SSN);
 					alert("Please Reenter correct SSN");
+				} else {
+					const data = await api.auth.createAdmin(user);
+					navigate("/login");
+					setSnackbarAPIProps(
+						Object.assign({}, snackbarAPIProps, {
+							open: true,
+							message: `Create a ${user.role} successfully`,
+							severity: "success"
+						})
+					);
 				}
 			} else if (activeStep === 3) {
 				const credentialValidation = await handlecredentialValidation();
@@ -737,7 +761,7 @@ const SignUp = () => {
 						<div className="container-inner" id="container-inner">
 							<Card className="card-container">
 								<CardContent className="card-content" id="card-content">
-									<div className="logo-container">
+									<div className="logo-container-lg-form">
 										<img src={Logo} className="logo" id="id" alt="Nexcaliber logo" />
 									</div>
 									{activeStep === 0 ? (
@@ -788,7 +812,7 @@ const SignUp = () => {
 												) : null}
 											</div>
 											<div
-												className="sign-up-button-container"
+												className="sign-up-button-container-lg-form"
 												id="sign-up-button-container"
 												style={{ marginTop: 50 }}
 											>
@@ -815,10 +839,10 @@ const SignUp = () => {
 										</>
 									) : activeStep === 1 ? (
 										<form onSubmit={handleSubmit} autoComplete="off" method="">
-											<FormControl className="form-container" id="form-container">
+											<FormControl className="form-container-lg-form" id="form-container">
 												<div className="form-inner">
 													<TextField
-														className="form-field-input"
+														className="form-field-input-lg-form"
 														id="email-input"
 														disabled={OTPVerified}
 														name="email"
@@ -839,8 +863,8 @@ const SignUp = () => {
 															),
 															endAdornment:
 																resendOTPButtonVisible &&
-																	user.email.match(mailformat) &&
-																	!OTPVerified ? (
+																user.email.match(mailformat) &&
+																!OTPVerified ? (
 																	<div
 																		style={{
 																			cursor:
@@ -869,7 +893,7 @@ const SignUp = () => {
 													/>
 													{startTimer && !OTPVerified ? (
 														<TextField
-															className="form-field-input"
+															className="form-field-input-lg-form"
 															id="OTP-input"
 															name="OTP"
 															label="OTP"
@@ -878,9 +902,9 @@ const SignUp = () => {
 															helperText={
 																startTimer
 																	? timer.minutes +
-																	":" +
-																	timer.seconds +
-																	" before expiration"
+																	  ":" +
+																	  timer.seconds +
+																	  " before expiration"
 																	: ""
 															}
 															variant="outlined"
@@ -896,7 +920,7 @@ const SignUp = () => {
 														/>
 													) : null}
 													<div
-														className="sign-up-button-container"
+														className="sign-up-button-container-lg-form"
 														id="sign-up-button-container"
 														style={{ cursor: OTPVerified ? "auto" : "not-allowed" }}
 													>
@@ -952,10 +976,10 @@ const SignUp = () => {
 										</form>
 									) : activeStep === 2 ? (
 										<form onSubmit={handleSubmit} autoComplete="off" method="">
-											<FormControl className="form-container" id="form-container">
+											<FormControl className="form-container-lg-form" id="form-container">
 												<div className="form-inner" id="form-inner">
 													<TextField
-														className="form-field-input"
+														className="form-field-input-lg-form"
 														id="first-name-input"
 														name="first_name"
 														value={user.first_name}
@@ -974,7 +998,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input"
+														className="form-field-input-lg-form"
 														id="middle-name-input"
 														name="middle_name"
 														label="Middle Name"
@@ -993,7 +1017,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input"
+														className="form-field-input-lg-form"
 														id="last-name-input"
 														name="last_name"
 														label="Last Name"
@@ -1014,7 +1038,7 @@ const SignUp = () => {
 													<div className="date-picker">
 														<MuiPickersUtilsProvider utils={DateFnsUtils}>
 															<KeyboardDatePicker
-																className="form-field-input"
+																className="form-field-input-lg-form"
 																inputVariant="outlined"
 																label="Date of Birth"
 																placeholder="Enter Date of Birth"
@@ -1043,7 +1067,7 @@ const SignUp = () => {
 														</MuiPickersUtilsProvider>
 													</div>
 													<TextField
-														className="form-field-input"
+														className="form-field-input-lg-form"
 														id="SSN-input"
 														name="SSN"
 														value={user.SSN}
@@ -1064,7 +1088,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input"
+														className="form-field-input-lg-form"
 														id="Reenter-SSN-input"
 														name="reenterSSN"
 														value={reEnteredSSN}
@@ -1085,7 +1109,10 @@ const SignUp = () => {
 														}}
 													/>
 												</div>
-												<div className="sign-up-button-container" id="sign-up-button-container">
+												<div
+													className="sign-up-button-container-lg-form"
+													id="sign-up-button-container"
+												>
 													<Button
 														className="button"
 														onClick={handleBack}
@@ -1136,10 +1163,10 @@ const SignUp = () => {
 										</form>
 									) : activeStep === 3 ? (
 										<form onSubmit={handleSubmit} autoComplete="off" method="">
-											<FormControl className="form-container" id="form-container">
+											<FormControl className="form-container-lg-form" id="form-container">
 												<div className="form-inner" id="form-inner">
 													<TextField
-														className="form-field-input"
+														className="form-field-input-lg-form"
 														id="user-name-input"
 														name="user_name"
 														label="Username"
@@ -1151,8 +1178,8 @@ const SignUp = () => {
 															userNameExists
 																? "Username exists!"
 																: checkInvalidUserName
-																	? "Username must be between 4 to 20 characters and alpha-numeric!"
-																	: validation.user.user_name
+																? "Username must be between 4 to 20 characters and alpha-numeric!"
+																: validation.user.user_name
 														}
 														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
@@ -1164,7 +1191,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input"
+														className="form-field-input-lg-form"
 														id="password-input"
 														name="password"
 														type={!showPassword ? "password" : "text"}
@@ -1201,7 +1228,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input"
+														className="form-field-input-lg-form"
 														id="confirm-password-input"
 														name="confirm_password"
 														type={!showConfirmPassword ? "password" : "text"}
@@ -1279,7 +1306,10 @@ const SignUp = () => {
 														</span>
 													</div>
 												</div>
-												<div className="sign-up-button-container" id="sign-up-button-container">
+												<div
+													className="sign-up-button-container-lg-form"
+													id="sign-up-button-container"
+												>
 													{/* <Button
                                                                 variant="contained"
                                                                 onClick={handleBack}
@@ -1379,7 +1409,10 @@ const SignUp = () => {
 													Your account has been successfully created
 												</div>
 											</div>
-											<div className="sign-up-button-container" id="sign-up-button-container">
+											<div
+												className="sign-up-button-container-lg-form"
+												id="sign-up-button-container"
+											>
 												{/* <Button
                                                             variant="contained"
                                                             onClick={handleSubmit}

@@ -5,7 +5,8 @@ import {
 	changeForgetUserId,
 	sendOTP,
 	findEmail,
-	verifyOTP
+	verifyOTP,
+	createAdmin
 } from "./auth/login";
 
 export const api = {
@@ -16,6 +17,7 @@ export const api = {
 		changeForgetUserId,
 		sendOTP,
 		findEmail,
-		verifyOTP
+		verifyOTP,
+		createAdmin
 	}
 };
