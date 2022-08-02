@@ -851,7 +851,7 @@ const SignUp = () => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<EmailIcon style={{ color: "#7cb342" }} />
+																	<EmailIcon className="auth-input-icon" />
 																</InputAdornment>
 															),
 															endAdornment:
@@ -906,7 +906,7 @@ const SignUp = () => {
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
-																		<VpnKeyIcon style={{ color: "#7cb342" }} />
+																		<VpnKeyIcon className="auth-input-icon" />
 																	</InputAdornment>
 																)
 															}}
@@ -985,7 +985,7 @@ const SignUp = () => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<AccountCircle style={{ color: "#7cb342" }} />
+																	<AccountCircle className="auth-input-icon" />
 																</InputAdornment>
 															)
 														}}
@@ -1004,7 +1004,7 @@ const SignUp = () => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<AccountCircle style={{ color: "#7cb342" }} />
+																	<AccountCircle className="auth-input-icon" />
 																</InputAdornment>
 															)
 														}}
@@ -1023,7 +1023,7 @@ const SignUp = () => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<AccountCircle style={{ color: "#7cb342" }} />
+																	<AccountCircle className="auth-input-icon" />
 																</InputAdornment>
 															)
 														}}
@@ -1050,7 +1050,7 @@ const SignUp = () => {
 																}}
 																style={{ width: "100%", borderRadius: 50 }}
 																keyboardIcon={
-																	<EventIcon style={{ color: "#7cb342" }} />
+																	<EventIcon className="auth-input-icon" />
 																}
 																KeyboardButtonProps={{
 																	"aria-label": "change date"
@@ -1075,7 +1075,7 @@ const SignUp = () => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<SecurityIcon style={{ color: "#7cb342" }} />
+																	<SecurityIcon className="auth-input-icon" />
 																</InputAdornment>
 															)
 														}}
@@ -1096,7 +1096,7 @@ const SignUp = () => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<SecurityIcon style={{ color: "#7cb342" }} />
+																	<SecurityIcon className="auth-input-icon" />
 																</InputAdornment>
 															)
 														}}
@@ -1175,7 +1175,7 @@ const SignUp = () => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<AccountCircle style={{ color: "#7cb342" }} />
+																	<AccountCircle className="auth-input-icon" />
 																</InputAdornment>
 															)
 														}}
@@ -1195,7 +1195,7 @@ const SignUp = () => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<LockIcon style={{ color: "#7cb342" }} />
+																	<SecurityIcon className="auth-input-icon" />
 																</InputAdornment>
 															),
 															endAdornment: (
@@ -1203,13 +1203,13 @@ const SignUp = () => {
 																	{!showPassword ? (
 																		<IconButton onClick={handleShowPassword}>
 																			<VisibilityOffIcon
-																				style={{ color: "#7cb342" }}
+																				className="auth-input-icon"
 																			/>
 																		</IconButton>
 																	) : (
 																		<IconButton onClick={handleShowPassword}>
 																			<VisibilityIcon
-																				style={{ color: "#7cb342" }}
+																				className="auth-input-icon"
 																			/>
 																		</IconButton>
 																	)}
@@ -1233,7 +1233,7 @@ const SignUp = () => {
 															startAdornment: (
 																<InputAdornment position="start">
 																	<EnhancedEncryptionIcon
-																		style={{ color: "#7cb342" }}
+																		className="auth-input-icon"
 																	/>
 																</InputAdornment>
 															),
@@ -1242,13 +1242,13 @@ const SignUp = () => {
 																	{!showConfirmPassword ? (
 																		<IconButton onClick={handleShowConfirmPassword}>
 																			<VisibilityOffIcon
-																				style={{ color: "#7cb342" }}
+																				className="auth-input-icon"
 																			/>
 																		</IconButton>
 																	) : (
 																		<IconButton onClick={handleShowConfirmPassword}>
 																			<VisibilityIcon
-																				style={{ color: "#7cb342" }}
+																				className="auth-input-icon"
 																			/>
 																		</IconButton>
 																	)}
