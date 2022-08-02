@@ -8,7 +8,7 @@ import { EmployeeRegister } from "../../controllers/admin/employee.register.cont
 const router = express.Router();
 
 router.route("/admin/signup").post(validator(validators.adminRegisterValidator, null), GroupOwnerRegister);
-router.route("/enroller/signup").post(validator(validators.adminRegisterValidator, null), AdminRegister);
+router.route("/enroller/signup").post(validator(validators.enrollerRegisterValidator, null), AdminRegister);
 router.route("/employee/signup").post(EmployeeRegister);
 
 module.exports = router;

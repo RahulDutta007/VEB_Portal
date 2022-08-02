@@ -3,7 +3,7 @@ import { login } from "../../controllers/admin/login.controller";
 import validator from "../../../../middlewares/validator/validator.middleware";
 import { ChangePassword } from "../../controllers/admin/change.password.controller";
 import { GetToken, VerifyToken } from "../../controllers/admin/forget.password.controller";
-import { FindUsername, FindEmail, SendOTP, VerifyOTP } from "../../controllers/admin/get.user.controller";
+import { FindUsername, FindEmail, FindUserDetails, SendOTP, VerifyOTP } from "../../controllers/admin/get.user.controller";
 import verifyToken from "../../../../middlewares/auth/verifyToken.middleware";
 import { validators } from "../../validators";
 import { ForgetUserName } from "../../controllers/admin/forget.username.controller";
@@ -21,5 +21,6 @@ router.route("/find-user-name").get(verifyToken, FindUsername);
 router.route("/find-email").get(FindEmail);
 router.route("/send-otp").patch(SendOTP);
 router.route("/verify-otp/:email").post(VerifyOTP);
+router.route("/user").get(verifyToken, FindUserDetails);
 
 module.exports = router;

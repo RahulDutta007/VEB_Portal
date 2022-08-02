@@ -185,3 +185,25 @@ const findUser = async (model: Model<any>, user: any) => {
 		: { member_id: user };
 	return await service.query.fetchOne(model, filter);
 }
+
+export const FindUserDetails = async (req: Request, res: Response) => {
+	try {
+		const user = req.user;
+		if (user) {
+			return res.status(StatusCodes.OK).json({
+				message: MESSAGE.get.succ,
+				result: user
+			});
+		} else {
+			return res.status(StatusCodes.OK).json({
+				message: MESSAGE.get.succ,
+				result: "No user found"
+			});
+		}
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({
+			message: MESSAGE.get.fail,
+			err
+		});
+	}
+};

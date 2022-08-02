@@ -11,7 +11,7 @@ const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 	{
 		admin_id: {
 			type: String,
-			required: [true, "Admin id is required"]
+			default: null
 		},
 		first_name: {
 			type: String,

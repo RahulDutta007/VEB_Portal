@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -22,10 +22,14 @@ import { styled } from "@mui/material/styles";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { keyframes } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { UIContext } from "../../../contexts";
+import { UIContext, AuthContext } from "../../../contexts";
 import SIDEBAR_OPTIONS from "../../../constants/sidebarOptions";
 import { Tab } from "../../../@types/sidebarOptions.types";
+
+import { AUTHORIZATION } from "../../../constants/api/auth";
+import axios from "axios";
+import { url, port, headers } from "../../../config/config";
+import { trackPromise } from "react-promise-tracker";
 
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -76,13 +80,47 @@ interface Props {
 
 const Sidebar = (props: Props) => {
 	const { window } = props;
-	const [mobileOpen, setMobileOpen] = React.useState(false);
+	const [mobileOpen, setMobileOpen] = useState(false);
 	const { dashboardHeader, selectedTab } = useContext(UIContext);
+	const { user, setUser } = useContext(AuthContext);
 	const navigate = useNavigate();
 
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
 	};
+
+	const getUser = useCallback(async () => {
+		const { Authorization, Bearer } = AUTHORIZATION;
+		const token = localStorage.getItem("@jwt");
+		try {
+			const response = await trackPromise(
+				axios.get(`${url}:${port}/api/v1/auth/user`, {
+					headers: {
+						[Authorization]: `${Bearer} ${token}`,
+						"Content-Type": "application/json"
+					}
+				})
+			);
+			const { data } = response.data;
+			console.log("getUser", data);
+			const ssn = String(data.SSN);
+			const ssnValue = ssn.substr(0, 3) + "-" + ssn.substr(3, 2) + "-" + ssn.substr(5);
+			const _user = {
+				...data,
+				SSN: ssnValue
+			};
+			setUser(Object.assign({}, _user));
+		} catch (err) {
+			console.log("err", err);
+		}
+	}, [setUser]);
+
+	useEffect(() => {
+		getUser();
+	}, [getUser]);
+
+
+	console.log(1111, user)
 
 	const drawer = (
 		<div>
@@ -141,17 +179,17 @@ const Sidebar = (props: Props) => {
 														style={{
 															backgroundColor:
 																selectedTab.subTabIndex === subTabIndex &&
-																selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																	? "#85CE36"
 																	: "inherit",
 															color:
 																selectedTab.subTabIndex === subTabIndex &&
-																selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																	? "#4e4e4e"
 																	: "inherit",
 															fontWeight:
 																selectedTab.subTabIndex === subTabIndex &&
-																selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																	? "bolder"
 																	: "inherit"
 														}}
@@ -162,12 +200,12 @@ const Sidebar = (props: Props) => {
 															style={{
 																color:
 																	selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																		selectedTab.index === tabIndex
 																		? "#4e4e4e"
 																		: "inherit",
 																fontWeight:
 																	selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																		selectedTab.index === tabIndex
 																		? "bolder"
 																		: "inherit"
 															}}
