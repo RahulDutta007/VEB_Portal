@@ -94,12 +94,7 @@ const Sidebar = (props: Props) => {
 		const token = localStorage.getItem("@jwt");
 		try {
 			const response = await trackPromise(
-				axios.get(`${url}:${port}/api/v1/auth/user`, {
-					headers: {
-						[Authorization]: `${Bearer} ${token}`,
-						"Access-Control-Allow-Origin": "*"
-					}
-				})
+				axios.get(`${url}:${port}/api/v1/auth/user`, { "headers": { Authorization: "Bearer " + token } })
 			);
 			const { data } = response.data;
 			console.log("getUser", data);

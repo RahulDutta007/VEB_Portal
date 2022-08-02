@@ -277,8 +277,15 @@ export const createAdmin = async (_payload) => {
 		const response = await post(endpoint, _payload, headers);
 
 		if (response) {
-			const { data } = response;
-			return data;
+			const {
+				data: { message }
+			} = response;
+			if (message === "Data edited successfully") {
+				const {
+					data: { message, result }
+				} = response;
+				return { message, result };
+			}
 		}
 	} catch (error) {
 		if (error.response.status === StatusCodes.BAD_REQUEST) {

@@ -19,7 +19,7 @@ export const FindUsername = async (req: Request, res: Response) => {
 				result: "Please provide username"
 			});
 		}
-		const UserInstance = await findUser(EmployeeRegisterModel, user_id);
+		const UserInstance = await findUser(AdminModel, user_id);
 		if (UserInstance) {
 			return res.status(StatusCodes.OK).json({
 				message: MESSAGE.get.succ,
@@ -52,7 +52,7 @@ export const ForgotUserName = async (req: Request, res: Response) => {
 				result: "Please provide username"
 			});
 		}
-		const UserInstance = await findUser(EmployeeRegisterModel, email);
+		const UserInstance = await findUser(AdminModel, email);
 		if (UserInstance) {
 			await sendEmailService(ForgotUserIdEmail.replace("${userId}", UserInstance._doc.member_id), "Retrieve UserId", email);
 			return res.status(StatusCodes.OK).json({
@@ -83,7 +83,7 @@ export const FindEmail = async (req: Request, res: Response) => {
 				result: "Please provide email"
 			});
 		}
-		const UserInstance = await findUser(EmployeeRegisterModel, email);
+		const UserInstance = await findUser(AdminModel, email);
 		if (UserInstance) {
 			return res.status(StatusCodes.OK).json({
 				message: MESSAGE.get.succ,
@@ -116,7 +116,7 @@ export const SendOTP = async (req: Request, res: Response) => {
 				result: "Please provide email"
 			});
 		}
-		const UserInstance = await findUser(EmployeeRegisterModel, email);
+		const UserInstance = await findUser(AdminModel, email);
 		if (UserInstance) {
 			const otp: number = Math.floor(100000 + Math.random() * 900000);
 			const text = `The OTP is ${otp}`;

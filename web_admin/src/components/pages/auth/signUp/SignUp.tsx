@@ -650,10 +650,18 @@ const SignUp = () => {
 						try {
 							// Old sign up integration
 							const response = await api.auth.createAdmin(_user);
-							console.log("user response.status", response.status);
+							console.log("user response.status", response?.message);
 							console.log("user response", response);
-							if (response.status === 201) {
-								setActiveStep(activeStep + 1);
+							if (response?.message === "Data edited successfully") {
+								const data = await api.auth.createAdmin(user);
+								navigate("/login");
+								setSnackbarAPIProps(
+									Object.assign({}, snackbarAPIProps, {
+										open: true,
+										message: `Create a ${user.role} successfully`,
+										severity: "success"
+									})
+								);
 							}
 						} catch (err) {
 							console.log("err", err);
