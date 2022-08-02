@@ -8,7 +8,7 @@ const { post, get, patch } = request;
 const { Authorization, Bearer } = AUTHORIZATION;
 
 const initialRoute = "auth";
-const adminRoute = "auth/group-owner/enroller/creation";
+const adminRoute = "auth/group-owner";
 
 export const login = async (_payload) => {
 	try {
@@ -273,7 +273,7 @@ export const verifyOTP = async (_payload, email) => {
 
 export const createAdmin = async (_payload) => {
 	try {
-		const endpoint = `${adminRoute}`;
+		const endpoint = `${adminRoute}/enroller/signup`;
 		const response = await post(endpoint, _payload, headers);
 
 		if (response) {

@@ -610,6 +610,9 @@ const Login = (props: any): JSX.Element => {
 								<span>
 									<Link to="/sign-up">Sign Up</Link>
 								</span>
+								<span>
+									<Link to="/create-group-owner">Create Group Owner</Link>
+								</span>
 							</div>
 						</CardContent>
 					</Card>

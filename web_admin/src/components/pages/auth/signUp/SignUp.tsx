@@ -77,6 +77,7 @@ const SignUp = () => {
 		minutes: 9,
 		seconds: 59
 	});
+	const [confirm_password, setConfirmPassword] = useState("");
 	const ref = useRef<HTMLElement>(null);
 	const [resendOTPButtonVisible, setResendOTPButtonVisible] = useState(true);
 	const [resentOTPCaptionVisible, setResentOTPCaptionVisible] = useState(false);
@@ -137,9 +138,7 @@ const SignUp = () => {
 		date_of_birth: moment().format("MM/DD/YYYY"),
 		SSN: "",
 		user_name: "",
-		password: "",
-		confirm_password: "",
-		claimNotification: false
+		password: ""
 	});
 	const steps = getSteps();
 	const [validation, setValidation] = useState({
@@ -155,6 +154,7 @@ const SignUp = () => {
 		}
 	});
 	const navigate = useNavigate();
+	const _validation = useRef();
 
 	const [speedDialopen, setSpeedDialOpen] = React.useState(false);
 	const [speedDialhidden, setSpeedDialHidden] = React.useState(false);
@@ -183,9 +183,35 @@ const SignUp = () => {
 	}, [user]);
 
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	const handlecredentialValidation = useCallback(async () => {
-		return "";
-	}, [user]);
+	// const handlecredentialValidation = useCallback(async () => {
+	// 	const { user_name, password, confirm_password } = user;
+	// 	_validation.current = {
+	// 		..._validation.current,
+	// 		user: {}
+	// 	};
+	// 	let flag = true;
+
+	// 	if (user_name.length === 0) {
+	// 		_validation.current.user["user_name"] = "User Name is required";
+	// 		_validation.current.user["status"] = "invalid";
+	// 		flag = false;
+	// 	}
+	// 	if (password.length === 0) {
+	// 		_validation.current.user["password"] = "Password is required";
+	// 		_validation.current.user["status"] = "invalid";
+	// 		flag = false;
+	// 	}
+	// 	if (confirm_password !== password) {
+	// 		_validation.current.user["confirm_password"] = "Password doesn't match";
+	// 		_validation.current.user["status"] = "invalid";
+	// 		flag = false;
+	// 	}
+	// 	if (flag === true) _validation.current["status"] = "valid";
+	// 	else _validation.current["status"] = "invalid";
+
+	// 	setValidation(Object.assign({}, _validation.current));
+	// 	return _validation.current["status"];
+	// }, [user]);
 
 	const handleDateChange = useCallback(
 		(date: any, dateValue: any) => {
@@ -255,8 +281,8 @@ const SignUp = () => {
 			setAnchorEl(null);
 			if (value) {
 				setUser(Object.assign({}, user, { role: value }));
-				const text = value === "Admin" ? 1 : value === "Enroller Admin" ? 2 : value === "Agent" ? 4 : 3;
-				setActiveStep(text);
+				// const text = value === "Admin" ? 1 : value === "Enroller Admin" ? 2 : value === "Agent" ? 4 : 3;
+				setActiveStep(1);
 			}
 		},
 		[setUser, user]
@@ -477,6 +503,8 @@ const SignUp = () => {
 						}
 					}
 				}
+			} else if (name === "confirm_password") {
+				setConfirmPassword(value);
 			} else {
 				setUser(Object.assign({}, user, { [name]: value }));
 			}
@@ -594,18 +622,19 @@ const SignUp = () => {
 					console.log("SSN", user.SSN);
 					alert("Please Reenter correct SSN");
 				} else {
-					const data = await api.auth.createAdmin(user);
-					navigate("/login");
-					setSnackbarAPIProps(
-						Object.assign({}, snackbarAPIProps, {
-							open: true,
-							message: `Create a ${user.role} successfully`,
-							severity: "success"
-						})
-					);
+					setActiveStep(activeStep + 1);
+					// const data = await api.auth.createAdmin(user);
+					// navigate("/login");
+					// setSnackbarAPIProps(
+					// 	Object.assign({}, snackbarAPIProps, {
+					// 		open: true,
+					// 		message: `Create a ${user.role} successfully`,
+					// 		severity: "success"
+					// 	})
+					// );
 				}
 			} else if (activeStep === 3) {
-				const credentialValidation = await handlecredentialValidation();
+				const credentialValidation = "valid"; // await handlecredentialValidation();
 				if (credentialValidation === "valid") {
 					if (hasReadStatementOfUnderstanding) {
 						const { role, date_of_birth } = user;
@@ -619,46 +648,13 @@ const SignUp = () => {
 						};
 						console.log("_user", _user);
 						try {
-							if (_role === ROLES.admin) {
-								const response = {}; // await trackPromise(api.signUp.userSignUp(_user));
-								console.log("User Response", response);
-
-								if (response) {
-									setActiveStep(activeStep + 1);
-								}
-							} else if (_role === ROLES.admin) {
-								const response = {}; //await trackPromise(api.groupMemberEmployee.employeeSignUp(_user));
-								console.log("Employee Response", response);
-
-								if (response) {
-									setActiveStep(activeStep + 1);
-								}
-							} else if (_role === ROLES.admin) {
-								const response = {}; //await trackPromise(api.groupMemberDependent.dependentSignUp(_user));
-								console.log("Dependent Response", response);
-
-								if (response) {
-									setActiveStep(activeStep + 1);
-								}
-							} else {
-								console.log("Invalid Role Selected!");
-							}
 							// Old sign up integration
-							// else {
-							// 	let response = await trackPromise(
-							// 		axios.post(`${LINK}/user/signup`, JSON.stringify(_user), {
-							// 			headers: {
-							// 				Accept: "application/json",
-							// 				"Content-Type": "application/json"
-							// 			}
-							// 		})
-							// 	);
-							// 	console.log("user response.status", response.status);
-							// 	console.log("user response", response);
-							// 	if (response.status === 201) {
-							// 		setActiveStep(activeStep + 1);
-							// 	}
-							// }
+							const response = await api.auth.createAdmin(_user);
+							console.log("user response.status", response.status);
+							console.log("user response", response);
+							if (response.status === 201) {
+								setActiveStep(activeStep + 1);
+							}
 						} catch (err) {
 							console.log("err", err);
 							setSignUpDialogProps(
@@ -692,7 +688,7 @@ const SignUp = () => {
 			activeStep,
 			handlePersonalDetailsValidation,
 			handleRoleValidation,
-			handlecredentialValidation,
+			// handlecredentialValidation,
 			hasReadStatementOfUnderstanding,
 			navigate,
 			reEnteredSSN,
@@ -761,7 +757,11 @@ const SignUp = () => {
 						<div className="container-inner" id="container-inner">
 							<Card className="card-container">
 								<CardContent className="card-content" id="card-content">
-									<div className={"logo-container " + (activeStep === 2 ? "logo-container-lg-form" : "")}>
+									<div
+										className={
+											"logo-container " + (activeStep === 2 ? "logo-container-lg-form" : "")
+										}
+									>
 										<img src={Logo} className="logo" id="id" alt="Nexcaliber logo" />
 									</div>
 									{activeStep === 0 ? (
@@ -856,8 +856,8 @@ const SignUp = () => {
 															),
 															endAdornment:
 																resendOTPButtonVisible &&
-																	user.email.match(mailformat) &&
-																	!OTPVerified ? (
+																user.email.match(mailformat) &&
+																!OTPVerified ? (
 																	<div
 																		style={{
 																			cursor:
@@ -895,9 +895,9 @@ const SignUp = () => {
 															helperText={
 																startTimer
 																	? timer.minutes +
-																	":" +
-																	timer.seconds +
-																	" before expiration"
+																	  ":" +
+																	  timer.seconds +
+																	  " before expiration"
 																	: ""
 															}
 															variant="outlined"
@@ -969,7 +969,10 @@ const SignUp = () => {
 										</form>
 									) : activeStep === 2 ? (
 										<form onSubmit={handleSubmit} autoComplete="off" method="">
-											<FormControl className={"form-container form-container-lg-form"} id="form-container">
+											<FormControl
+												className={"form-container form-container-lg-form"}
+												id="form-container"
+											>
 												<div className="form-inner form-inner-lg" id="form-inner">
 													<TextField
 														className="form-field-input-lg-form"
@@ -1102,7 +1105,13 @@ const SignUp = () => {
 														}}
 													/>
 												</div>
-												<div className={"sign-up-button-container " + (activeStep === 2 ? "sign-up-button-container-lg-form" : "")} id="sign-up-button-container">
+												<div
+													className={
+														"sign-up-button-container " +
+														(activeStep === 2 ? "sign-up-button-container-lg-form" : "")
+													}
+													id="sign-up-button-container"
+												>
 													<Button
 														className="button"
 														onClick={handleBack}
@@ -1168,8 +1177,8 @@ const SignUp = () => {
 															userNameExists
 																? "Username exists!"
 																: checkInvalidUserName
-																	? "Username must be between 4 to 20 characters and alpha-numeric!"
-																	: validation.user.user_name
+																? "Username must be between 4 to 20 characters and alpha-numeric!"
+																: validation.user.user_name
 														}
 														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
@@ -1224,7 +1233,7 @@ const SignUp = () => {
 														type={!showConfirmPassword ? "password" : "text"}
 														label="Confirm password"
 														placeholder="Enter Confirm Password"
-														value={user.confirm_password}
+														value={confirm_password}
 														variant="outlined"
 														onChange={handleChange}
 														helperText={validation.user.confirm_password}
@@ -1296,10 +1305,7 @@ const SignUp = () => {
 														</span>
 													</div>
 												</div>
-												<div
-													className="sign-up-button-container"
-													id="sign-up-button-container"
-												>
+												<div className="sign-up-button-container" id="sign-up-button-container">
 													{/* <Button
                                                                 variant="contained"
                                                                 onClick={handleBack}

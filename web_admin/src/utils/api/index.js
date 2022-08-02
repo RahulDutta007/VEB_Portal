@@ -1,3 +1,5 @@
+import { _assignGroupsAndLocation } from "./admin/assignGroups/AssignGroups";
+
 import {
 	login,
 	forgetPassword,
@@ -19,5 +21,12 @@ export const api = {
 		findEmail,
 		verifyOTP,
 		createAdmin
+	},
+	assignGroupsAndLocation: {
+		getGroupAndLocationAssignment: _assignGroupsAndLocation.getGroupAndLocationAssignment,
+		assignGroups: _assignGroupsAndLocation.assignGroups,
+		assignLocations: _assignGroupsAndLocation.assignLocations,
+		assignAllGroups: _assignGroupsAndLocation.assignAllGroups,
+		assignAllLocations: _assignGroupsAndLocation.assignAllLocations
 	}
 };

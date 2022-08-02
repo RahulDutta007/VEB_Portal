@@ -5,7 +5,7 @@ import { MARITAL_STATUS } from "../../../../constants/marital.status";
 import { UPLOAD_TYPE } from "../../../../constants/upload.types";
 
 const adminRegisterValidator = Joi.object({
-	admin_id: Joi.string().required(),
+	admin_id: Joi.string().optional(),
 	first_name: Joi.string().min(3).max(30).required(),
 	last_name: Joi.string().min(3).max(30).required(),
 	middle_name: Joi.string().optional().allow(null),
@@ -21,13 +21,13 @@ const adminRegisterValidator = Joi.object({
 		message: "Unauthorized Role!"
 	}),
 	email: Joi.string().email().required(),
-	SSN: Joi.string().pattern(new RegExp("^[0-9]{9}$")).required(),
+	SSN: Joi.number().required(),
 	date_of_birth: Joi.date().optional().allow(null),
-	gender: Joi.string().required().valid(GENDER.male, GENDER.female, GENDER.others).messages({
+	gender: Joi.string().optional().valid(GENDER.male, GENDER.female, GENDER.others).messages({
 		message: "Please provide correct gender!"
 	}),
 	marital_status: Joi.string()
-		.required()
+		.optional()
 		.valid(
 			MARITAL_STATUS.single,
 			MARITAL_STATUS.married,
@@ -51,7 +51,7 @@ const adminRegisterValidator = Joi.object({
 	is_member_chat_support: Joi.boolean().optional().allow(null),
 	is_employer_chat_support: Joi.boolean().optional().allow(null),
 	hire_date: Joi.date().optional().allow(null),
-	upload_type: Joi.string().required().valid(UPLOAD_TYPE.bulk, UPLOAD_TYPE.manual, UPLOAD_TYPE.migrated).messages({
+	upload_type: Joi.string().optional().valid(UPLOAD_TYPE.bulk, UPLOAD_TYPE.manual, UPLOAD_TYPE.migrated).messages({
 		message: "Please provide correct upload type!"
 	}),
 	created_by: Joi.string().optional().allow(null),
