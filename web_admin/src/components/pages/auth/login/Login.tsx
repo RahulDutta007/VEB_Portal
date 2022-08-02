@@ -324,10 +324,7 @@ const Login = (props: any): JSX.Element => {
 										<Button
 											onClick={handleRoleClick}
 											endIcon={<ExpandMoreIcon className="auth-dropdown-icon" />}
-											style={{
-												backgroundColor: "#e0e0e0",
-												width: 200
-											}}
+											className="role-dropdown"
 										>
 											{role !== "" ? role : "Select Your Role"}
 										</Button>

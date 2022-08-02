@@ -761,7 +761,7 @@ const SignUp = () => {
 						<div className="container-inner" id="container-inner">
 							<Card className="card-container">
 								<CardContent className="card-content" id="card-content">
-									<div className="logo-container-lg-form">
+									<div className={"logo-container " + (activeStep === 2 ? "logo-container-lg-form" : "")}>
 										<img src={Logo} className="logo" id="id" alt="Nexcaliber logo" />
 									</div>
 									{activeStep === 0 ? (
@@ -769,11 +769,8 @@ const SignUp = () => {
 											<div className="select-role-container" id="select-role-container">
 												<Button
 													onClick={handleClick}
-													endIcon={<ExpandMoreIcon style={{ color: "#9c27b0" }} />}
-													style={{
-														backgroundColor: "#e0e0e0",
-														width: 200
-													}}
+													endIcon={<ExpandMoreIcon className="role-arrow-down" />}
+													className="role-dropdown"
 												>
 													{user.role !== "" ? user.role : "Select Your Role"}
 												</Button>
@@ -817,13 +814,9 @@ const SignUp = () => {
 												style={{ marginTop: 50 }}
 											>
 												<Button
-													className="button"
+													className="button next-arrow-down"
 													onClick={handleSubmit}
 													variant="contained"
-													style={{
-														backgroundColor: "#9c27b0",
-														color: "#ffff"
-													}}
 												>
 													<span className="button-label-with-icon" style={{ color: "#ffff" }}>
 														Next
@@ -863,8 +856,8 @@ const SignUp = () => {
 															),
 															endAdornment:
 																resendOTPButtonVisible &&
-																user.email.match(mailformat) &&
-																!OTPVerified ? (
+																	user.email.match(mailformat) &&
+																	!OTPVerified ? (
 																	<div
 																		style={{
 																			cursor:
@@ -902,9 +895,9 @@ const SignUp = () => {
 															helperText={
 																startTimer
 																	? timer.minutes +
-																	  ":" +
-																	  timer.seconds +
-																	  " before expiration"
+																	":" +
+																	timer.seconds +
+																	" before expiration"
 																	: ""
 															}
 															variant="outlined"
@@ -976,8 +969,8 @@ const SignUp = () => {
 										</form>
 									) : activeStep === 2 ? (
 										<form onSubmit={handleSubmit} autoComplete="off" method="">
-											<FormControl className="form-container-lg-form" id="form-container">
-												<div className="form-inner" id="form-inner">
+											<FormControl className={"form-container form-container-lg-form"} id="form-container">
+												<div className="form-inner form-inner-lg" id="form-inner">
 													<TextField
 														className="form-field-input-lg-form"
 														id="first-name-input"
@@ -998,7 +991,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form"
 														id="middle-name-input"
 														name="middle_name"
 														label="Middle Name"
@@ -1017,7 +1010,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form"
 														id="last-name-input"
 														name="last_name"
 														label="Last Name"
@@ -1038,7 +1031,7 @@ const SignUp = () => {
 													<div className="date-picker">
 														<MuiPickersUtilsProvider utils={DateFnsUtils}>
 															<KeyboardDatePicker
-																className="form-field-input-lg-form"
+																className="form-field-input form-field-input-lg-form"
 																inputVariant="outlined"
 																label="Date of Birth"
 																placeholder="Enter Date of Birth"
@@ -1067,7 +1060,7 @@ const SignUp = () => {
 														</MuiPickersUtilsProvider>
 													</div>
 													<TextField
-														className="form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form"
 														id="SSN-input"
 														name="SSN"
 														value={user.SSN}
@@ -1088,7 +1081,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form"
 														id="Reenter-SSN-input"
 														name="reenterSSN"
 														value={reEnteredSSN}
@@ -1109,10 +1102,7 @@ const SignUp = () => {
 														}}
 													/>
 												</div>
-												<div
-													className="sign-up-button-container-lg-form"
-													id="sign-up-button-container"
-												>
+												<div className={"sign-up-button-container " + (activeStep === 2 ? "sign-up-button-container-lg-form" : "")} id="sign-up-button-container">
 													<Button
 														className="button"
 														onClick={handleBack}
@@ -1178,8 +1168,8 @@ const SignUp = () => {
 															userNameExists
 																? "Username exists!"
 																: checkInvalidUserName
-																? "Username must be between 4 to 20 characters and alpha-numeric!"
-																: validation.user.user_name
+																	? "Username must be between 4 to 20 characters and alpha-numeric!"
+																	: validation.user.user_name
 														}
 														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
@@ -1448,8 +1438,8 @@ const SignUp = () => {
 										</>
 									)}
 								</CardContent>
-								<CardActions>
-									<div className="sign-in-container" id="sign-up-container">
+								<CardActions className={activeStep === 2 ? "sign-in-container-lg-form" : ""}>
+									<div className="sign-in-container">
 										<span>Already registered? </span>
 										<span>
 											<Link to="/login">Sign In</Link>

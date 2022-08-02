@@ -254,10 +254,35 @@
     margin: 0 5px;
 }
 
-.form-inner {
+/* .form-inner {
     height: 400px;
     width: 300px;
     overflow-y: scroll;
+} */
+
+.form-inner-lg {
+    height: 400px;
+    width: 300px;
+    overflow-y: scroll;
+}
+
+.role-dropdown {
+    background-color: #e0e0e0 !important;
+    width: 200 !important;
+}
+
+.next-arrow-down {
+    background-color: #9c27b0 !important;
+    color: #ffff !important;
+}
+
+.role-arrow-down {
+    color: #9c27b0 !important;
+}
+
+.next-arrow-down>span>span>svg {
+    margin-top: 5px !important;
+    margin-left: 5px !important;
 }
 
 /* @media only screen and (max-height:449px) {
@@ -359,10 +384,23 @@
 
     .sign-up .logo-container {
         margin-bottom: 10px;
-        display: none;
     }
 
-    /* 
+    .role-dropdown {
+        background-color: transparent !important;
+    }
+
+    .role-arrow-down {
+        color: #FFFFFF !important;
+    }
+
+    /* .next-arrow-down {
+        background-color: transparent !important;
+        color: #ffff !important;
+        margin-top: 5px !important;
+    } */
+
+
     .sign-up .logo-container-lg-form {
         position: fixed;
         top: 0px;
@@ -377,9 +415,11 @@
         box-sizing: border-box;
     }
 
+
     .sign-up .logo-container-lg-form>img {
         height: 50px;
     }
+
 
     .sign-up .form-container-lg-form {
         position: absolute;
@@ -389,6 +429,7 @@
         overflow-y: scroll;
     }
 
+
     .sign-up .form-field-input-lg-form:last-child {
         margin-bottom: 0px;
     }
@@ -397,15 +438,20 @@
         margin: 15px 0px !important;
     }
 
+
     .sign-up .sign-up-button-container-lg-form {
         position: relative;
         bottom: 0;
-        margin-top: 0px;
+        margin-top: 5px;
     }
 
-    .MuiCardActions-root-lg-form {
+    .sign-up .sign-up-button-container-lg-form>button>span>span>svg {
+        margin-top: 8px;
+    }
+
+    .sign-in-container-lg-form {
         position: absolute;
         bottom: 5px;
-    } */
+    }
 
 }
