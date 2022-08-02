@@ -97,7 +97,7 @@ const Sidebar = (props: Props) => {
 				axios.get(`${url}:${port}/api/v1/auth/user`, {
 					headers: {
 						[Authorization]: `${Bearer} ${token}`,
-						"Content-Type": "application/json"
+						"Access-Control-Allow-Origin": "*"
 					}
 				})
 			);

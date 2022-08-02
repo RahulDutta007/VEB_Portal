@@ -78,7 +78,7 @@ export const enrollerRegisterValidator = Joi.object({
 		message: "Unauthorized Role!"
 	}),
 	email: Joi.string().email().required(),
-	SSN: Joi.string().pattern(new RegExp("^[0-9]{9}$")).required(),
+	SSN: Joi.string().pattern(new RegExp("^\\d{9}$")).required(),
 	date_of_birth: Joi.date().optional().allow(null),
 	gender: Joi.string().valid(GENDER.male, GENDER.female, GENDER.others).messages({
 		message: "Please provide correct gender!"
