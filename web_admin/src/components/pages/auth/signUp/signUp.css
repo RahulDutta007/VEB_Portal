@@ -285,6 +285,10 @@
     margin-left: 5px !important;
 }
 
+.MuiFormControl-root:first-child {
+    margin-top: 10px;
+}
+
 /* @media only screen and (max-height:449px) {
     .sign-up .MuiCardContent-root:last-child {
         height: 200px;
