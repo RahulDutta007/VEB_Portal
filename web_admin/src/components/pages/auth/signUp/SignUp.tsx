@@ -809,7 +809,7 @@ const SignUp = () => {
 												) : null}
 											</div>
 											<div
-												className="sign-up-button-container-lg-form"
+												className="sign-up-button-container"
 												id="sign-up-button-container"
 												style={{ marginTop: 50 }}
 											>
@@ -832,7 +832,7 @@ const SignUp = () => {
 										</>
 									) : activeStep === 1 ? (
 										<form onSubmit={handleSubmit} autoComplete="off" method="">
-											<FormControl className="form-container-lg-form" id="form-container">
+											<FormControl className="form-container" id="form-container">
 												<div className="form-inner">
 													<TextField
 														className="form-field-input-lg-form"
@@ -886,7 +886,7 @@ const SignUp = () => {
 													/>
 													{startTimer && !OTPVerified ? (
 														<TextField
-															className="form-field-input-lg-form"
+															className="form-field-input"
 															id="OTP-input"
 															name="OTP"
 															label="OTP"
@@ -913,7 +913,7 @@ const SignUp = () => {
 														/>
 													) : null}
 													<div
-														className="sign-up-button-container-lg-form"
+														className="sign-up-button-container"
 														id="sign-up-button-container"
 														style={{ cursor: OTPVerified ? "auto" : "not-allowed" }}
 													>
@@ -1153,10 +1153,10 @@ const SignUp = () => {
 										</form>
 									) : activeStep === 3 ? (
 										<form onSubmit={handleSubmit} autoComplete="off" method="">
-											<FormControl className="form-container-lg-form" id="form-container">
+											<FormControl className="form-container" id="form-container">
 												<div className="form-inner" id="form-inner">
 													<TextField
-														className="form-field-input-lg-form"
+														className="form-field-input"
 														id="user-name-input"
 														name="user_name"
 														label="Username"
@@ -1181,7 +1181,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input-lg-form"
+														className="form-field-input"
 														id="password-input"
 														name="password"
 														type={!showPassword ? "password" : "text"}
@@ -1218,7 +1218,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input-lg-form"
+														className="form-field-input"
 														id="confirm-password-input"
 														name="confirm_password"
 														type={!showConfirmPassword ? "password" : "text"}
@@ -1297,7 +1297,7 @@ const SignUp = () => {
 													</div>
 												</div>
 												<div
-													className="sign-up-button-container-lg-form"
+													className="sign-up-button-container"
 													id="sign-up-button-container"
 												>
 													{/* <Button
