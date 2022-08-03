@@ -94,7 +94,7 @@ const Sidebar = (props: Props) => {
 		const token = localStorage.getItem("@jwt");
 		try {
 			const response = await trackPromise(
-				axios.get(`${url}:${port}/api/v1/auth/user`, { "headers": { Authorization: "Bearer " + token } })
+				axios.get(`${url}:${port}/api/v1/auth/user`, { headers: { Authorization: "Bearer " + token } })
 			);
 			const { data } = response.data;
 			console.log("getUser", data);
@@ -114,8 +114,7 @@ const Sidebar = (props: Props) => {
 		getUser();
 	}, [getUser]);
 
-
-	console.log(1111, user)
+	console.log(1111, user);
 
 	const drawer = (
 		<div>
@@ -174,17 +173,17 @@ const Sidebar = (props: Props) => {
 														style={{
 															backgroundColor:
 																selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																selectedTab.index === tabIndex
 																	? "#85CE36"
 																	: "inherit",
 															color:
 																selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																selectedTab.index === tabIndex
 																	? "#4e4e4e"
 																	: "inherit",
 															fontWeight:
 																selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																selectedTab.index === tabIndex
 																	? "bolder"
 																	: "inherit"
 														}}
@@ -195,12 +194,12 @@ const Sidebar = (props: Props) => {
 															style={{
 																color:
 																	selectedTab.subTabIndex === subTabIndex &&
-																		selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																		? "#4e4e4e"
 																		: "inherit",
 																fontWeight:
 																	selectedTab.subTabIndex === subTabIndex &&
-																		selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																		? "bolder"
 																		: "inherit"
 															}}

@@ -94,7 +94,6 @@ const SignUp = () => {
 	const [emailExists, setEmailExists] = useState(false);
 	const [pasted, setPasted] = useState(false);
 	const [rePaste, setRePaste] = useState(false);
-	const [hasReadStatementOfUnderstanding, setHasReadStatementOfUnderstanding] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [dateValue, setDateValue] = useState(moment());
@@ -270,12 +269,6 @@ const SignUp = () => {
 		// }
 	};
 
-	const handleStatementOfUnderstandingRead = () => {
-		setHasReadStatementOfUnderstanding(
-			(prevHasReadStatementOfUnderstanding: any) => !prevHasReadStatementOfUnderstanding
-		);
-	};
-
 	const handleClose = useCallback(
 		(value: any) => {
 			setAnchorEl(null);
@@ -289,6 +282,11 @@ const SignUp = () => {
 	);
 
 	const handleBack = () => {
+		// eslint-disable-next-line arrow-parens
+		if (activeStep === 2) {
+			setUser(Object.assign({}, user, { email: "" }));
+			setOTP("");
+		}
 		// eslint-disable-next-line arrow-parens
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
 	};
@@ -615,7 +613,6 @@ const SignUp = () => {
 				const personalDetailsValidation = await handlePersonalDetailsValidation();
 				if (personalDetailsValidation === "valid") {
 					setActiveStep(activeStep + 1);
-					setHasReadStatementOfUnderstanding(false);
 				}
 				if (user.SSN !== reEnteredSSN) {
 					console.log("Reenterd SSN", reEnteredSSN);
@@ -636,56 +633,52 @@ const SignUp = () => {
 			} else if (activeStep === 3) {
 				const credentialValidation = "valid"; // await handlecredentialValidation();
 				if (credentialValidation === "valid") {
-					if (hasReadStatementOfUnderstanding) {
-						const { role, date_of_birth } = user;
-						const _role = role.toUpperCase();
-						const date = new Date(date_of_birth);
-						const _user = {
-							...user,
-							SSN: Number(user.SSN.replaceAll("-", "")).toString(),
-							role: user.role.toUpperCase(),
-							date_of_birth: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
-						};
-						console.log("_user", _user);
-						try {
-							// Old sign up integration
-							const response = await api.auth.createAdmin(_user);
-							console.log("user response.status", response?.message);
-							console.log("user response", response);
-							if (response?.message === "Data edited successfully") {
-								const data = await api.auth.createAdmin(user);
-								navigate("/login");
-								setSnackbarAPIProps(
-									Object.assign({}, snackbarAPIProps, {
-										open: true,
-										message: `Create a ${user.role} successfully`,
-										severity: "success"
-									})
-								);
-							}
-						} catch (err) {
-							console.log("err", err);
-							setSignUpDialogProps(
-								Object.assign({}, signUpDialogProps, {
-									openDialog: true,
-									title: "Unsuccessfull Sign Up",
-									content: "Unable to sign up. Please try again",
-									actions: [
-										{
-											label: "Close",
-											callback: () =>
-												setSignUpDialogProps(
-													Object.assign({}, signUpDialogProps, {
-														openDialog: false
-													})
-												)
-										}
-									]
+					const { role, date_of_birth } = user;
+					const _role = role.toUpperCase();
+					const date = new Date(date_of_birth);
+					const _user = {
+						...user,
+						SSN: Number(user.SSN.replaceAll("-", "")).toString(),
+						role: user.role.toUpperCase(),
+						date_of_birth: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+					};
+					console.log("_user", _user);
+					try {
+						// Old sign up integration
+						const response = await api.auth.createAdmin(_user);
+						console.log("user response.status", response?.message);
+						console.log("user response", response);
+						if (response?.message === "Data edited successfully") {
+							const data = await api.auth.createAdmin(user);
+							navigate("/login");
+							setSnackbarAPIProps(
+								Object.assign({}, snackbarAPIProps, {
+									open: true,
+									message: `Create a ${user.role} successfully`,
+									severity: "success"
 								})
 							);
 						}
-					} else {
-						alert("Please Read the Statement of Understanding and accept it.");
+					} catch (err) {
+						console.log("err", err);
+						setSignUpDialogProps(
+							Object.assign({}, signUpDialogProps, {
+								openDialog: true,
+								title: "Unsuccessfull Sign Up",
+								content: "Unable to sign up. Please try again",
+								actions: [
+									{
+										label: "Close",
+										callback: () =>
+											setSignUpDialogProps(
+												Object.assign({}, signUpDialogProps, {
+													openDialog: false
+												})
+											)
+									}
+								]
+							})
+						);
 					}
 				}
 			} else if (activeStep === 4) {
@@ -697,12 +690,12 @@ const SignUp = () => {
 			handlePersonalDetailsValidation,
 			handleRoleValidation,
 			// handlecredentialValidation,
-			hasReadStatementOfUnderstanding,
 			navigate,
 			reEnteredSSN,
 			signUpDialogProps,
 			user,
-			OTP
+			OTP,
+			snackbarAPIProps
 		]
 	);
 
@@ -794,9 +787,6 @@ const SignUp = () => {
 													>
 														{initCapitalize(ROLES.super_admin)}
 													</MenuItem> */}
-													<MenuItem onClick={() => handleClose(initCapitalize(ROLES.admin))}>
-														{initCapitalize(ROLES.admin)}
-													</MenuItem>
 													<MenuItem
 														onClick={() =>
 															handleClose(initCapitalize(ROLES.enroller_admin))
@@ -854,7 +844,11 @@ const SignUp = () => {
 														onChange={handleChange}
 														style={{ width: "100%", borderRadius: 50 }}
 														helperText={
-															emailExists ? "Email exists!" : "validation.user.email"
+															user.email.length === 0
+																? ""
+																: emailExists
+																? "Email is already exist"
+																: ""
 														}
 														InputProps={{
 															startAdornment: (
@@ -864,8 +858,8 @@ const SignUp = () => {
 															),
 															endAdornment:
 																resendOTPButtonVisible &&
-																	user.email.match(mailformat) &&
-																	!OTPVerified ? (
+																user.email.match(mailformat) &&
+																!OTPVerified ? (
 																	<div
 																		style={{
 																			cursor:
@@ -900,14 +894,14 @@ const SignUp = () => {
 															label="OTP"
 															placeholder="Enter OTP"
 															value={OTP}
-															helperText={
-																startTimer
-																	? timer.minutes +
-																	":" +
-																	timer.seconds +
-																	" before expiration"
-																	: ""
-															}
+															// helperText={
+															// 	startTimer
+															// 		? timer.minutes +
+															// 		  ":" +
+															// 		  timer.seconds +
+															// 		  " before expiration"
+															// 		: ""
+															// }
 															variant="outlined"
 															onChange={handleOTPChange}
 															style={{ width: "100%", borderRadius: 50 }}
@@ -1060,9 +1054,7 @@ const SignUp = () => {
 																	shrink: true
 																}}
 																style={{ width: "100%", borderRadius: 50 }}
-																keyboardIcon={
-																	<EventIcon className="auth-input-icon" />
-																}
+																keyboardIcon={<EventIcon className="auth-input-icon" />}
 																KeyboardButtonProps={{
 																	"aria-label": "change date"
 																}}
@@ -1185,8 +1177,8 @@ const SignUp = () => {
 															userNameExists
 																? "Username exists!"
 																: checkInvalidUserName
-																	? "Username must be between 4 to 20 characters and alpha-numeric!"
-																	: validation.user.user_name
+																? "Username must be between 4 to 20 characters and alpha-numeric!"
+																: validation.user.user_name
 														}
 														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
@@ -1219,15 +1211,11 @@ const SignUp = () => {
 																<InputAdornment position="end">
 																	{!showPassword ? (
 																		<IconButton onClick={handleShowPassword}>
-																			<VisibilityOffIcon
-																				className="auth-input-icon"
-																			/>
+																			<VisibilityOffIcon className="auth-input-icon" />
 																		</IconButton>
 																	) : (
 																		<IconButton onClick={handleShowPassword}>
-																			<VisibilityIcon
-																				className="auth-input-icon"
-																			/>
+																			<VisibilityIcon className="auth-input-icon" />
 																		</IconButton>
 																	)}
 																</InputAdornment>
@@ -1249,24 +1237,18 @@ const SignUp = () => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<EnhancedEncryptionIcon
-																		className="auth-input-icon"
-																	/>
+																	<EnhancedEncryptionIcon className="auth-input-icon" />
 																</InputAdornment>
 															),
 															endAdornment: (
 																<InputAdornment position="end">
 																	{!showConfirmPassword ? (
 																		<IconButton onClick={handleShowConfirmPassword}>
-																			<VisibilityOffIcon
-																				className="auth-input-icon"
-																			/>
+																			<VisibilityOffIcon className="auth-input-icon" />
 																		</IconButton>
 																	) : (
 																		<IconButton onClick={handleShowConfirmPassword}>
-																			<VisibilityIcon
-																				className="auth-input-icon"
-																			/>
+																			<VisibilityIcon className="auth-input-icon" />
 																		</IconButton>
 																	)}
 																</InputAdornment>
@@ -1295,23 +1277,6 @@ const SignUp = () => {
 														/>
 														Receive Processed Claim Notification
 													</div> */}
-													<div className="sou-checkbox" id="sou-checkbox">
-														<Checkbox
-															name="hasReadStatementOfUnderstanding"
-															style={{
-																color: "#9c27b0"
-															}}
-															value={hasReadStatementOfUnderstanding}
-															onChange={handleStatementOfUnderstandingRead}
-														/>
-														<span>I have read the </span>
-														<span
-															className="sou"
-															onClick={handleStatementOfUnderstandingOpen}
-														>
-															Statement of Understanding
-														</span>
-													</div>
 												</div>
 												<div className="sign-up-button-container" id="sign-up-button-container">
 													{/* <Button
@@ -1369,11 +1334,7 @@ const SignUp = () => {
 														</span>
 													</Button>
 													<Tooltip
-														title={
-															!hasReadStatementOfUnderstanding
-																? "Please read the statement of understanding before signing up"
-																: ""
-														}
+														title="Please read the statement of understanding before signing up"
 														arrow
 													>
 														<Button
