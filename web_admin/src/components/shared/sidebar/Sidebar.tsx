@@ -81,6 +81,10 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 		setMobileOpen(!mobileOpen);
 	};
 
+	const hClick = (route: any) => {
+		navigate(route);
+	};
+
 	const getUser = useCallback(async () => {
 		const { Authorization, Bearer } = AUTHORIZATION;
 		const token = localStorage.getItem("@jwt");
@@ -152,7 +156,7 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 									className="list-item-accordion-summary"
 								>
 									<div style={{ marginRight: 10 }}>{tab.icon()}</div>
-									<div>{tab.caption}</div>
+									<div onClick={() => navigate(tab.route)}>{tab.caption}</div>
 								</AccordionSummary>
 								<AccordionDetails>
 									<List>
@@ -164,21 +168,21 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 														button
 														key={subTabIndex}
 														className="list-item-container"
-														onClick={() => navigate(route)}
+														onClick={hClick}
 														style={{
 															backgroundColor:
 																selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																selectedTab.index === tabIndex
 																	? "#85CE36"
 																	: "inherit",
 															color:
 																selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																selectedTab.index === tabIndex
 																	? "#4e4e4e"
 																	: "inherit",
 															fontWeight:
 																selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																selectedTab.index === tabIndex
 																	? "bolder"
 																	: "inherit"
 														}}
@@ -189,12 +193,12 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 															style={{
 																color:
 																	selectedTab.subTabIndex === subTabIndex &&
-																		selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																		? "#4e4e4e"
 																		: "inherit",
 																fontWeight:
 																	selectedTab.subTabIndex === subTabIndex &&
-																		selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																		? "bolder"
 																		: "inherit"
 															}}
