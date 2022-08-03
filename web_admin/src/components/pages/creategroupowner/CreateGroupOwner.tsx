@@ -686,18 +686,6 @@ const CreateGroupOwner = () => {
 									: [initCapitalize(ROLES.agent)]
 						}
 					],
-					"Group Information": [
-						{
-							schema: "employee",
-							label: "Group",
-							name: "group_number",
-							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleGroupChange(event),
-							placeholder: "Select group",
-							value: createdUser.group_number,
-							type: "select",
-							options: [...assignedGroups]
-						}
-					],
 					"User Information": [
 						{
 							label: "User ID",
