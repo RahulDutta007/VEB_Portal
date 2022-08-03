@@ -86,7 +86,11 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 		const token = localStorage.getItem("@jwt");
 		try {
 			const response = await trackPromise(
-				axios.get(`${url}:${port}/api/v1/auth/user`, { headers: { Authorization: "Bearer " + token } })
+				axios.get(`${url}:${port}/api/v1/auth/user`, {
+					headers: {
+						[Authorization]: `${Bearer} ${token}`
+					}
+				})
 			);
 			const { data } = response.data;
 			console.log("getUser", data);
@@ -132,7 +136,6 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 				</div>
 			</div>
 			<Divider />
-			<Divider />
 			<List>
 				{"ADMIN" &&
 					SIDEBAR_OPTIONS["ADMIN"]?.map((tab: Tab, tabIndex: number) => {
@@ -165,17 +168,17 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 														style={{
 															backgroundColor:
 																selectedTab.subTabIndex === subTabIndex &&
-																selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																	? "#85CE36"
 																	: "inherit",
 															color:
 																selectedTab.subTabIndex === subTabIndex &&
-																selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																	? "#4e4e4e"
 																	: "inherit",
 															fontWeight:
 																selectedTab.subTabIndex === subTabIndex &&
-																selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																	? "bolder"
 																	: "inherit"
 														}}
@@ -186,12 +189,12 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 															style={{
 																color:
 																	selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																		selectedTab.index === tabIndex
 																		? "#4e4e4e"
 																		: "inherit",
 																fontWeight:
 																	selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																		selectedTab.index === tabIndex
 																		? "bolder"
 																		: "inherit"
 															}}
