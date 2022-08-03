@@ -8,6 +8,7 @@ import "./globalStyles/paperFormStyles.css";
 import "./App.css";
 import SignUp from "./components/pages/auth/signUp/SignUp";
 import CreateGroupOwner from "./components/pages/creategroupowner/CreateGroupOwner";
+import Sidebar from "./components/shared/sidebar/Sidebar";
 
 const App = (): JSX.Element => {
 	return (
@@ -15,7 +16,7 @@ const App = (): JSX.Element => {
 			<UIContextProvider>
 				<BrowserRouter>
 					<Routes>
-						<Route path="/" element={<GroupOwnerSidebar />} />
+						<Route path="/" element={<Sidebar WrappedComponent={CreateGroupOwner} />} />
 						<Route
 							path="/login"
 							element={localStorage.getItem("@jwt") ? <Navigate to="/" replace /> : <Login />}
@@ -24,7 +25,7 @@ const App = (): JSX.Element => {
 						<Route path="/forgot-user-id" element={<Login />} />
 						<Route path="/forget-password/verify-token/:token" element={<Login />} />
 						<Route path="/sign-up" element={<SignUp />} />
-						<Route path="/create-group-owner" element={<CreateGroupOwner />} />
+						<Route path="/create-group-owner" element={<Sidebar WrappedComponent={CreateGroupOwner} />} />
 					</Routes>
 				</BrowserRouter>
 			</UIContextProvider>

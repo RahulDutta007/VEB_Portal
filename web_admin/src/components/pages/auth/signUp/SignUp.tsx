@@ -65,6 +65,7 @@ import "./signUp.css";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { LazySnackbarAPI, SnackbarAPI } from "../../../shared";
 import { SnackbarProps } from "../../../../@types/snackbarAPI.types";
+import { Admin } from "../../../../@types/admin.types";
 
 const getSteps = () => ["Roles", "Personal Information", "Sign Up", "Completed"];
 
@@ -128,7 +129,7 @@ const SignUp = () => {
 		content: "",
 		actions: []
 	});
-	const [user, setUser] = useState({
+	const [user, setUser] = useState<Admin>({
 		first_name: "",
 		middle_name: "",
 		last_name: "",
@@ -644,6 +645,9 @@ const SignUp = () => {
 					};
 					console.log("_user", _user);
 					try {
+						if (_user.middle_name === "") {
+							delete _user.middle_name;
+						}
 						// Old sign up integration
 						const response = await api.auth.createAdmin(_user);
 						console.log("user response.status", response?.message);

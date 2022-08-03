@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useCallback } from "react";
+import { useState, useContext, useEffect, useCallback, Suspense } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -36,6 +36,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import "./sidebar.css";
+import { SidebarProps } from "../../../@types/components/sidebar.types";
 
 const rippleKeyFrame = keyframes`
 	0% {
@@ -70,16 +71,7 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 
 const drawerWidth = 240;
 
-interface Props {
-	/**
-	 * Injected by the documentation to work in an iframe.
-	 * You won't need it on your project.
-	 */
-	window?: () => Window;
-}
-
-const Sidebar = (props: Props) => {
-	const { window } = props;
+const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const { dashboardHeader, selectedTab } = useContext(UIContext);
 	const { user, setUser } = useContext(AuthContext);
@@ -216,7 +208,7 @@ const Sidebar = (props: Props) => {
 		</div>
 	);
 
-	const container = window !== undefined ? () => window().document.body : undefined;
+	const container = window !== undefined ? () => window.document.body : undefined;
 
 	return (
 		<div className="admin-sidebar">
@@ -309,7 +301,7 @@ const Sidebar = (props: Props) => {
 				</Box>
 				<Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
 					<Toolbar />
-					<Typography paragraph>
+					{/* <Typography paragraph>
 						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
 						labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum facilisis leo
 						vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum quisque non
@@ -330,7 +322,10 @@ const Sidebar = (props: Props) => {
 						senectus et. Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean euismod
 						elementum nisi quis eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
 						posuere sollicitudin aliquam ultrices sagittis orci a.
-					</Typography>
+					</Typography> */}
+					<Suspense fallback={<div />}>
+						<WrappedComponent />
+					</Suspense>
 				</Box>
 			</Box>
 		</div>
