@@ -130,7 +130,10 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 					variant="dot"
 				>
 					<Avatar alt="Remy Sharp" className="profile-avatar">
-						<div className="avatar-text">{user?.first_name.charAt(0).toUpperCase()}{user?.last_name.charAt(0).toUpperCase()}</div>
+						<div className="avatar-text">
+							{user?.first_name.charAt(0).toUpperCase()}
+							{user?.last_name.charAt(0).toUpperCase()}
+						</div>
 					</Avatar>
 				</StyledBadge>
 				<div className="welcome-text" id="welcome-text">
@@ -170,17 +173,17 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 														style={{
 															backgroundColor:
 																selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																selectedTab.index === tabIndex
 																	? "#85CE36"
 																	: "inherit",
 															color:
 																selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																selectedTab.index === tabIndex
 																	? "#4e4e4e"
 																	: "inherit",
 															fontWeight:
 																selectedTab.subTabIndex === subTabIndex &&
-																	selectedTab.index === tabIndex
+																selectedTab.index === tabIndex
 																	? "bolder"
 																	: "inherit"
 														}}
@@ -191,12 +194,12 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 															style={{
 																color:
 																	selectedTab.subTabIndex === subTabIndex &&
-																		selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																		? "#4e4e4e"
 																		: "inherit",
 																fontWeight:
 																	selectedTab.subTabIndex === subTabIndex &&
-																		selectedTab.index === tabIndex
+																	selectedTab.index === tabIndex
 																		? "bolder"
 																		: "inherit"
 															}}

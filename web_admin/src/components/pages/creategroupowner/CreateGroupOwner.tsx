@@ -61,7 +61,8 @@ const CreateGroupOwner = () => {
 	const [selectedGroup, setSelectedGroup] = useState({});
 	const { user } = useContext(AuthContext); // Extracting logged in user from central storage.
 	const [createdUser, setCreatedUsers] = useState({
-		user_id: "", // This Id is mapped with Group HR (Group Specific)
+		user_name: "", // This Id is mapped with Group HR (Group Specific)
+		admin_id: "",
 		first_name: "",
 		middle_name: "",
 		last_name: "",
@@ -70,7 +71,7 @@ const CreateGroupOwner = () => {
 		date_of_birth: "",
 		hire_date: "",
 		gender: "",
-		marital_status: null,
+		marital_status: "",
 		email: "",
 		address_line_1: "",
 		address_line_2: "",
@@ -79,10 +80,8 @@ const CreateGroupOwner = () => {
 		country: "USA - United States of America",
 		ZIP: "",
 		contact_label: null,
-		mobile: null,
+		phone_number: null,
 		phone_extension: null,
-		is_member_support: false,
-		is_employer_support: false,
 		group_number: null
 	});
 	const [validation, setValidation] = useState<Validation>({
@@ -139,7 +138,8 @@ const CreateGroupOwner = () => {
 
 	const handleValidation = useCallback(async () => {
 		const {
-			user_id, // This Id is mapped with Group HR (Group Specific)
+			user_name, // This Id is mapped with Group HR (Group Specific)
+			admin_id,
 			first_name,
 			last_name,
 			role,
@@ -154,7 +154,7 @@ const CreateGroupOwner = () => {
 			state,
 			ZIP,
 			contact_label,
-			mobile,
+			phone_number,
 			phone_extension
 		} = createdUser;
 		_validation.current = {
@@ -527,17 +527,21 @@ const CreateGroupOwner = () => {
 						}
 					}
 				}
-			} else if (name === "mobile") {
+			} else if (name === "phone_number") {
 				if (!isNaN(value as any)) {
 					if (value.length <= 10) {
 						setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 					} else {
-						event.target.value = createdUser?.mobile ? (createdUser?.mobile as unknown as string) : "";
+						event.target.value = createdUser?.phone_number
+							? (createdUser?.phone_number as unknown as string)
+							: "";
 						alert("Phone Number cannot be greater 10 digit!");
 					}
 				} else {
 					event.target.value = "";
-					event.target.value = createdUser?.mobile ? (createdUser?.mobile as unknown as string) : "";
+					event.target.value = createdUser?.phone_number
+						? (createdUser?.phone_number as unknown as string)
+						: "";
 				}
 			} else if (name === "phone_extension") {
 				if (!isNaN(value as any)) {
@@ -622,13 +626,15 @@ const CreateGroupOwner = () => {
 							hire_date:
 								hireDate !== null
 									? hireDate.getFullYear() +
-									"-" +
-									(hireDate.getMonth() + 1) +
-									"-" +
-									hireDate.getDate()
+									  "-" +
+									  (hireDate.getMonth() + 1) +
+									  "-" +
+									  hireDate.getDate()
 									: hireDate,
-							SSN: createdUser.SSN ? Number(createdUser?.SSN?.replaceAll("-", "") as string) : null,
-							ZIP: createdUser.ZIP ? createdUser.ZIP.replaceAll("-", "") : null
+							SSN: createdUser.SSN ? createdUser?.SSN?.replaceAll("-", "").toString() : null,
+							ZIP: createdUser.ZIP ? createdUser.ZIP.replaceAll("-", "") : null,
+							gender: createdUser.gender.toUpperCase(),
+							marital_status: createdUser?.marital_status.toUpperCase()
 						}
 					};
 
@@ -640,13 +646,13 @@ const CreateGroupOwner = () => {
 						console.log("Response", response);
 						setCreatedUsers(Object.assign({}, response as any));
 						alert("User Created Successfully!");
-						// setSnackbarAPICallProps(
-						// 	Object.assign({}, snackbarAPICallProps, {
-						// 		open: true,
-						// 		message: "Member Created Successfully!",
-						// 		severity: "success"
-						// 	})
-						// );
+						setSnackbarAPICallProps(
+							Object.assign({}, snackbarAPICallProps, {
+								open: true,
+								message: "Member Created Successfully!",
+								severity: "success"
+							})
+						);
 
 						navigate("/");
 						// setTimeout(() => {
@@ -691,11 +697,19 @@ const CreateGroupOwner = () => {
 					],
 					"User Information": [
 						{
-							label: "User ID",
-							name: "user_id",
+							label: "User Name",
+							name: "user_name",
 							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleUserChange(event),
-							placeholder: "Enter user Id",
-							value: createdUser.user_id,
+							placeholder: "Enter user Name",
+							value: createdUser.user_name,
+							type: "textfield"
+						},
+						{
+							label: "Admin Id",
+							name: "admin_id",
+							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleUserChange(event),
+							placeholder: "Enter Admin Id",
+							value: createdUser.admin_id,
 							type: "textfield"
 						},
 						{
@@ -785,10 +799,10 @@ const CreateGroupOwner = () => {
 						},
 						{
 							label: "Phone Number",
-							name: "mobile",
+							name: "phone_number",
 							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleUserChange(event),
 							placeholder: "Enter phone number",
-							value: createdUser.mobile,
+							value: createdUser.phone_number,
 							type: "textfield"
 						},
 						{
@@ -938,31 +952,31 @@ const CreateGroupOwner = () => {
 															item
 															xs={
 																field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? undefined
 																	: 12
 															}
 															sm={
 																field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? undefined
 																	: 12
 															}
 															md={
 																field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
 															lg={
 																field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
 															xl={
 																field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
@@ -970,20 +984,20 @@ const CreateGroupOwner = () => {
 															<div
 																className={
 																	field.name === "first_name" ||
-																		field.name === "last_name" ||
-																		field.name === "email" ||
-																		field.name === "group_number" ||
-																		field.name === "role"
+																	field.name === "last_name" ||
+																	field.name === "email" ||
+																	field.name === "group_number" ||
+																	field.name === "role"
 																		? // field.name === "address_line_2" ||
-																		// field.name === "is_employer_support" ||
-																		// field.name === "is_member_support"
-																		"pf-label-text required"
+																		  // field.name === "is_employer_support" ||
+																		  // field.name === "is_member_support"
+																		  "pf-label-text required"
 																		: "pf-label-text"
 																}
 																id="pf-label-text"
 															>
 																{field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? ""
 																	: field.label}
 															</div>
@@ -1008,7 +1022,7 @@ const CreateGroupOwner = () => {
 																	InputProps={{
 																		readOnly:
 																			field.value ===
-																				"USA - United States of America"
+																			"USA - United States of America"
 																				? true
 																				: false
 																	}}
@@ -1016,9 +1030,9 @@ const CreateGroupOwner = () => {
 																		emailExists && field.name === "email"
 																			? "Email exists!"
 																			: checkInvalidEmail &&
-																				field.name === "email"
-																				? "Please enter a valid email address!"
-																				: validation.createdUser[field.name]
+																			  field.name === "email"
+																			? "Please enter a valid email address!"
+																			: validation.createdUser[field.name]
 																	}
 																	//style={{ width: "70%", borderRadius: 50 }}
 																	//disabled={!isButtonSelected}
@@ -1070,7 +1084,7 @@ const CreateGroupOwner = () => {
 																		))}
 																	</Select>
 																	{validation &&
-																		validation.createdUser[field.name] ? (
+																	validation.createdUser[field.name] ? (
 																		<div className="details">
 																			<span className="select-validation-text2">
 																				{validation.createdUser[field.name]}

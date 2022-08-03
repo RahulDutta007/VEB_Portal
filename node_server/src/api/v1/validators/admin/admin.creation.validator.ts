@@ -44,7 +44,7 @@ export const adminCreationValidator = Joi.object({
 	is_member_chat_support: Joi.boolean().optional().allow(null),
 	is_employer_chat_support: Joi.boolean().optional().allow(null),
 	hire_date: Joi.date().optional().allow(null),
-	upload_type: Joi.string().required().valid(UPLOAD_TYPE.bulk, UPLOAD_TYPE.manual, UPLOAD_TYPE.migrated).messages({
+	upload_type: Joi.string().optional().valid(UPLOAD_TYPE.bulk, UPLOAD_TYPE.manual, UPLOAD_TYPE.migrated).messages({
 		message: "Please provide correct upload type!"
 	}),
 	created_by: Joi.string().optional().allow(null),

@@ -204,7 +204,7 @@ export const sendOTP = async (_payload) => {
 	try {
 		const payload = JSON.stringify(_payload);
 		const endpoint = `${initialRoute}/send-otp`;
-		const response = await patch(endpoint, _payload, headers);
+		const response = await patch(endpoint, _payload, _headers);
 
 		if (response) {
 			const { data } = response;
@@ -316,13 +316,17 @@ export const createAdmin = async (_payload) => {
 export const createEnroller = async (_payload) => {
 	try {
 		const endpoint = `${adminRoute}/enroller/creation`;
-		const response = await post(endpoint, _payload, headers);
+		const token = localStorage.getItem("@jwt");
+		const _headers = Object.assign({}, headers, {
+			Authorization: `${Bearer} ${token}`
+		});
+		const response = await post(endpoint, _payload, _headers);
 
 		if (response) {
 			const {
 				data: { message }
 			} = response;
-			if (message === "Data edited successfully") {
+			if (message === "Data added successfully") {
 				const {
 					data: { message, result }
 				} = response;
