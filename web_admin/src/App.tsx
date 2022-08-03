@@ -13,22 +13,24 @@ import Sidebar from "./components/shared/sidebar/Sidebar";
 const App = (): JSX.Element => {
 	return (
 		<div className="App">
-			<UIContextProvider>
-				<BrowserRouter>
-					<Routes>
-						<Route path="/" element={<Sidebar WrappedComponent={CreateGroupOwner} />} />
-						<Route
-							path="/login"
-							element={localStorage.getItem("@jwt") ? <Navigate to="/" replace /> : <Login />}
-						/>
-						<Route path="/forgot-password" element={<Login />} />
-						<Route path="/forgot-user-id" element={<Login />} />
-						<Route path="/forget-password/verify-token/:token" element={<Login />} />
-						<Route path="/sign-up" element={<SignUp />} />
-						<Route path="/enroller" element={<Sidebar WrappedComponent={CreateGroupOwner} />} />
-					</Routes>
-				</BrowserRouter>
-			</UIContextProvider>
+			<AuthContextProvider>
+				<UIContextProvider>
+					<BrowserRouter>
+						<Routes>
+							<Route path="/" element={<Sidebar WrappedComponent={CreateGroupOwner} />} />
+							<Route
+								path="/login"
+								element={localStorage.getItem("@jwt") ? <Navigate to="/" replace /> : <Login />}
+							/>
+							<Route path="/forgot-password" element={<Login />} />
+							<Route path="/forgot-user-id" element={<Login />} />
+							<Route path="/forget-password/verify-token/:token" element={<Login />} />
+							<Route path="/sign-up" element={<SignUp />} />
+							<Route path="/enroller" element={<Sidebar WrappedComponent={CreateGroupOwner} />} />
+						</Routes>
+					</BrowserRouter>
+				</UIContextProvider>
+			</AuthContextProvider>
 		</div>
 	);
 };

@@ -289,6 +289,11 @@
     margin-top: 10px;
 }
 
+.css-h4y409-MuiList-root {
+    text-align: left;
+    padding-left: 57px;
+}
+
 /* @media only screen and (max-height:449px) {
     .sign-up .MuiCardContent-root:last-child {
         height: 200px;
@@ -456,6 +461,14 @@
     .sign-in-container-lg-form {
         position: absolute;
         bottom: 5px;
+    }
+
+    .css-h4y409-MuiList-root {
+        padding-left: 0px;
+    }
+
+    .css-6iz4mj-MuiButtonBase-root-MuiIconButton-root {
+        color: #FFFFFF !important;
     }
 
 }

@@ -192,12 +192,12 @@ export const FindUserDetails = async (req: Request, res: Response) => {
 		if (user) {
 			return res.status(StatusCodes.OK).json({
 				message: MESSAGE.get.succ,
-				result: user
+				data: user
 			});
 		} else {
 			return res.status(StatusCodes.OK).json({
 				message: MESSAGE.get.succ,
-				result: "No user found"
+				data: "No user found"
 			});
 		}
 	} catch (err) {

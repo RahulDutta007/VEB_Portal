@@ -15,6 +15,7 @@ app.use(cors({
 
 	allowedHeaders: [
 		"Content-Type",
+		"Authorization"
 	],
 	optionsSuccessStatus: 200 // For legacy browser support
 }))

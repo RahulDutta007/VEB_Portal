@@ -132,4 +132,8 @@
 	.MuiAccordionSummary-expandIconWrapper>svg {
 		color: #FFFFFF;
 	}
+
+	.MuiGrid-root .pf-label>div>.text-field-input>div:focus {
+		color: #000 !important;
+	}
 }

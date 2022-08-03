@@ -36,6 +36,8 @@ import EventIcon from "@material-ui/icons/Event";
 import { DynamicForm, DynamicFormField } from "../../../@types/dynamicForm.types";
 import { Validation } from "../../../@types/validation.types";
 
+import "./createGroupOwner.css";
+
 const mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/;
 const specialCharacters = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
 
@@ -620,10 +622,10 @@ const CreateGroupOwner = () => {
 							hire_date:
 								hireDate !== null
 									? hireDate.getFullYear() +
-									  "-" +
-									  (hireDate.getMonth() + 1) +
-									  "-" +
-									  hireDate.getDate()
+									"-" +
+									(hireDate.getMonth() + 1) +
+									"-" +
+									hireDate.getDate()
 									: hireDate,
 							SSN: createdUser.SSN ? Number(createdUser?.SSN?.replaceAll("-", "") as string) : null,
 							ZIP: createdUser.ZIP ? createdUser.ZIP.replaceAll("-", "") : null
@@ -936,31 +938,31 @@ const CreateGroupOwner = () => {
 															item
 															xs={
 																field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? undefined
 																	: 12
 															}
 															sm={
 																field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? undefined
 																	: 12
 															}
 															md={
 																field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
 															lg={
 																field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
 															xl={
 																field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
@@ -968,20 +970,20 @@ const CreateGroupOwner = () => {
 															<div
 																className={
 																	field.name === "first_name" ||
-																	field.name === "last_name" ||
-																	field.name === "email" ||
-																	field.name === "group_number" ||
-																	field.name === "role"
+																		field.name === "last_name" ||
+																		field.name === "email" ||
+																		field.name === "group_number" ||
+																		field.name === "role"
 																		? // field.name === "address_line_2" ||
-																		  // field.name === "is_employer_support" ||
-																		  // field.name === "is_member_support"
-																		  "pf-label-text required"
+																		// field.name === "is_employer_support" ||
+																		// field.name === "is_member_support"
+																		"pf-label-text required"
 																		: "pf-label-text"
 																}
 																id="pf-label-text"
 															>
 																{field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? ""
 																	: field.label}
 															</div>
@@ -989,7 +991,7 @@ const CreateGroupOwner = () => {
 														<Grid item xs={9} sm={9} md={9} lg={9} xl={9}>
 															{field.type === "textfield" ? (
 																<TextField
-																	className="text-field-input"
+																	className="text-field-input text-field-input-create-enroller"
 																	id="text-field-input"
 																	name={field.name}
 																	placeholder={field.placeholder}
@@ -1006,7 +1008,7 @@ const CreateGroupOwner = () => {
 																	InputProps={{
 																		readOnly:
 																			field.value ===
-																			"USA - United States of America"
+																				"USA - United States of America"
 																				? true
 																				: false
 																	}}
@@ -1014,9 +1016,9 @@ const CreateGroupOwner = () => {
 																		emailExists && field.name === "email"
 																			? "Email exists!"
 																			: checkInvalidEmail &&
-																			  field.name === "email"
-																			? "Please enter a valid email address!"
-																			: validation.createdUser[field.name]
+																				field.name === "email"
+																				? "Please enter a valid email address!"
+																				: validation.createdUser[field.name]
 																	}
 																	//style={{ width: "70%", borderRadius: 50 }}
 																	//disabled={!isButtonSelected}
@@ -1068,7 +1070,7 @@ const CreateGroupOwner = () => {
 																		))}
 																	</Select>
 																	{validation &&
-																	validation.createdUser[field.name] ? (
+																		validation.createdUser[field.name] ? (
 																		<div className="details">
 																			<span className="select-validation-text2">
 																				{validation.createdUser[field.name]}

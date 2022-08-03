@@ -37,7 +37,8 @@
     justify-content: center;
 }
 
-.MuiGrid-root {
+.login .MuiGrid-root,
+.sign-up .MuiGrid-root {
     display: flex !important;
     flex-direction: row !important;
     justify-content: center !important;

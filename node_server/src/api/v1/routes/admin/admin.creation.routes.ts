@@ -6,6 +6,6 @@ import { validators } from "../../validators";
 
 const router = express.Router();
 
-router.route("/").post(validator(validators.adminCreationValidator, null), adminCreation);
+router.route("/").post(validator(validators.adminCreationValidator, null), verifyToken, adminCreation);
 
 module.exports = router;
