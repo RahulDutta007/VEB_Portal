@@ -312,3 +312,45 @@ export const createAdmin = async (_payload) => {
 		}
 	}
 };
+
+export const createEnroller = async (_payload) => {
+	try {
+		const endpoint = `${adminRoute}/enroller/creation`;
+		const response = await post(endpoint, _payload, headers);
+
+		if (response) {
+			const {
+				data: { message }
+			} = response;
+			if (message === "Data edited successfully") {
+				const {
+					data: { message, result }
+				} = response;
+				return { message, result };
+			}
+		}
+	} catch (error) {
+		if (error.response.status === StatusCodes.BAD_REQUEST) {
+			const { message } = error.response.data;
+			if (message === "Unauthorised Role!") {
+				alert("Unauthorised Role!");
+			} else if (message === MESSAGE.none) {
+				alert("No Such Data!");
+			} else if (message === "Login Unsuccessful!") {
+				alert("Login Unsuccessful!");
+			} else alert("Other Errors of Status Code 400");
+		} else if (error.response.status === StatusCodes.UNAUTHORIZED) {
+			const { message } = error.response.data;
+
+			if (message === "Authentication Failed!") {
+				alert("Authentication Failed!");
+				// throw error;
+			} else {
+				throw error;
+				//alert("Other Errors of Status Code 401");
+			}
+		} else {
+			throw error;
+		}
+	}
+};

@@ -611,6 +611,7 @@ const CreateGroupOwner = () => {
 					const payload = {
 						createdUser: {
 							...createdUser,
+							group_number: "220",
 							role: createdUser.role.toUpperCase(),
 							date_of_birth:
 								DOB !== null
@@ -630,7 +631,7 @@ const CreateGroupOwner = () => {
 					};
 
 					console.log("Payload", payload);
-					const response = await trackPromise(api.auth.createAdmin(payload));
+					const response = await api.auth.createEnroller(payload.createdUser);
 
 					if (response) {
 						setHasCreateClick(true);
