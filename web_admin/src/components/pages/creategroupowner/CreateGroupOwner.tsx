@@ -769,20 +769,6 @@ const CreateGroupOwner = () => {
 							value: createdUser.marital_status,
 							type: "select",
 							options: ["Single", "Married", "Divorced", "Common Law Marriage"]
-						},
-						{
-							label: "Member Support",
-							name: "is_member_support",
-							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleEnableCheckbox(event),
-							value: createdUser.is_member_support,
-							type: "checkbox"
-						},
-						{
-							label: "Employer Support",
-							name: "is_employer_support",
-							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleEnableCheckbox(event),
-							value: createdUser.is_employer_support,
-							type: "checkbox"
 						}
 					],
 					"Contact Details": [

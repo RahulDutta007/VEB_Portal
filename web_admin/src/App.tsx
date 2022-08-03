@@ -25,7 +25,7 @@ const App = (): JSX.Element => {
 						<Route path="/forgot-user-id" element={<Login />} />
 						<Route path="/forget-password/verify-token/:token" element={<Login />} />
 						<Route path="/sign-up" element={<SignUp />} />
-						<Route path="/create-group-owner" element={<Sidebar WrappedComponent={CreateGroupOwner} />} />
+						<Route path="/enroller" element={<Sidebar WrappedComponent={CreateGroupOwner} />} />
 					</Routes>
 				</BrowserRouter>
 			</UIContextProvider>

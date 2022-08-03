@@ -20,7 +20,7 @@ const sidebarOptions: SidebarOptions = {
 		},
 		{
 			caption: "Enroller",
-			route: "/create-group-owner",
+			route: "/enroller",
 			icon: () => <AdminPanelSettingsIcon />,
 			subTabs: []
 		},
