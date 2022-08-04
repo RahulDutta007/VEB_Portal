@@ -11,7 +11,7 @@ const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 	{
 		admin_id: {
 			type: String,
-			required: [true, "Admin id is required"]
+			default: null
 		},
 		first_name: {
 			type: String,
@@ -142,10 +142,13 @@ const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 		enroller_id: {
 			type: String,
 			default: null
+		},
+		otp: {
+			type: Number
 		}
 	},
 	GENERAL_SCHEMA_OPTIONS
 );
 
-const AdminModel = model("UserAdmin", AdminRegisterSchema);
+const AdminModel = model("useradmin", AdminRegisterSchema);
 export default AdminModel;

@@ -8,6 +8,7 @@ import { cpus } from "os";
 import process from "process";
 
 const numCPUs = cpus().length;
+let server: http.Server;
 
 export const getIOInstance = () => io;
 
@@ -31,17 +32,16 @@ if (cluster.isPrimary) {
 		console.log(`worker ${worker.process.pid} died`);
 	});
 } else {
-	connectDb();
-
-	const PORT = process.env.PORT || 4000;
-
-	const server = httpServer.listen(PORT, () => {
-		console.log(`\x1b[33m \x1b[1m Server is running in ${process.env.NODE_ENV} mode on port ${PORT} \x1b[0m`);
-		io.on("connection", (socket: any) => {
-			console.log("info", "new socket user" + socket.id);
-			socket.on("approval", (message: any) => {
-				socket.broadcast.emit("messageSent", message);
-				console.log(message);
+	connectDb().then(() => {
+		const PORT = process.env.PORT || 4000;
+		server = httpServer.listen(PORT, () => {
+			console.log(`\x1b[33m \x1b[1m Server is running in ${process.env.NODE_ENV} mode on port ${PORT} \x1b[0m`);
+			io.on("connection", (socket: any) => {
+				console.log("info", "new socket user" + socket.id);
+				socket.on("approval", (message: any) => {
+					socket.broadcast.emit("messageSent", message);
+					console.log(message);
+				});
 			});
 		});
 	});

@@ -14,7 +14,7 @@ import {
 	generateJWT,
 	generateDependentNumber
 } from "./auth/auth.service";
-import { insert, fetchAll, fetchOne } from "./query/query.service";
+import { insert, fetchAll, fetchOne, findOneAndUpdate } from "./query/query.service";
 
 const service = {
 	auth: {
@@ -32,7 +32,8 @@ const service = {
 	query: {
 		insert,
 		fetchAll,
-		fetchOne
+		fetchOne,
+		findOneAndUpdate
 	},
 	common: {
 		isValidEmailService,

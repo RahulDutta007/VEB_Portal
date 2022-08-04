@@ -1,0 +1,50 @@
+import { useState, useRef, useContext, useEffect, useCallback, Suspense } from "react";
+import { LazySnackbarAPI } from "..";
+import { SnackbarProps } from "../../../../src/@types/snackbarAPI.types";
+import { api } from "../../../api";
+
+const Announcements = () => {
+	const [snackbarAPIProps, setSnackbarAPIProps] = useState<SnackbarProps>({
+		open: false,
+		severity: undefined,
+		message: "",
+		handleSnackbarClose: (event, reason) => {
+			if (reason === "clickaway") return;
+			setSnackbarAPIProps(
+				Object.assign({}, snackbarAPIProps, {
+					open: false
+				})
+			);
+		}
+	});
+
+	const deleteAnnouncement = useCallback(
+		async (_id: string) => {
+			const _announcements = [];
+			if (_announcements) {
+				_announcements(Object.assign([], [..._announcements]));
+
+				setSnackbarAPIProps(
+					Object.assign({}, snackbarAPIProps, {
+						open: true,
+						message: "Successfully deleted announcement",
+						severity: "success"
+					})
+				);
+			}
+
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		},
+		[snackbarAPIProps]
+	);
+
+	return (
+		<div className="announcements">
+			<Suspense fallback={<div />}>
+				<LazySnackbarAPI snackbarProps={snackbarAPIProps} />
+			</Suspense>
+		</div>
+	);
+};
+
+export default Announcements;

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const connectDb = async () => {
 	console.log("ConnectDb");
+	process.env.MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/VEBPortal";
 	console.log("uri", process.env.MONGO_URI);
 	try {
 		if (process.env.MONGO_URI) {

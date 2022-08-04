@@ -50,6 +50,7 @@ export const AdminRegister = async (req: Request, res: Response) => {
 		}
 
 		// This query is for Owner already registered.
+		// eslint-disable-next-line prefer-const
 		data = await AdminModel.findOne({
 			$and: [{ email }, { role }]
 		});

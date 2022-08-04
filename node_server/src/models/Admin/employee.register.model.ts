@@ -20,6 +20,9 @@ const MemberRegisterSchema: Schema<IEmployeeSchema> = new Schema(
 		employee_number: {
 			type: Number
 		},
+		password: {
+			type: String
+		},
 		group_number: {
 			type: Number
 		},
@@ -53,10 +56,13 @@ const MemberRegisterSchema: Schema<IEmployeeSchema> = new Schema(
 		date: {
 			type: Date,
 			default: null
+		},
+		otp: {
+			type: Number
 		}
 	},
 	GENERAL_SCHEMA_OPTIONS
 );
 
-const EmployeeRegisterModel = model("EmployeeRegister", MemberRegisterSchema);
+const EmployeeRegisterModel = model("employeeregisters", MemberRegisterSchema);
 export default EmployeeRegisterModel;

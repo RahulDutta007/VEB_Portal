@@ -1,7 +1,24 @@
-export {};
+export { };
 import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
 
 const app = express();
+app.use(cors({
+	origin: "*",
+	methods: [
+		"GET",
+		"POST",
+		"PATCH",
+		"PUT",
+		"DELETE"
+	],
+
+	allowedHeaders: [
+		"Content-Type",
+		"Authorization"
+	],
+	optionsSuccessStatus: 200 // For legacy browser support
+}))
 
 app.use((req: Request, res: Response, next: NextFunction) => {
 	res.header("Access-Control-Allow-Origin", "*");
@@ -12,6 +29,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 	}
 	next();
 });
+
 
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));

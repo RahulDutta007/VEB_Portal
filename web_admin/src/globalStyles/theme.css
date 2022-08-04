@@ -1,0 +1,47 @@
+.error-message {
+	color: #cc0033;
+	display: inline-block;
+	font-size: 15px;
+	font-weight: 500;
+	margin-top: 5px;
+	margin-left: 20px;
+}
+
+/* .glb-tab-label .css-h0q0iv-MuiButtonBase-root-MuiTab-root {
+	min-height: 3rem !important;
+	padding: 0.5rem 1rem !important;
+	font-weight: 600 !important;
+} */
+
+.glb-tab-label {
+	font-family: inherit !important;
+	border: none;
+	min-height: 3rem !important;
+	padding: 0.5rem 1rem !important;
+	font-weight: 600 !important;
+	align-items: center;
+}
+
+.glb-tab-icon {
+	font-size: 1.6rem !important;
+	padding-right: 0.5rem !important;
+}
+
+.glb-tab-panel .MuiTab-textColorInherit.Mui-selected {
+	background-color: #e8e9ec !important;
+}
+
+.glb-tab-grid-container {
+	margin-top: 1.5rem;
+}
+
+.grid-margin {
+	margin-top: 1.5rem;
+}
+
+.pagination .MuiPaginationItem-page.Mui-selected {
+	background-color: #44b700;
+}
+/* .PrivateTabIndicator-colorSecondary-7 {
+	background-color: #558b2f !important;
+} */

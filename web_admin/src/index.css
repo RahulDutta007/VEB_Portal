@@ -8,6 +8,27 @@ body {
 	color: #4e4e4e !important;
 }
 
+button {
+	text-transform: none !important;
+}
+
+.MuiFormHelperText-root {
+	color: #e91e63 !important;
+	font-size: 11pt !important;
+}
+
+.select-validation-text {
+	margin-left: 14px;
+	margin-right: 14px;
+	margin-top: 3px;
+	text-align: left;
+	line-height: 1.66;
+	letter-spacing: 0.03333em;
+	color: #e91e63 !important;
+	font-size: 11pt !important;
+	font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+}
+
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }

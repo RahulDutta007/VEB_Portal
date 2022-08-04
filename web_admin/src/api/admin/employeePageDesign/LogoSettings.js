@@ -1,14 +1,14 @@
 /* eslint-disable prettier/prettier */
 import { request } from "../../api";
-import { headers } from "../../../../config/config";
+import { headers } from "../../../config/config";
 import { MESSAGE } from "../../../../constants/api/message";
 const { post, get, put, del } = request;
 
 const initialRoute = "admin/employee-page-design";
 
 export const addLogoSettings = async formData => {
-	const endpoint = `${initialRoute}/logo-settings`;
-	const response = await post(endpoint, formData);
+	const endpoint = `${initialRoute}/logo-settings`; 
+	const response = await post(endpoint, formData); 
 	if (response) {
 		const {
 			data: { message }

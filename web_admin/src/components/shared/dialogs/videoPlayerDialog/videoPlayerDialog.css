@@ -1,0 +1,20 @@
+.video-player-container .MuiDialog-paperWidthSm {
+	max-width: 800px !important;
+	display: flex !important;
+	justify-content: center !important;
+}
+
+.video-player-input-container .MuiDialogActions-root {
+	justify-content: flex-start;
+}
+
+.video-player-control-input {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	width: 30%;
+}
+
+.video-player-slider .MuiSlider-root {
+	padding: 30px 0 0 0;
+}

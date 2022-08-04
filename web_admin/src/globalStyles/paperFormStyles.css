@@ -1,0 +1,278 @@
+/* Form styles for announcement + create member */
+
+.pf-grid-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.pf-action-button-container {
+	text-align: end;
+	margin-bottom: 1em;
+}
+
+.margin-top-action-button {
+	margin-top: 2rem;
+}
+
+.pf-title {
+	margin-top: 2rem;
+	/* margin-bottom: 1rem; */
+	font-size: 1.2rem;
+	font-weight: bold;
+	text-align: left;
+}
+
+.pf-paper-container {
+	margin-top: 1em;
+	padding: 2em 2em 0em 2em;
+}
+
+.pf-label-text {
+	text-align: left;
+	font-size: 1rem;
+	color: #424242;
+	font-weight: bold;
+	margin-top: 0.7em;
+	/* margin-bottom: 1em; */
+}
+
+.pf-label {
+	margin-bottom: 2em;
+}
+
+.check-support {
+	margin-left: -1.5rem;
+}
+
+/* Announcements */
+.edit-announcements .group-assign-action-button-container {
+	text-align: end;
+	margin-bottom: 1em;
+}
+
+.edit-announcements .title {
+	margin-top: 1rem;
+	/* margin-bottom: 1rem; */
+	font-size: 1.2rem;
+	font-weight: bold;
+	text-align: left;
+}
+
+.edit-announcements .image-upload {
+	display: flex;
+	flex-direction: row;
+}
+
+.edit-announcements .paper-container {
+	margin-top: 1em;
+	padding: 2em;
+}
+
+.edit-announcements .chip-container {
+	padding-left: 1rem;
+}
+
+.edit-announcements .form-label {
+	margin-top: 1rem;
+	/* margin-bottom: 1rem; */
+}
+
+.edit-announcements .form-label-margin-2px {
+	margin-top: 2rem;
+}
+
+.edit-announcements .label-text {
+	text-align: left;
+	font-size: 1rem;
+	color: #424242;
+	font-weight: bold;
+	margin-top: 0.7em;
+	margin-bottom: 1em;
+}
+
+.edit-announcements .caption-text {
+	text-align: left;
+	font-size: 1.1rem;
+	color: #424242;
+	font-weight: bold;
+	margin-top: 0.7em;
+	margin-bottom: 1em;
+}
+
+.edit-announcements .screen-divider {
+	margin-top: 2rem !important;
+}
+
+.edit-announcements .opacity-container {
+	margin-top: 2rem !important;
+	margin-bottom: -1.5rem;
+}
+
+.edit-announcements .subject-color {
+	padding-top: 0.5em;
+}
+
+.edit-announcements .subject-color-picker-container {
+	margin-left: 1rem;
+}
+
+.edit-announcements .subject-caption {
+	margin-left: 1rem;
+	margin-top: 2rem;
+}
+
+.edit-announcements .description-color {
+	padding-top: 0.5em;
+}
+
+.edit-announcements .Description-color-picker-container {
+	margin-left: 1rem;
+}
+
+.edit-announcements .description-caption {
+	margin-left: 1rem;
+	margin-top: 2rem;
+}
+
+.edit-announcements .subject-enabled-checkbox {
+	margin-left: 0.5rem;
+	margin-top: 2rem;
+}
+
+.edit-announcements .subject-enabled-text {
+	font-size: 1rem;
+	color: #424242;
+	font-weight: bold;
+	padding-left: 0.5rem;
+	padding-top: 1rem;
+}
+
+.edit-announcements .description-enabled-checkbox {
+	margin-left: 0.5rem;
+	margin-top: 2rem;
+}
+
+.edit-announcements .description-enabled-text {
+	font-size: 1rem;
+	color: #424242;
+	font-weight: bold;
+	padding-left: 0.5rem;
+	padding-top: 1rem;
+}
+
+.edit-announcements .caption-alignment {
+	margin-left: 1rem;
+}
+
+.edit-announcements .alignment-options {
+	margin-top: 0.3rem;
+}
+.edit-announcements .popper-primary-color {
+	z-index: 99999;
+}
+
+/* Mapping */
+.employee-mapping .flex-container {
+	display: flex;
+	flex-direction: row-reverse;
+}
+
+.employee-mapping .smooth-scroll-nav {
+	margin-top: 2rem;
+}
+
+.employee-mapping .list {
+	list-style-type: none;
+	padding: 0px;
+}
+
+.employee-mapping .options-header {
+	font-size: 1.2rem;
+	font-weight: bold;
+	letter-spacing: 0.05rem;
+	padding-bottom: 0.5rem;
+}
+
+.employee-mapping .list li {
+	padding: 0.5rem 0.7rem;
+	font-size: 1rem;
+	margin-left: -0.7rem;
+	border-left: 4px solid transparent;
+}
+
+.employee-mapping .group-name {
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: #757575;
+	margin: 0rem 0rem;
+	text-align: center;
+}
+
+.employee-mapping .title {
+	font-size: 1.2rem;
+}
+
+.employee-mapping .settings-container {
+	margin-top: 1rem;
+	padding: 2rem;
+}
+
+.employee-mapping .scroll-link-element {
+	margin-bottom: 3rem;
+}
+
+.employee-mapping .settings-label {
+	font-weight: bold;
+}
+
+.employee-mapping .smooth-scroll-nav a {
+	cursor: pointer !important;
+}
+
+.employee-mapping .list li:hover {
+	border-left: 4px solid #e0e0e0;
+}
+
+.employee-mapping .list .active {
+	border-left: 4px solid #757575;
+}
+
+.employee-mapping .MuiFab-primary,
+.employee-mapping .MuiFab-primary:hover {
+	background-color: #44b700;
+}
+
+.employee-mapping .vertical-navigation {
+	/* position: fixed; */
+	display: flex;
+	flex-direction: column;
+	margin-left: 2rem;
+	padding-left: 1.5rem !important;
+	/* For Border Left */
+	margin-top: -1rem;
+	border-left: 2px solid #e0e0e0;
+	padding-top: 26px;
+	height: 100%;
+	/* height: 748vh; */
+}
+
+/* .employee-mapping .excel-headers {
+	overflow-y: scroll;
+	height: 400px;
+	width: 500px;
+} */
+
+@media (max-width: 1280px) {
+	/* .smooth-scroll-nav {
+		display: none;
+	} */
+	.page-design-container {
+		display: flex;
+		flex-direction: column-reverse;
+	}
+	.vertical-navigation {
+		display: flex !important;
+		flex-direction: row !important;
+		justify-content: flex-end !important;
+	}
+}

@@ -1,9 +1,7 @@
 const roles = {
-	super_admin: "SUPER ADMIN",
 	admin: "ADMIN",
-	employer: "EMPLOYER",
-	employee: "EMPLOYEE",
-	dependent: "DEPENDENT"
+	enroller_admin: "ENROLLER_ADMIN",
+	agent: "AGENT"
 };
 
 export default roles;

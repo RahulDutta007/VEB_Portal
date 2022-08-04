@@ -38,6 +38,7 @@ export interface IAdminSchema {
 	is_registered: boolean | null;
 	writing_number: number | null;
 	enroller_id: string | null;
+	otp: number | null;
 }
 
-export interface IAdminUser extends IAdminSchema, IObjectId {}
+export interface IAdminUser extends IAdminSchema, IObjectId { }

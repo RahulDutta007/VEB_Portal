@@ -20,13 +20,13 @@ const sidebarOptions: SidebarOptions = {
 		},
 		{
 			caption: "Enroller",
-			route: "/",
+			route: "/enroller",
 			icon: () => <AdminPanelSettingsIcon />,
 			subTabs: []
 		},
 		{
 			caption: "Agents",
-			route: "/",
+			route: "/admin-agent",
 			icon: () => <SupportAgentIcon />,
 			subTabs: []
 		},

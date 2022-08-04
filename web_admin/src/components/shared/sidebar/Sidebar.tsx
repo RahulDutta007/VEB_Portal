@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useContext, useEffect, useCallback, Suspense } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -22,16 +22,21 @@ import { styled } from "@mui/material/styles";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { keyframes } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { UIContext } from "../../../contexts";
+import { UIContext, AuthContext } from "../../../contexts";
 import SIDEBAR_OPTIONS from "../../../constants/sidebarOptions";
 import { Tab } from "../../../@types/sidebarOptions.types";
+
+import { AUTHORIZATION } from "../../../constants/api/auth";
+import axios from "axios";
+import { url, port, headers } from "../../../config/config";
+import { trackPromise } from "react-promise-tracker";
 
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import "./sidebar.css";
+import { SidebarProps } from "../../../@types/components/sidebar.types";
 
 const rippleKeyFrame = keyframes`
 	0% {
@@ -66,23 +71,48 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 
 const drawerWidth = 240;
 
-interface Props {
-	/**
-	 * Injected by the documentation to work in an iframe.
-	 * You won't need it on your project.
-	 */
-	window?: () => Window;
-}
-
-const Sidebar = (props: Props) => {
-	const { window } = props;
-	const [mobileOpen, setMobileOpen] = React.useState(false);
+const Sidebar = ({ WrappedComponent }: SidebarProps) => {
+	const [mobileOpen, setMobileOpen] = useState(false);
 	const { dashboardHeader, selectedTab } = useContext(UIContext);
+	const { user, setUser } = useContext(AuthContext);
 	const navigate = useNavigate();
 
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
 	};
+
+	const hClick = (route: any) => {
+		navigate(route);
+	};
+
+	const getUser = useCallback(async () => {
+		const { Authorization, Bearer } = AUTHORIZATION;
+		const token = localStorage.getItem("@jwt");
+		try {
+			const response = await trackPromise(
+				axios.get(`${url}:${port}/api/v1/auth/user`, {
+					headers: {
+						[Authorization]: `${Bearer} ${token}`
+					}
+				})
+			);
+			const { data } = response.data;
+			console.log("getUser", data);
+			const ssn = String(data.SSN);
+			const ssnValue = ssn.substr(0, 3) + "-" + ssn.substr(3, 2) + "-" + ssn.substr(5);
+			const _user = {
+				...data,
+				SSN: ssnValue
+			};
+			setUser(Object.assign({}, _user));
+		} catch (err) {
+			console.log("err", err);
+		}
+	}, [setUser]);
+
+	useEffect(() => {
+		getUser();
+	}, [getUser]);
 
 	const drawer = (
 		<div>
@@ -100,14 +130,16 @@ const Sidebar = (props: Props) => {
 					variant="dot"
 				>
 					<Avatar alt="Remy Sharp" className="profile-avatar">
-						<div className="avatar-text">RD</div>
+						<div className="avatar-text">
+							{user?.first_name.charAt(0).toUpperCase()}
+							{user?.last_name.charAt(0).toUpperCase()}
+						</div>
 					</Avatar>
 				</StyledBadge>
 				<div className="welcome-text" id="welcome-text">
-					Rahul Dutta
+					{user?.first_name} {user?.last_name}
 				</div>
 			</div>
-			<Divider />
 			<Divider />
 			<List>
 				{"ADMIN" &&
@@ -125,7 +157,7 @@ const Sidebar = (props: Props) => {
 									className="list-item-accordion-summary"
 								>
 									<div style={{ marginRight: 10 }}>{tab.icon()}</div>
-									<div>{tab.caption}</div>
+									<div onClick={() => navigate(tab.route)}>{tab.caption}</div>
 								</AccordionSummary>
 								<AccordionDetails>
 									<List>
@@ -137,7 +169,7 @@ const Sidebar = (props: Props) => {
 														button
 														key={subTabIndex}
 														className="list-item-container"
-														onClick={() => navigate(route)}
+														onClick={hClick}
 														style={{
 															backgroundColor:
 																selectedTab.subTabIndex === subTabIndex &&
@@ -184,7 +216,7 @@ const Sidebar = (props: Props) => {
 		</div>
 	);
 
-	const container = window !== undefined ? () => window().document.body : undefined;
+	const container = window !== undefined ? () => window.document.body : undefined;
 
 	return (
 		<div className="admin-sidebar">
@@ -277,7 +309,7 @@ const Sidebar = (props: Props) => {
 				</Box>
 				<Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
 					<Toolbar />
-					<Typography paragraph>
+					{/* <Typography paragraph>
 						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
 						labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum facilisis leo
 						vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum quisque non
@@ -298,7 +330,10 @@ const Sidebar = (props: Props) => {
 						senectus et. Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean euismod
 						elementum nisi quis eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
 						posuere sollicitudin aliquam ultrices sagittis orci a.
-					</Typography>
+					</Typography> */}
+					<Suspense fallback={<div />}>
+						<WrappedComponent />
+					</Suspense>
 				</Box>
 			</Box>
 		</div>

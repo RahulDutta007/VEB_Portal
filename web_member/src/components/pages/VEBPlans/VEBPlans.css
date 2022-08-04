@@ -1,0 +1,17 @@
+.VEB-plans {
+	padding: 0.9rem 2rem;
+}
+
+.VEB-plans .VEB-plans-header {
+	font-size: 1.8rem;
+	font-weight: 700;
+	text-align: center;
+}
+
+.VEB-plans .VEB-plans-subheader {
+	font-size: 1.2rem;
+	text-align: center;
+	margin-top: 1.8rem;
+	font-style: italic;
+	font-weight: 500;
+}
