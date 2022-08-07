@@ -1,7 +1,8 @@
 import Joi from "joi";
 
 export const forgetPasswordValidator = Joi.object({
-	credential: Joi.string()
+	credential: Joi.string(),
+	role: Joi.string()
 });
 
 export const verifyPasswordValidator = Joi.object({
