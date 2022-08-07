@@ -7,7 +7,7 @@ import "./globalStyles/paperFormStyles.css";
 
 import "./App.css";
 import SignUp from "./components/pages/auth/signUp/SignUp";
-import CreateGroupOwner from "./components/pages/creategroupowner/CreateGroupOwner";
+import CreateGroupOwner from "./components/pages/createGroupOwner/CreateGroupOwner";
 import Sidebar from "./components/shared/sidebar/Sidebar";
 
 const App = (): JSX.Element => {

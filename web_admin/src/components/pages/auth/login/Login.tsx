@@ -131,10 +131,11 @@ const Login = (props: any): JSX.Element => {
 	const handleSubmitForgetPassword = useCallback(async () => {
 		// event.preventDefault();
 		const payload = {
-			credential: forgetPasswordUser
+			credential: forgetPasswordUser,
+			role: credential.role
 		};
-		// const status = await handleValidation();
-		const response = await trackPromise(api.auth.forgetPassword(payload));
+		const status = await handleValidation();
+		const response = await api.auth.forgetPassword(payload);
 		// console.log("55", response);
 		if (response) {
 			// setStatusMessage("Sent a Link Email to email for reset password");
@@ -164,7 +165,7 @@ const Login = (props: any): JSX.Element => {
 			email: forgetUserId
 		};
 		// const status = await handleValidation();
-		const response = await trackPromise(api.auth.changeForgetUserId(payload));
+		const response = await api.auth.changeForgetUserId(payload);
 		console.log("55", response);
 		if (response) {
 			// setStatusMessage("Sent email with forget user id");
