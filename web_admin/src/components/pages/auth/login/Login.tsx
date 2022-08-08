@@ -605,7 +605,7 @@ const Login = (props: any): JSX.Element => {
 											</Button>
 										) : location.pathname === "/forgot-user-id" ? (
 											<Button
-												className="button"
+												className="button theme-button-violet"
 												onClick={handleSubmitForgetUserId}
 												variant="contained"
 												type="submit"
