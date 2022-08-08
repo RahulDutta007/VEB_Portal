@@ -14,7 +14,7 @@ export const login = async (_payload) => {
 	try {
 		const payload = JSON.stringify(_payload);
 		const endpoint = `${initialRoute}/login`;
-		const response = await post(endpoint, payload, headers);
+		const response = await post(endpoint, _payload, headers);
 
 		if (response) {
 			const {

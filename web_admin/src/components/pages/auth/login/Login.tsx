@@ -43,7 +43,9 @@ const Login = (props: any): JSX.Element => {
 	const [credential, setCredential] = useState<Credential>({
 		user_id: "",
 		role: "",
-		password: ""
+		password: "",
+		newPassword: "",
+		confirmPassword: ""
 	});
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -99,6 +101,27 @@ const Login = (props: any): JSX.Element => {
 				_validation.current["status"] = "invalid";
 				flag = false;
 			}
+			if (validationType === "Change Password" && newPassword?.length) {
+				_validation.current["newPassword"] = "New Password is required";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
+			if (validationType === "Change Password" && confirmPassword?.length) {
+				_validation.current["newPassword"] = "Confirm Password is required";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
+			if (validationType === "Change Password" && confirmPassword !== newPassword) {
+				_validation.current["status"] = "invalid";
+				flag = false;
+				setSnackbarAPIProps(
+					Object.assign({}, snackbarAPIProps, {
+						open: true,
+						message: "New Password should match with Confirm Password",
+						severity: "success"
+					})
+				);
+			}
 			if (flag === true) _validation.current["status"] = "valid";
 			else _validation.current["status"] = "invalid";
 
@@ -152,7 +175,9 @@ const Login = (props: any): JSX.Element => {
 					setCredential({
 						user_id: "",
 						role: "",
-						password: ""
+						password: "",
+						newPassword: "",
+						confirmPassword: ""
 					});
 					setSnackbarAPIProps(
 						Object.assign({}, snackbarAPIProps, {
@@ -190,7 +215,9 @@ const Login = (props: any): JSX.Element => {
 				setCredential({
 					user_id: "",
 					role: "",
-					password: ""
+					password: "",
+					newPassword: "",
+					confirmPassword: ""
 				});
 				navigate("/login");
 				setSnackbarAPIProps(
@@ -214,10 +241,10 @@ const Login = (props: any): JSX.Element => {
 			new_password: newPassword,
 			confirm_password: confirmPassword
 		};
-		// const status = await handleValidation();
-		// if (validationResult === "invalid") {
-		// 	return false;
-		// }
+		const validationResult = await handleValidation("Change Password");
+		if (validationResult === "invalid") {
+			return false;
+		}
 		const response = await trackPromise(api.auth.changeForgetPassword(payload, token));
 		console.log("55", response);
 		if (response) {
@@ -263,11 +290,12 @@ const Login = (props: any): JSX.Element => {
 			if (validationResult === "valid") {
 				try {
 					const _credential = {
-						...credential,
+						user_id,
+						password,
 						role: credential.role.toUpperCase()
 					};
 
-					const response = await trackPromise(api.auth.login(_credential));
+					const response = await api.auth.login(_credential);
 					console.log("Login Data", response);
 
 					if (response?.message === "Authentication Successful!") {
@@ -429,7 +457,7 @@ const Login = (props: any): JSX.Element => {
 										/>
 									) : (
 										<>
-											{location.pathname === "/change-password" ? (
+											{location.pathname === "/change-password" || token != undefined ? (
 												<>
 													<TextField
 														className="form-field-input"
@@ -440,7 +468,9 @@ const Login = (props: any): JSX.Element => {
 														placeholder="Enter New Password"
 														value={newPassword}
 														onChange={handleNewPassowrdChange}
-														helperText={validation?.user_id ? validation.user_id : null}
+														helperText={
+															validation?.newPassword ? validation.newPassword : null
+														}
 														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
 															startAdornment: (
@@ -460,7 +490,11 @@ const Login = (props: any): JSX.Element => {
 														placeholder="Enter Confirm Password"
 														value={confirmPassword}
 														onChange={handleConfirmPassowrdChange}
-														helperText={validation?.password ? validation.password : null}
+														helperText={
+															validation?.confirmPassword
+																? validation.confirmPassword
+																: null
+														}
 														style={{ width: "100%" }}
 														InputProps={{
 															startAdornment: (
