@@ -741,7 +741,7 @@ const SignUp = () => {
 						<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
 							<Stepper
 								activeStep={activeStep}
-								style={{ backgroundColor: "transparent", width: 500 }}
+								className="sign-up-stepper"
 								alternativeLabel
 							>
 								{steps.map((label, index) => {
@@ -803,7 +803,7 @@ const SignUp = () => {
 													</MenuItem>
 												</Menu>
 												{validation.user.role ? (
-													<div className="details" style={{ paddingLeft: "12.7" }}>
+													<div className="details role-selected-value">
 														<span className="select-validation-text">
 															{validation.user.role}
 														</span>
@@ -813,20 +813,18 @@ const SignUp = () => {
 											<div
 												className="sign-up-button-container"
 												id="sign-up-button-container"
-												style={{ marginTop: 50 }}
 											>
 												<Button
 													className="button next-arrow-down"
 													onClick={handleSubmit}
 													variant="contained"
 												>
-													<span className="button-label-with-icon" style={{ color: "#ffff" }}>
+													<span className="button-label-with-icon color-white" >
 														Next
 													</span>
 													<span>
 														<ArrowForwardIosIcon
-															className="button-icon"
-															style={{ color: "#ffff" }}
+															className="button-icon color-white"
 														/>
 													</span>
 												</Button>
@@ -837,7 +835,7 @@ const SignUp = () => {
 											<FormControl className="form-container" id="form-container">
 												<div className="form-inner">
 													<TextField
-														className="form-field-input-lg-form"
+														className="form-field-input-lg-form auth-input-fields"
 														id="email-input"
 														disabled={OTPVerified}
 														name="email"
@@ -846,13 +844,12 @@ const SignUp = () => {
 														value={user.email}
 														variant="outlined"
 														onChange={handleChange}
-														style={{ width: "100%", borderRadius: 50 }}
 														helperText={
 															user.email.length === 0
 																? ""
 																: emailExists
-																? "Email is already exist"
-																: ""
+																	? "Email is already exist"
+																	: ""
 														}
 														InputProps={{
 															startAdornment: (
@@ -862,8 +859,8 @@ const SignUp = () => {
 															),
 															endAdornment:
 																resendOTPButtonVisible &&
-																user.email.match(mailformat) &&
-																!OTPVerified ? (
+																	user.email.match(mailformat) &&
+																	!OTPVerified ? (
 																	<div
 																		style={{
 																			cursor:
@@ -875,7 +872,7 @@ const SignUp = () => {
 																		<Button
 																			variant="outlined"
 																			onClick={handleSendOTPToEmailClick}
-																			style={{ marginLeft: 5 }}
+																			className="margin-lf-5"
 																			disabled={
 																				user.email !== "" && !emailExists
 																					? false
@@ -892,7 +889,7 @@ const SignUp = () => {
 													/>
 													{startTimer && !OTPVerified ? (
 														<TextField
-															className="form-field-input"
+															className="form-field-input auth-input-fields"
 															id="OTP-input"
 															name="OTP"
 															label="OTP"
@@ -908,7 +905,6 @@ const SignUp = () => {
 															// }
 															variant="outlined"
 															onChange={handleOTPChange}
-															style={{ width: "100%", borderRadius: 50 }}
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
@@ -924,48 +920,36 @@ const SignUp = () => {
 														style={{ cursor: OTPVerified ? "auto" : "not-allowed" }}
 													>
 														<Button
-															className="button"
+															className="button button-back"
 															onClick={handleBack}
 															variant="contained"
-															style={{
-																backgroundColor: "#f5f5f5",
-																color: "#4e4e4e "
-															}}
 														>
 															<span>
 																<ArrowBackIosIcon
-																	className="button-icon"
-																	style={{ color: "#4e4e4e" }}
+																	className="button-icon icon-back"
 																/>
 															</span>
 															<span
-																className="button-label-with-icon"
-																style={{ color: "#4e4e4e" }}
+																className="button-label-with-icon icon-back"
 															>
 																Back
 															</span>
 														</Button>
 														<Button
-															className="button"
+															className="button theme-button-violet"
 															// disabled={!OTPVerified}
 															onClick={handleSubmit}
 															type="submit"
 															variant="contained"
-															style={{
-																backgroundColor: "#9c27b0",
-																color: "#ffff"
-															}}
 														>
 															<span
 																className="button-label-with-icon"
-																style={{ color: "#ffff" }}
 															>
 																Next
 															</span>
 															<span>
 																<ArrowForwardIosIcon
-																	className="button-icon"
-																	style={{ color: "#ffff" }}
+																	className="button-icon color-white"
 																/>
 															</span>
 														</Button>
@@ -981,7 +965,7 @@ const SignUp = () => {
 											>
 												<div className="form-inner form-inner-lg" id="form-inner">
 													<TextField
-														className="form-field-input-lg-form"
+														className="form-field-input-lg-form auth-input-fields"
 														id="first-name-input"
 														name="first_name"
 														value={user.first_name}
@@ -989,7 +973,6 @@ const SignUp = () => {
 														placeholder="Enter First Name"
 														variant="outlined"
 														onChange={handleChange}
-														style={{ width: "100%", borderRadius: 50 }}
 														helperText={validation.user.first_name}
 														InputProps={{
 															startAdornment: (
@@ -1000,7 +983,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form auth-input-fields"
 														id="middle-name-input"
 														name="middle_name"
 														label="Middle Name"
@@ -1008,7 +991,6 @@ const SignUp = () => {
 														value={user.middle_name}
 														variant="outlined"
 														onChange={handleChange}
-														style={{ width: "100%", borderRadius: 50 }}
 														// helperText={validation.user.middle_name}
 														InputProps={{
 															startAdornment: (
@@ -1019,7 +1001,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form auth-input-fields"
 														id="last-name-input"
 														name="last_name"
 														label="Last Name"
@@ -1027,7 +1009,6 @@ const SignUp = () => {
 														value={user.last_name}
 														variant="outlined"
 														onChange={handleChange}
-														style={{ width: "100%", borderRadius: 50 }}
 														helperText={validation.user.last_name}
 														InputProps={{
 															startAdornment: (
@@ -1040,7 +1021,7 @@ const SignUp = () => {
 													<div className="date-picker">
 														<MuiPickersUtilsProvider utils={DateFnsUtils}>
 															<KeyboardDatePicker
-																className="form-field-input form-field-input-lg-form"
+																className="form-field-input form-field-input-lg-form auth-input-fields"
 																inputVariant="outlined"
 																label="Date of Birth"
 																placeholder="Enter Date of Birth"
@@ -1057,7 +1038,6 @@ const SignUp = () => {
 																InputLabelProps={{
 																	shrink: true
 																}}
-																style={{ width: "100%", borderRadius: 50 }}
 																keyboardIcon={<EventIcon className="auth-input-icon" />}
 																KeyboardButtonProps={{
 																	"aria-label": "change date"
@@ -1067,7 +1047,7 @@ const SignUp = () => {
 														</MuiPickersUtilsProvider>
 													</div>
 													<TextField
-														className="form-field-input form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form auth-input-fields"
 														id="SSN-input"
 														name="SSN"
 														value={user.SSN}
@@ -1077,7 +1057,6 @@ const SignUp = () => {
 														onChange={handleChange}
 														onKeyDown={(event: any) => handleKeyCheck(event)}
 														onPaste={(event: any) => handlePaste(event)}
-														style={{ width: "100%", borderRadius: 50 }}
 														helperText={validation.user.SSN}
 														InputProps={{
 															startAdornment: (
@@ -1088,7 +1067,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form auth-input-fields"
 														id="Reenter-SSN-input"
 														name="reenterSSN"
 														value={reEnteredSSN}
@@ -1098,7 +1077,6 @@ const SignUp = () => {
 														onChange={handleReEnteredSSNChange}
 														onKeyDown={(event: any) => handleKeyCheck(event)}
 														onPaste={(event: any) => handlePaste(event)}
-														style={{ width: "100%", borderRadius: 50 }}
 														//helperText={validation.user.SSN}
 														InputProps={{
 															startAdornment: (
@@ -1117,47 +1095,35 @@ const SignUp = () => {
 													id="sign-up-button-container"
 												>
 													<Button
-														className="button"
+														className="button button-back"
 														onClick={handleBack}
 														variant="contained"
-														style={{
-															backgroundColor: "#f5f5f5",
-															color: "#4e4e4e "
-														}}
 													>
 														<span>
 															<ArrowBackIosIcon
-																className="button-icon"
-																style={{ color: "#4e4e4e" }}
+																className="button-icon icon-back"
 															/>
 														</span>
 														<span
-															className="button-label-with-icon"
-															style={{ color: "#4e4e4e" }}
+															className="button-label-with-icon icon-back"
 														>
 															Back
 														</span>
 													</Button>
 													<Button
-														className="button"
+														className="button theme-button-violet"
 														//onClick={handleSubmit}
 														type="submit"
 														variant="contained"
-														style={{
-															backgroundColor: "#9c27b0",
-															color: "#ffff"
-														}}
 													>
 														<span
-															className="button-label-with-icon"
-															style={{ color: "#ffff" }}
+															className="button-label-with-icon color-white"
 														>
 															Next
 														</span>
 														<span>
 															<ArrowForwardIosIcon
-																className="button-icon"
-																style={{ color: "#ffff" }}
+																className="button-icon color-white"
 															/>
 														</span>
 													</Button>
@@ -1169,7 +1135,7 @@ const SignUp = () => {
 											<FormControl className="form-container" id="form-container">
 												<div className="form-inner" id="form-inner">
 													<TextField
-														className="form-field-input"
+														className="form-field-input auth-input-fields"
 														id="user-name-input"
 														name="user_name"
 														label="Username"
@@ -1181,10 +1147,9 @@ const SignUp = () => {
 															userNameExists
 																? "Username exists!"
 																: checkInvalidUserName
-																? "Username must be between 4 to 20 characters and alpha-numeric!"
-																: validation.user.user_name
+																	? "Username must be between 4 to 20 characters and alpha-numeric!"
+																	: validation.user.user_name
 														}
-														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
@@ -1194,7 +1159,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input"
+														className="form-field-input auth-input-fields"
 														id="password-input"
 														name="password"
 														type={!showPassword ? "password" : "text"}
@@ -1204,7 +1169,6 @@ const SignUp = () => {
 														variant="outlined"
 														onChange={handleChange}
 														helperText={validation.user.password}
-														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
@@ -1227,7 +1191,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input"
+														className="form-field-input auth-input-fields"
 														id="confirm-password-input"
 														name="confirm_password"
 														type={!showConfirmPassword ? "password" : "text"}
@@ -1237,7 +1201,6 @@ const SignUp = () => {
 														variant="outlined"
 														onChange={handleChange}
 														helperText={validation.user.confirm_password}
-														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
@@ -1259,80 +1222,21 @@ const SignUp = () => {
 															)
 														}}
 													/>
-													{/* <div
-														className="claim-notification-checkbox"
-														id="claim-notification-checkbox"
-													>
-														<Checkbox
-															icon={
-																<NotificationsIcon
-																	fontSize="small"
-																	style={{ color: "#9c27b0" }}
-																/>
-															}
-															checkedIcon={
-																<NotificationsNoneIcon
-																	fontSize="small"
-																	style={{ color: "#9c27b0" }}
-																/>
-															}
-															name="checkedI"
-															onChange={handleNotificationChange}
-														/>
-														Receive Processed Claim Notification
-													</div> */}
 												</div>
 												<div className="sign-up-button-container" id="sign-up-button-container">
-													{/* <Button
-                                                                variant="contained"
-                                                                onClick={handleBack}
-                                                                style={{
-                                                                    backgroundColor: "#f5f5f5",
-                                                                    letterSpacing: "1.5px",
-                                                                    fontSize: "1rem",
-                                                                    marginRight: 10
-                                                                }}
-                                                            >
-                                                                Back
-                                                            </Button>
-                                                            <Tooltip
-                                                                title={!hasReadStatementOfUnderstanding ? "Please read the statement of understanding before signing up" : ""}
-                                                                arrow
-                                                            >
-                                                                <Button
-                                                                    variant="contained"
-                                                                    disabled={!hasReadStatementOfUnderstanding}
-                                                                    onClick={handleSubmit}
-                                                                    style={{
-                                                                        backgroundColor: "#9c27b0",
-                                                                        color: "white",
-                                                                        letterSpacing: "1.5px",
-                                                                        fontSize: "1rem",
-                                                                        cursor: !hasReadStatementOfUnderstanding ? "not-allowed" : "pointer",
-                                                                        pointerEvents: "unset"
-                                                                    }}
-                                                                >
-                                                                    Sign Up
-                                                                </Button>
-                                                            </Tooltip> */}
+
 													<Button
-														className="button"
+														className="button button-back"
 														onClick={handleBack}
 														variant="contained"
-														style={{
-															backgroundColor: "#f5f5f5",
-															color: "#4e4e4e "
-														}}
 													>
 														<span>
 															<ArrowBackIosIcon
-																className="button-icon"
-																style={{ color: "#4e4e4e " }}
+																className="button-icon icon-back"
 															/>
 														</span>
 														<span
-															className="button-label-with-icon"
-															style={{ color: "#4e4e4e " }}
+															className="button-label-with-icon icon-back"
 														>
 															Back
 														</span>
@@ -1342,25 +1246,19 @@ const SignUp = () => {
 														arrow
 													>
 														<Button
-															className="button"
+															className="button theme-button-violet"
 															//onClick={handleSubmit}
 															type="submit"
 															variant="contained"
-															style={{
-																backgroundColor: "#9c27b0",
-																color: "#ffff"
-															}}
 														>
 															<span
-																className="button-label-with-icon"
-																style={{ color: "#ffff" }}
+																className="button-label-with-icon color-white"
 															>
 																Sign Up
 															</span>
 															<span>
 																<PersonAddIcon
-																	className="button-icon"
-																	style={{ color: "#ffff" }}
+																	className="button-icon color-white"
 																/>
 															</span>
 														</Button>
@@ -1382,34 +1280,17 @@ const SignUp = () => {
 												className="sign-up-button-container-lg-form"
 												id="sign-up-button-container"
 											>
-												{/* <Button
-                                                            variant="contained"
-                                                            onClick={handleSubmit}
-                                                            style={{
-                                                                backgroundColor: "#9c27b0",
-                                                                color: "white",
-                                                                letterSpacing: "1.5px",
-                                                                fontSize: "1rem"
-                                                            }}
-                                                        >
-                                                            Login
-                                                        </Button> */}
 												<Button
-													className="button"
+													className="button theme-button-violet"
 													onClick={handleSubmit}
 													variant="contained"
-													style={{
-														backgroundColor: "#9c27b0",
-														color: "#ffff"
-													}}
 												>
-													<span className="button-label-with-icon" style={{ color: "#ffff" }}>
+													<span className="button-label-with-icon color-white" >
 														Login
 													</span>
 													<span>
 														<PersonIcon
-															className="button-icon"
-															style={{ color: "#ffff" }}
+															className="button-icon color-white"
 														/>
 													</span>
 												</Button>

@@ -410,14 +410,14 @@ const Login = (props: any): JSX.Element => {
 											</MenuItem>
 										</Menu>
 										{validation?.role ? (
-											<div className="details" style={{ paddingLeft: "12.7" }}>
+											<div className="details role-selected-value">
 												<span className="select-validation-text">{validation?.role}</span>
 											</div>
 										) : null}
 									</div>
 									{location.pathname === "/forgot-password" ? (
 										<TextField
-											className="form-field-input"
+											className="form-field-input auth-input-fields"
 											id="forget-user-name-password"
 											name="user_id"
 											label="Username/Email"
@@ -426,7 +426,6 @@ const Login = (props: any): JSX.Element => {
 											value={credential.user_id}
 											onChange={handleChange}
 											helperText={validation?.user_id ? validation.user_id : null}
-											style={{ width: "100%", borderRadius: 50 }}
 											InputProps={{
 												startAdornment: (
 													<InputAdornment position="start">
@@ -437,7 +436,7 @@ const Login = (props: any): JSX.Element => {
 										/>
 									) : location.pathname === "/forgot-user-id" ? (
 										<TextField
-											className="form-field-input"
+											className="form-field-input auth-input-fields"
 											id="forget-user-name"
 											name="user_id"
 											label="Username/Email"
@@ -446,7 +445,6 @@ const Login = (props: any): JSX.Element => {
 											value={credential.user_id}
 											onChange={handleChange}
 											helperText={validation?.user_id ? validation.user_id : null}
-											style={{ width: "100%", borderRadius: 50 }}
 											InputProps={{
 												startAdornment: (
 													<InputAdornment position="start">
@@ -460,7 +458,7 @@ const Login = (props: any): JSX.Element => {
 											{location.pathname === "/change-password" || token != undefined ? (
 												<>
 													<TextField
-														className="form-field-input"
+														className="form-field-input auth-input-fields"
 														id="new-password"
 														name="new_password"
 														label="New Password"
@@ -471,7 +469,6 @@ const Login = (props: any): JSX.Element => {
 														helperText={
 															validation?.newPassword ? validation.newPassword : null
 														}
-														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
@@ -481,7 +478,7 @@ const Login = (props: any): JSX.Element => {
 														}}
 													/>
 													<TextField
-														className="form-field-input"
+														className="form-field-input auth-input-fields"
 														id="confirm-password"
 														name="confirm_password"
 														type={!showPassword ? "password" : "text"}
@@ -495,7 +492,6 @@ const Login = (props: any): JSX.Element => {
 																? validation.confirmPassword
 																: null
 														}
-														style={{ width: "100%" }}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
@@ -522,7 +518,7 @@ const Login = (props: any): JSX.Element => {
 												<>
 													<>
 														<TextField
-															className="form-field-input"
+															className="form-field-input auth-input-fields"
 															id="user-name-input"
 															name="user_id"
 															label="Username/Email"
@@ -531,7 +527,6 @@ const Login = (props: any): JSX.Element => {
 															value={user_id}
 															onChange={handleChange}
 															helperText={validation?.user_id ? validation.user_id : null}
-															style={{ width: "100%", borderRadius: 50 }}
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
@@ -541,7 +536,7 @@ const Login = (props: any): JSX.Element => {
 															}}
 														/>
 														<TextField
-															className="form-field-input"
+															className="form-field-input auth-input-fields"
 															id="password-name-input"
 															name="password"
 															type={!showPassword ? "password" : "text"}
@@ -553,7 +548,6 @@ const Login = (props: any): JSX.Element => {
 															helperText={
 																validation?.password ? validation.password : null
 															}
-															style={{ width: "100%" }}
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
@@ -599,17 +593,13 @@ const Login = (props: any): JSX.Element => {
 									<div className="login-button-container" id="login-button-container">
 										{location.pathname === "/forgot-password" ? (
 											<Button
-												className="button"
+												className="button theme-button-violet"
 												onClick={handleSubmitForgetPassword}
 												name="forget-password-button"
 												variant="contained"
 												type="submit"
-												style={{
-													backgroundColor: "#9c27b0",
-													color: "#ffff"
-												}}
 											>
-												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
+												<span className="button-label-with-icon">
 													Validate User
 												</span>
 											</Button>
@@ -619,49 +609,37 @@ const Login = (props: any): JSX.Element => {
 												onClick={handleSubmitForgetUserId}
 												variant="contained"
 												type="submit"
-												style={{
-													backgroundColor: "#9c27b0",
-													color: "#ffff"
-												}}
 											>
-												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
+												<span className="button-label-with-icon">
 													Send Email
 												</span>
 											</Button>
 										) : token != undefined ? (
 											<Button
-												className="button"
+												className="button theme-button-violet"
 												onClick={handleSubmitChangePassword}
 												variant="contained"
 												type="submit"
-												style={{
-													backgroundColor: "#9c27b0",
-													color: "#ffff"
-												}}
 											>
-												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
+												<span className="button-label-with-icon">
 													Change Password
 												</span>
 												<span>
-													<PersonIcon className="button-icon" style={{ color: "#ffff" }} />
+													<PersonIcon className="button-icon" />
 												</span>
 											</Button>
 										) : (
 											<Button
-												className="button"
+												className="button theme-button-violet"
 												onClick={handleSubmit}
 												variant="contained"
 												type="submit"
-												style={{
-													backgroundColor: "#9c27b0",
-													color: "#ffff"
-												}}
 											>
-												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
+												<span className="button-label-with-icon">
 													Login
 												</span>
 												<span>
-													<PersonIcon className="button-icon" style={{ color: "#ffff" }} />
+													<PersonIcon className="button-icon" />
 												</span>
 											</Button>
 										)}

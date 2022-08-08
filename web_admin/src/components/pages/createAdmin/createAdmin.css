@@ -1,0 +1,27 @@
+.text-field-input-create-enroller>div>input {
+    color: #000000;
+    border-bottom: 1px solid #e5e5e5;
+    border-radius: 0px !important;
+}
+
+.theme-color-green {
+    color: #7cb342;
+}
+
+.pointer-event-unset {
+    pointer-events: unset;
+}
+
+.create-admin-input-width {
+    width: 340px;
+}
+
+.select-input-style {
+    min-width: 180px;
+    text-align: left;
+    overflow-y: visible;
+}
+
+.zindex-35960 {
+    z-index: 35960;
+}

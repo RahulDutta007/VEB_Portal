@@ -36,7 +36,7 @@ import EventIcon from "@material-ui/icons/Event";
 import { DynamicForm, DynamicFormField } from "../../../@types/dynamicForm.types";
 import { Validation } from "../../../@types/validation.types";
 
-import "./createGroupOwner.css";
+import "./createAdmin.css";
 
 const mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/;
 const specialCharacters = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
@@ -51,7 +51,7 @@ const GreenCheckbox = withStyles({
 	checked: {}
 })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
-const CreateGroupOwner = () => {
+const CreateAdmin = () => {
 	const [userForm, setUserForm] = useState<DynamicForm>();
 	const [emailExists, setEmailExists] = useState(false);
 	const [checkInvalidEmail, setCheckInvalidEmail] = useState(false);
@@ -626,10 +626,10 @@ const CreateGroupOwner = () => {
 							hire_date:
 								hireDate !== null
 									? hireDate.getFullYear() +
-									  "-" +
-									  (hireDate.getMonth() + 1) +
-									  "-" +
-									  hireDate.getDate()
+									"-" +
+									(hireDate.getMonth() + 1) +
+									"-" +
+									hireDate.getDate()
 									: hireDate,
 							SSN: createdUser.SSN ? createdUser?.SSN?.replaceAll("-", "").toString() : null,
 							ZIP: createdUser.ZIP ? createdUser.ZIP.replaceAll("-", "") : null,
@@ -952,31 +952,31 @@ const CreateGroupOwner = () => {
 															item
 															xs={
 																field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? undefined
 																	: 12
 															}
 															sm={
 																field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? undefined
 																	: 12
 															}
 															md={
 																field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
 															lg={
 																field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
 															xl={
 																field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
@@ -984,20 +984,20 @@ const CreateGroupOwner = () => {
 															<div
 																className={
 																	field.name === "first_name" ||
-																	field.name === "last_name" ||
-																	field.name === "email" ||
-																	field.name === "group_number" ||
-																	field.name === "role"
+																		field.name === "last_name" ||
+																		field.name === "email" ||
+																		field.name === "group_number" ||
+																		field.name === "role"
 																		? // field.name === "address_line_2" ||
-																		  // field.name === "is_employer_support" ||
-																		  // field.name === "is_member_support"
-																		  "pf-label-text required"
+																		// field.name === "is_employer_support" ||
+																		// field.name === "is_member_support"
+																		"pf-label-text required"
 																		: "pf-label-text"
 																}
 																id="pf-label-text"
 															>
 																{field.name === "is_employer_support" ||
-																field.name === "is_member_support"
+																	field.name === "is_member_support"
 																	? ""
 																	: field.label}
 															</div>
@@ -1005,7 +1005,7 @@ const CreateGroupOwner = () => {
 														<Grid item xs={9} sm={9} md={9} lg={9} xl={9}>
 															{field.type === "textfield" ? (
 																<TextField
-																	className="text-field-input text-field-input-create-enroller"
+																	className="text-field-input text-field-input-create-enroller pointer-event-unset create-admin-input-width"
 																	id="text-field-input"
 																	name={field.name}
 																	placeholder={field.placeholder}
@@ -1022,7 +1022,7 @@ const CreateGroupOwner = () => {
 																	InputProps={{
 																		readOnly:
 																			field.value ===
-																			"USA - United States of America"
+																				"USA - United States of America"
 																				? true
 																				: false
 																	}}
@@ -1030,36 +1030,18 @@ const CreateGroupOwner = () => {
 																		emailExists && field.name === "email"
 																			? "Email exists!"
 																			: checkInvalidEmail &&
-																			  field.name === "email"
-																			? "Please enter a valid email address!"
-																			: validation.createdUser[field.name]
+																				field.name === "email"
+																				? "Please enter a valid email address!"
+																				: validation.createdUser[field.name]
 																	}
-																	//style={{ width: "70%", borderRadius: 50 }}
-																	//disabled={!isButtonSelected}
-																	//disableElevation={!isButtonSelected}
-																	style={{
-																		//cursor: !isButtonSelected?"not-allowed": "pointer",
-																		pointerEvents: "unset",
-																		width: "340px",
-																		borderRadius: 50
-																	}}
 																/>
 															) : field.type === "select" ? (
 																<>
 																	<Select
 																		id="text-align-options"
+																		className="pointer-event-unset select-input-style"
 																		name={field.name}
 																		onChange={field.onChange}
-																		//disabled={!isButtonSelected}
-																		//disableElevation={!isButtonSelected}
-																		style={{
-																			//cursor: !isButtonSelected ? "not-allowed" : "pointer",
-																			pointerEvents: "unset",
-																			minWidth: 180,
-																			textAlign: "left",
-																			// zIndex: 10000,
-																			overflowY: "visible"
-																		}}
 																		MenuProps={{
 																			style: { zIndex: 35960 }
 																		}}
@@ -1084,7 +1066,7 @@ const CreateGroupOwner = () => {
 																		))}
 																	</Select>
 																	{validation &&
-																	validation.createdUser[field.name] ? (
+																		validation.createdUser[field.name] ? (
 																		<div className="details">
 																			<span className="select-validation-text2">
 																				{validation.createdUser[field.name]}
@@ -1095,7 +1077,7 @@ const CreateGroupOwner = () => {
 															) : field.type === "date" ? (
 																<MuiPickersUtilsProvider utils={DateFnsUtils}>
 																	<KeyboardDatePicker
-																		className="date-input"
+																		className="date-input pointer-event-unset create-admin-input-width"
 																		id="date-input"
 																		inputVariant="outlined"
 																		label={field.label}
@@ -1113,20 +1095,11 @@ const CreateGroupOwner = () => {
 																		InputLabelProps={{
 																			shrink: true
 																		}}
-																		//style={{ width: "340px", borderRadius: 50 }}
 																		keyboardIcon={
-																			<EventIcon style={{ color: "#7cb342" }} />
+																			<EventIcon className="theme-color-green" />
 																		}
 																		KeyboardButtonProps={{
 																			"aria-label": "change date"
-																		}}
-																		// disabled={!isButtonSelected}
-																		// disableElevation={!isButtonSelected}
-																		style={{
-																			// cursor: !isButtonSelected ? "not-allowed" : "pointer",
-																			pointerEvents: "unset",
-																			width: "340px",
-																			borderRadius: 50
 																		}}
 																		helperText={validation.createdUser[field.name]}
 																	/>
@@ -1183,4 +1156,4 @@ const CreateGroupOwner = () => {
 	);
 };
 
-export default CreateGroupOwner;
+export default CreateAdmin;
