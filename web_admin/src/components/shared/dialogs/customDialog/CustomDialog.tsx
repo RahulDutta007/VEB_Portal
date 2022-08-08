@@ -32,7 +32,7 @@ const CustomDialog = ({ dialogProps }: CustomDialogProps): JSX.Element => {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					{actions.map((action: { label: any; callback: any; }, index: Key | null | undefined) => {
+					{actions.map((action: { label: any; callback: any }, index: Key | null | undefined) => {
 						const { label, callback } = action;
 						return (
 							<Button

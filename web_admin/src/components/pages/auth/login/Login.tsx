@@ -50,7 +50,12 @@ const Login = (props: any): JSX.Element => {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [validation, setValidation] = useState<Validation>();
-	const [loginDialogProps, setLoginDialogProps] = useState<DialogProps>();
+	const [loginDialogProps, setLoginDialogProps] = useState({
+		openDialog: false,
+		title: "",
+		content: "",
+		actions: []
+	});
 	const [forgetPasswordUser, setForgetPasswordUser] = useState<null | string>("");
 	const [forgetUserId, setForgetUserId] = useState<null | string>("");
 	const [newPassword, setNewPassword] = useState<null | string>("");

@@ -9,5 +9,5 @@ export type DialogProps = {
 		title: string;
 		content: string;
 		actions: Action[];
-	}
+	};
 };
