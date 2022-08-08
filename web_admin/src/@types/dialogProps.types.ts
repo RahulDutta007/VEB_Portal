@@ -4,8 +4,10 @@ export type Action = {
 };
 
 export type DialogProps = {
-	openDialog: boolean;
-	title: string;
-	content: string;
-	actions: Action[];
+	dialogProps: {
+		openDialog: boolean;
+		title: string;
+		content: string;
+		actions: Action[];
+	}
 };

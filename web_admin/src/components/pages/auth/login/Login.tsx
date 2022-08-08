@@ -33,7 +33,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import { useLocation, useParams } from "react-router-dom";
 
 import "./login.css";
-import { LazySnackbarAPI, SnackbarAPI } from "../../../shared";
+import { CustomDialog, LazySnackbarAPI, SnackbarAPI } from "../../../shared";
 import { SnackbarProps } from "../../../../@types/snackbarAPI.types";
 
 const Login = (props: any): JSX.Element => {
@@ -365,6 +365,9 @@ const Login = (props: any): JSX.Element => {
 
 	return (
 		<div className="login" id="login">
+			<Suspense fallback={<div />}>
+				<CustomDialog dialogProps={loginDialogProps} />
+			</Suspense>
 			<div className="container-outer" id="container-outer">
 				<div className="container-inner" id="container-inner">
 					<Card className="card-container" elevation={5}>
