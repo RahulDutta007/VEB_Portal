@@ -691,8 +691,8 @@ const CreateAdmin = () => {
 							type: "select",
 							options:
 								user?.role === ROLES.admin
-									? [initCapitalize(ROLES.admin), initCapitalize(ROLES.enroller_admin)]
-									: [initCapitalize(ROLES.agent)]
+									? [initCapitalize(ROLES.enroller_admin), initCapitalize(ROLES.agent)]
+									: (user?.role === ROLES.enroller_admin ? [initCapitalize(ROLES.agent)] : [])
 						}
 					],
 					"User Information": [
