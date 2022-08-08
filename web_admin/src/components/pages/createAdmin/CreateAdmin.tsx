@@ -1039,7 +1039,7 @@ const CreateAdmin = () => {
 																<>
 																	<Select
 																		id="text-align-options"
-																		className="pointer-event-unset select-input-style"
+																		className="pointer-event-unset select-input-style create-user-input-select"
 																		name={field.name}
 																		onChange={field.onChange}
 																		MenuProps={{
@@ -1077,7 +1077,7 @@ const CreateAdmin = () => {
 															) : field.type === "date" ? (
 																<MuiPickersUtilsProvider utils={DateFnsUtils}>
 																	<KeyboardDatePicker
-																		className="date-input pointer-event-unset create-admin-input-width"
+																		className="date-input pointer-event-unset create-admin-input-width create-user-input-date"
 																		id="date-input"
 																		inputVariant="outlined"
 																		label={field.label}

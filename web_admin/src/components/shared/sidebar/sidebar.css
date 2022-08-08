@@ -61,7 +61,7 @@
 }
 
 .admin-sidebar .toolbar-icon-badge .MuiBadge-colorPrimary {
-	background-color: #9370DB !important;
+	background-color: #7cb342 !important;
 }
 
 .admin-sidebar .list-item-accordion {
@@ -77,7 +77,7 @@
 }
 
 .admin-sidebar .list-item-accordion:hover {
-	background-color: #9370DB !important;
+	background-color: #7cb342 !important;
 	color: #4e4e4e !important;
 	font-weight: bold;
 }
