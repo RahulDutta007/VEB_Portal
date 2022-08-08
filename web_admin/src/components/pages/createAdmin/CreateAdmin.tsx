@@ -180,29 +180,17 @@ const CreateAdmin = () => {
 			_validation.current["status"] = "invalid";
 			flag = false;
 		}
-		// if (SSN === null || SSN === "") {
-		// 	_validation.current.createdUser["SSN"] = "SSN is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (SSN !== null) {
-		// 	var _SSN = SSN.replaceAll("-", "");
-		// 	if (String(_SSN).length !== 9) {
-		// 		_validation.current.createdUser["SSN"] = "Enter correct 9 digit SSN";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
-		// }
-		// if (SSN !== null) {
-		// 	if (SSN !== "") {
-		// 		var _SSN = SSN.replaceAll("-", "");
-		// 		if (String(_SSN).length !== 9) {
-		// 			_validation.current.createdUser["SSN"] = "Enter correct 9 digit SSN";
-		// 			_validation.current["status"] = "invalid";
-		// 			flag = false;
-		// 		}
-		// 	}
-		// }
+
+		if (SSN !== null) {
+			if (SSN !== "") {
+				var _SSN = SSN.replaceAll("-", "");
+				if (String(_SSN).length !== 9) {
+					_validation.current.createdUser["SSN"] = "Enter correct 9 digit SSN";
+					_validation.current["status"] = "invalid";
+					flag = false;
+				}
+			}
+		}
 		// if (String(date_of_birth).length === 0) {
 		// 	_validation.current.createdUser["date_of_birth"] = "Date of birth is required";
 		// 	_validation.current["status"] = "invalid";
