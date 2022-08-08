@@ -37,10 +37,10 @@
 
 @media (min-width: 320px) and (max-width: 1024px) {
 
-    .MuiSelect-select.MuiSelect-select,
+    /* .MuiSelect-select.MuiSelect-select,
     .MuiOutlinedInput-inputAdornedEnd {
         color: #000000 !important;
-    }
+    } */
 
     .create-admin-input-width {
         width: 100%;
@@ -58,6 +58,16 @@
     .text-field-input-create-enroller {
         border: 1px solid #4e4e4e !important;
         border-radius: 5px;
+    }
+
+    .text-field-input-create-enroller>div>input,
+    .create-user-input-select>div>input,
+    .create-user-input-date>div>input {
+        color: #000000 !important;
+    }
+
+    .create-user-input-select>div {
+        color: #000000 !important;
     }
 
     .create-user-input-select {
