@@ -92,8 +92,7 @@ export const adminCreation = async (req: Request, res: Response) => {
 			hire_date,
 			upload_type: UPLOAD_TYPE.manual,
 			created_by: _id,
-			is_registered: false,
-			user_name: email
+			is_registered: false
 		};
 
 		const createdAdminInstance: IAdminUser & IObjectId = await service.query.insert(AdminModel, payload);

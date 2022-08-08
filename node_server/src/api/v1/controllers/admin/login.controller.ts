@@ -26,11 +26,11 @@ export const login = async (req: Request, res: Response) => {
 				message: MESSAGE.custom("Unauthorized Role!")
 			});
 		}
-
+		console.log(query + " " + role);
 		const user = await model.findOne({
 			$and: [query, { role }]
 		});
-
+		console.log(user);
 		if (!user) {
 			return res.status(StatusCodes.UNAUTHORIZED).json({
 				message: MESSAGE.custom("Authentication Failed!")

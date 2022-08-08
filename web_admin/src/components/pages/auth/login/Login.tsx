@@ -325,7 +325,7 @@ const Login = (props: any): JSX.Element => {
 							Object.assign({}, loginDialogProps, {
 								openDialog: true,
 								title: "Login failed!",
-								content: response?.message,
+								content: "Authorization failed",
 								actions: [
 									{
 										label: "Close",

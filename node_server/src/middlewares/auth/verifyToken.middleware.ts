@@ -8,11 +8,13 @@ import { ObjectId } from "mongoose";
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 	try {
+		console.log("tok", req.headers);
 		if (!req.headers.authorization) {
 			return res.status(StatusCodes.UNAUTHORIZED).json({
 				message: MESSAGE.custom("Access denied. No token provided")
 			});
 		}
+		console.log("tok", req.headers);
 
 		const token = req.headers.authorization.replace("Bearer ", "");
 		if (!token) {
@@ -20,6 +22,7 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 				message: MESSAGE.custom("Access denied. No token provided")
 			});
 		}
+		console.log("token", token);
 
 		if (!process.env.JWT_KEY) {
 			return res.status(StatusCodes.BAD_REQUEST).json({

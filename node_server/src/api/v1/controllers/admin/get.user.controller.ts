@@ -22,17 +22,13 @@ export const FindUsername = async (req: Request, res: Response) => {
 		const UserInstance = await findUser(AdminModel, user_id);
 		if (UserInstance) {
 			return res.status(StatusCodes.OK).json({
-				message: MESSAGE.get.succ,
-				result: {
-					isRegistered: true
-				}
+				message: "User Name Exist",
+				isNameExist: true
 			});
 		} else {
 			return res.status(StatusCodes.OK).json({
-				message: MESSAGE.get.succ,
-				result: {
-					isRegistered: false
-				}
+				message: "User Name Not Exist",
+				isNameExist: false
 			});
 		}
 	} catch (err) {

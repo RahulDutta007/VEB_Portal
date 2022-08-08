@@ -54,6 +54,7 @@ const GreenCheckbox = withStyles({
 const CreateAdmin = () => {
 	const [userForm, setUserForm] = useState<DynamicForm>();
 	const [emailExists, setEmailExists] = useState(false);
+	const [userNameExists, setUserNameExists] = useState(false);
 	const [checkInvalidEmail, setCheckInvalidEmail] = useState(false);
 	const [pasted, setPasted] = useState(false);
 	const [hasCreateClick, setHasCreateClick] = useState(false);
@@ -105,24 +106,6 @@ const CreateAdmin = () => {
 	});
 	const { setDashboardHeader } = useContext(UIContext);
 
-	const getAssignGroups = useCallback(async () => {
-		const params = {
-			user_id: user?._id
-		};
-		const response = await api.assignGroupsAndLocation.getGroupAndLocationAssignment(params);
-
-		if (response) {
-			const _assignedGroups: any[] = [];
-			response.groupsAndLocations.forEach((group: any) => {
-				if (group.assigned_group_info) {
-					_assignedGroups.push(group);
-				}
-			});
-
-			setAssignedGroups(Object.assign([], _assignedGroups));
-		}
-	}, [user?._id]);
-
 	const findUserEmail = useDebouncedCallback(async (value: string) => {
 		if (value !== "") {
 			const data = await api.auth.findEmail(value);
@@ -135,6 +118,19 @@ const CreateAdmin = () => {
 			}
 		} else {
 			setEmailExists(false);
+		}
+	}, 500);
+
+	const findUserName = useDebouncedCallback(async (value: string) => {
+		if (value !== "") {
+			const data = await api.auth.findUserName(value);
+			if (data.isNameExist) {
+				setUserNameExists(true);
+			} else {
+				setUserNameExists(false);
+			}
+		} else {
+			setUserNameExists(false);
 		}
 	}, 500);
 
@@ -165,6 +161,24 @@ const CreateAdmin = () => {
 			status: "invalid"
 		};
 		let flag = true;
+
+		if (user_name.length === 0) {
+			_validation.current.createdUser["user_name"] = "User Name is required";
+			_validation.current["status"] = "invalid";
+			flag = false;
+		}
+
+		if (userNameExists) {
+			_validation.current.createdUser["user_name"] = "User Name is Exist";
+			_validation.current["status"] = "invalid";
+			flag = false;
+		}
+
+		if (emailExists) {
+			_validation.current.createdUser["email"] = "Email is Exist";
+			_validation.current["status"] = "invalid";
+			flag = false;
+		}
 
 		if (first_name.length === 0) {
 			_validation.current.createdUser["first_name"] = "First Name is required";
@@ -245,7 +259,7 @@ const CreateAdmin = () => {
 		}
 		setValidation(Object.assign({}, _validation.current));
 		return _validation.current["status"];
-	}, [createdUser, validation]);
+	}, [createdUser, emailExists, userNameExists, validation]);
 
 	const handleKeyCheck = useCallback(
 		(event: React.KeyboardEvent<HTMLInputElement | HTMLDivElement>) => {
@@ -300,6 +314,9 @@ const CreateAdmin = () => {
 				} else if (/\s/g.test(value)) {
 					setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 				}
+			} else if (name === "user_name") {
+				setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+				await findUserName(value);
 			} else if (name === "email") {
 				setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 				if (validateEmail(value)) {
@@ -307,13 +324,6 @@ const CreateAdmin = () => {
 				} else {
 					setCheckInvalidEmail(true);
 				}
-
-				// if (value.match(mailformat)) {
-				// 	await findUserEmail(value);
-				// 	setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
-				// } else {
-
-				// }
 			} else if (name === "SSN") {
 				if (!pasted) {
 					// console.log("Not Pasted");
@@ -480,7 +490,7 @@ const CreateAdmin = () => {
 				setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 			}
 		},
-		[createdUser, findUserEmail, pasted]
+		[createdUser, findUserEmail, findUserName, pasted]
 	);
 
 	const handleUserDateChange = useCallback(
@@ -558,11 +568,10 @@ const CreateAdmin = () => {
 					console.log("Payload", payload);
 					const response = await api.auth.createEnroller(payload.createdUser);
 
-					if (response) {
+					if (response?.message === "Data added successfully") {
 						setHasCreateClick(true);
 						console.log("Response", response);
 						setCreatedUsers(Object.assign({}, response as any));
-						alert("User Created Successfully!");
 						setSnackbarAPICallProps(
 							Object.assign({}, snackbarAPICallProps, {
 								open: true,
@@ -570,28 +579,66 @@ const CreateAdmin = () => {
 								severity: "success"
 							})
 						);
-
+						setHasCreateClick(false);
+						_validation.current = {
+							createdUser: {},
+							status: "invalid"
+						};
+						setCreatedUsers({
+							user_name: "", // This Id is mapped with Group HR (Group Specific)
+							admin_id: "",
+							first_name: "",
+							middle_name: "",
+							last_name: "",
+							role: "",
+							SSN: "",
+							date_of_birth: "",
+							hire_date: "",
+							gender: "",
+							marital_status: "",
+							email: "",
+							address_line_1: "",
+							address_line_2: "",
+							city: "",
+							state: "",
+							country: "USA - United States of America",
+							ZIP: "",
+							contact_label: null,
+							phone_number: null,
+							phone_extension: null,
+							group_number: null
+						});
 						navigate("/");
 						// setTimeout(() => {
 						// 	history.push("/");
 						// }, 2000);
+					} else {
+						setHasCreateClick(false);
+						setSnackbarAPICallProps(
+							Object.assign({}, snackbarAPICallProps, {
+								open: true,
+								message: "Member Creation Failed!",
+								severity: "error"
+							})
+						);
 					}
 				} else {
 					setHasCreateClick(false);
+					setSnackbarAPICallProps(
+						Object.assign({}, snackbarAPICallProps, {
+							open: true,
+							message: "Invalid!",
+							severity: "error"
+						})
+					);
 				}
 			} catch (error) {
 				setHasCreateClick(false);
 				alert("User creation unsuccessful!");
-				throw error;
 			}
 		},
 		[createdUser, handleValidation, navigate, snackbarAPICallProps]
 	);
-
-	useEffect(() => {
-		setDashboardHeader(ADMIN_DASHBOARD_HEADER.create_user);
-		getAssignGroups();
-	}, [getAssignGroups, setDashboardHeader]);
 
 	useEffect(() => {
 		setUserForm(
@@ -951,11 +998,11 @@ const CreateAdmin = () => {
 																				? "Email exists!"
 																				: checkInvalidEmail
 																				? "Please enter a valid email address!"
-																				: field.value.length !== 0 &&
-																				  !checkInvalidEmail
-																				? "Email Not exists!"
 																				: ""
-																			: validation.createdUser[field.name]
+																			: field.name === "user_name" &&
+																			  userNameExists
+																			? "User Name exists!"
+																			: ""
 																	}
 																/>
 															) : field.type === "select" ? (
