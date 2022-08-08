@@ -290,8 +290,8 @@ const Login = (props: any): JSX.Element => {
 			if (validationResult === "valid") {
 				try {
 					const _credential = {
-						user_id,
-						password,
+						user_id: credential.user_id,
+						password: credential.password,
 						role: credential.role.toUpperCase()
 					};
 
@@ -314,12 +314,13 @@ const Login = (props: any): JSX.Element => {
 						} else {
 							alert("Invalid role selected!");
 						}
-					} else if (response)
+					} else {
+						console.log("kdas", response?.message);
 						setLoginDialogProps(
 							Object.assign({}, loginDialogProps, {
 								openDialog: true,
 								title: "Login failed!",
-								content: "Invalid Role or Username or Password",
+								content: response?.message,
 								actions: [
 									{
 										label: "Close",
@@ -333,6 +334,7 @@ const Login = (props: any): JSX.Element => {
 								]
 							})
 						);
+					}
 				} catch (err) {
 					setLoginDialogProps(
 						Object.assign({}, loginDialogProps, {
@@ -356,7 +358,7 @@ const Login = (props: any): JSX.Element => {
 				console.log("Form is invalid");
 			}
 		},
-		[handleValidation, credential, loginDialogProps, navigate]
+		[handleValidation, credential.user_id, credential.password, credential.role, navigate, loginDialogProps]
 	);
 
 	const { role, user_id, password } = credential;

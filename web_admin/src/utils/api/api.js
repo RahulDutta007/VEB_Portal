@@ -17,15 +17,10 @@ const get = async (endpoint, headers, params = {}) => {
 	}
 };
 
-const post = async (endpoint, payload, headers) => {
+const post = async (endpoint, payload) => {
 	try {
-		const response = await axios.post(`${url}:${port}/api/${version}/${endpoint}`, payload, {
-			headers
-		});
-		const { status } = response;
-		if (status === 200) {
-			return response;
-		}
+		const response = await axios.post(`${url}:${port}/api/${version}/${endpoint}`, payload);
+		return response;
 	} catch (error) {
 		console.log("error", error);
 		throw error;
