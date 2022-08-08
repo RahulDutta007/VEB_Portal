@@ -125,11 +125,13 @@ const CreateAdmin = () => {
 
 	const findUserEmail = useDebouncedCallback(async (value: string) => {
 		if (value !== "") {
-			const email = await api.auth.findEmail(value);
-			if (email === false) {
-				setEmailExists(false);
-			} else {
+			const data = await api.auth.findEmail(value);
+			if (data.emailExist) {
 				setEmailExists(true);
+				setCheckInvalidEmail(false);
+			} else {
+				setEmailExists(false);
+				setCheckInvalidEmail(false);
 			}
 		} else {
 			setEmailExists(false);
@@ -164,12 +166,6 @@ const CreateAdmin = () => {
 		};
 		let flag = true;
 
-		// createdUser validation checking
-		// if (user_id.length === 0 || user_id === undefined) {
-		// 	_validation.current.createdUser["user_id"] = "User Id is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
 		if (first_name.length === 0) {
 			_validation.current.createdUser["first_name"] = "First Name is required";
 			_validation.current["status"] = "invalid";
@@ -183,7 +179,7 @@ const CreateAdmin = () => {
 
 		if (SSN !== null) {
 			if (SSN !== "") {
-				var _SSN = SSN.replaceAll("-", "");
+				const _SSN = SSN.replaceAll("-", "");
 				if (String(_SSN).length !== 9) {
 					_validation.current.createdUser["SSN"] = "Enter correct 9 digit SSN";
 					_validation.current["status"] = "invalid";
@@ -191,55 +187,40 @@ const CreateAdmin = () => {
 				}
 			}
 		}
-		// if (String(date_of_birth).length === 0) {
-		// 	_validation.current.createdUser["date_of_birth"] = "Date of birth is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (String(hire_date).length === 0) {
-		// 	_validation.current.createdUser["hire_date"] = "Hire Date is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (String(hire_date).length !== 0) {
-		// 	let hireDate = new Date(hire_date).getFullYear();
-		// 	let DOB = new Date(date_of_birth).getFullYear();
-		// 	let hireDateTime = new Date(hire_date).getTime();
-		// 	let DOBtime = new Date(date_of_birth).getTime();
-		// 	let age = hireDate - DOB;
+		if (String(date_of_birth).length === 0) {
+			_validation.current.createdUser["date_of_birth"] = "Date of birth is required";
+			_validation.current["status"] = "invalid";
+			flag = false;
+		}
+		if (String(hire_date).length === 0) {
+			_validation.current.createdUser["hire_date"] = "Hire Date is required";
+			_validation.current["status"] = "invalid";
+			flag = false;
+		}
+		if (String(hire_date).length !== 0) {
+			const hireDate = new Date(hire_date).getFullYear();
+			const DOB = new Date(date_of_birth).getFullYear();
+			const hireDateTime = new Date(hire_date).getTime();
+			const DOBtime = new Date(date_of_birth).getTime();
+			const age = hireDate - DOB;
 
-		// 	if (age <= 14) {
-		// 		_validation.current.createdUser["hire_date"] = "Age should be 14 years or above!";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
+			if (age <= 14) {
+				_validation.current.createdUser["hire_date"] = "Age should be 14 years or above!";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
 
-		// 	if (hireDateTime < DOBtime) {
-		// 		_validation.current.createdUser["hire_date"] = "Hire date cannot be less than Date of Birth!";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
-		// }
+			if (hireDateTime < DOBtime) {
+				_validation.current.createdUser["hire_date"] = "Hire date cannot be less than Date of Birth!";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
+		}
 		if (role.length === 0) {
 			_validation.current.createdUser["role"] = "Role is required";
 			_validation.current["status"] = "invalid";
 			flag = false;
 		}
-		// if (gender.length === 0) {
-		// 	_validation.current.createdUser["gender"] = "Gender is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (marital_status.length === 0) {
-		// 	_validation.current.createdUser["marital_status"] = "Marital Status is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (contact_label.length === 0) {
-		// 	_validation.current.createdUser["contact_label"] = "Contact Label is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
 		if (email.length === 0) {
 			_validation.current.createdUser["email"] = "Email is required";
 			_validation.current["status"] = "invalid";
@@ -256,69 +237,6 @@ const CreateAdmin = () => {
 				setCheckInvalidEmail(true);
 			}
 		}
-		// if (mobile === null) {
-		// 	_validation.current.createdUser["mobile"] = "Phone number is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (mobile !== null) {
-		// 	if (String(mobile).length !== 10) {
-		// 		_validation.current.createdUser["mobile"] = "Enter valid 10 digit phone number";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
-		// }
-		// if (phone_extension === null) {
-		// 	_validation.current.createdUser["phone_extension"] = "Phone extension is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (phone_extension !== null) {
-		// 	if (String(phone_extension).length !== 3) {
-		// 		_validation.current.createdUser["phone_extension"] = "Enter Valid 3 digit Phone extension";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
-		// }
-		// if (address_line_1.length === 0) {
-		// 	_validation.current.createdUser["address_line_1"] = "Address line 1 is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (city.length === 0) {
-		// 	_validation.current.createdUser["city"] = "City is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (state.length === 0) {
-		// 	_validation.current.createdUser["state"] = "State is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (ZIP.length === 0) {
-		// 	_validation.current.createdUser["ZIP"] = "ZIP Code is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (ZIP.length === 0) {
-		// 	_validation.current.createdUser["ZIP"] = "ZIP Code is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (ZIP.length !== 0) {
-		// 	var _zip = ZIP.replaceAll("-", "");
-		// 	if (_zip.length === 5) {
-		// 		_validation.current["status"] = "valid";
-		// 		flag = true;
-		// 	} else if (_zip.length === 9) {
-		// 		_validation.current["status"] = "valid";
-		// 		flag = true;
-		// 	} else {
-		// 		_validation.current.createdUser["ZIP"] = "Enter 5 or 9 digit ZIP Code!";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
-		// }
 
 		if (flag === true) _validation.current["status"] = "valid";
 		else {
@@ -371,7 +289,7 @@ const CreateAdmin = () => {
 	};
 
 	const handleUserChange = useCallback(
-		(event: React.ChangeEvent<HTMLInputElement>) => {
+		async (event: React.ChangeEvent<HTMLInputElement>) => {
 			let { value } = event.target;
 			const { name } = event.target;
 			if (name === "first_name") {
@@ -383,8 +301,19 @@ const CreateAdmin = () => {
 					setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 				}
 			} else if (name === "email") {
-				findUserEmail(value);
 				setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+				if (validateEmail(value)) {
+					await findUserEmail(value);
+				} else {
+					setCheckInvalidEmail(true);
+				}
+
+				// if (value.match(mailformat)) {
+				// 	await findUserEmail(value);
+				// 	setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+				// } else {
+
+				// }
 			} else if (name === "SSN") {
 				if (!pasted) {
 					// console.log("Not Pasted");
@@ -614,10 +543,10 @@ const CreateAdmin = () => {
 							hire_date:
 								hireDate !== null
 									? hireDate.getFullYear() +
-									"-" +
-									(hireDate.getMonth() + 1) +
-									"-" +
-									hireDate.getDate()
+									  "-" +
+									  (hireDate.getMonth() + 1) +
+									  "-" +
+									  hireDate.getDate()
 									: hireDate,
 							SSN: createdUser.SSN ? createdUser?.SSN?.replaceAll("-", "").toString() : null,
 							ZIP: createdUser.ZIP ? createdUser.ZIP.replaceAll("-", "") : null,
@@ -656,7 +585,7 @@ const CreateAdmin = () => {
 				throw error;
 			}
 		},
-		[createdUser, handleValidation, navigate]
+		[createdUser, handleValidation, navigate, snackbarAPICallProps]
 	);
 
 	useEffect(() => {
@@ -680,7 +609,9 @@ const CreateAdmin = () => {
 							options:
 								user?.role === ROLES.admin
 									? [initCapitalize(ROLES.enroller_admin), initCapitalize(ROLES.agent)]
-									: (user?.role === ROLES.enroller_admin ? [initCapitalize(ROLES.agent)] : [])
+									: user?.role === ROLES.enroller_admin
+									? [initCapitalize(ROLES.agent)]
+									: []
 						}
 					],
 					"User Information": [
@@ -940,31 +871,31 @@ const CreateAdmin = () => {
 															item
 															xs={
 																field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? undefined
 																	: 12
 															}
 															sm={
 																field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? undefined
 																	: 12
 															}
 															md={
 																field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
 															lg={
 																field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
 															xl={
 																field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? undefined
 																	: 3
 															}
@@ -972,20 +903,20 @@ const CreateAdmin = () => {
 															<div
 																className={
 																	field.name === "first_name" ||
-																		field.name === "last_name" ||
-																		field.name === "email" ||
-																		field.name === "group_number" ||
-																		field.name === "role"
+																	field.name === "last_name" ||
+																	field.name === "email" ||
+																	field.name === "group_number" ||
+																	field.name === "role"
 																		? // field.name === "address_line_2" ||
-																		// field.name === "is_employer_support" ||
-																		// field.name === "is_member_support"
-																		"pf-label-text required"
+																		  // field.name === "is_employer_support" ||
+																		  // field.name === "is_member_support"
+																		  "pf-label-text required"
 																		: "pf-label-text"
 																}
 																id="pf-label-text"
 															>
 																{field.name === "is_employer_support" ||
-																	field.name === "is_member_support"
+																field.name === "is_member_support"
 																	? ""
 																	: field.label}
 															</div>
@@ -1010,17 +941,21 @@ const CreateAdmin = () => {
 																	InputProps={{
 																		readOnly:
 																			field.value ===
-																				"USA - United States of America"
+																			"USA - United States of America"
 																				? true
 																				: false
 																	}}
 																	helperText={
-																		emailExists && field.name === "email"
-																			? "Email exists!"
-																			: checkInvalidEmail &&
-																				field.name === "email"
+																		field.name === "email"
+																			? !checkInvalidEmail && emailExists
+																				? "Email exists!"
+																				: checkInvalidEmail
 																				? "Please enter a valid email address!"
-																				: validation.createdUser[field.name]
+																				: field.value.length !== 0 &&
+																				  !checkInvalidEmail
+																				? "Email Not exists!"
+																				: ""
+																			: validation.createdUser[field.name]
 																	}
 																/>
 															) : field.type === "select" ? (
@@ -1054,7 +989,7 @@ const CreateAdmin = () => {
 																		))}
 																	</Select>
 																	{validation &&
-																		validation.createdUser[field.name] ? (
+																	validation.createdUser[field.name] ? (
 																		<div className="details">
 																			<span className="select-validation-text2">
 																				{validation.createdUser[field.name]}

@@ -601,9 +601,7 @@ const Login = (props: any): JSX.Element => {
 												variant="contained"
 												type="submit"
 											>
-												<span className="button-label-with-icon">
-													Validate User
-												</span>
+												<span className="button-label-with-icon">Validate User</span>
 											</Button>
 										) : location.pathname === "/forgot-user-id" ? (
 											<Button
@@ -612,9 +610,7 @@ const Login = (props: any): JSX.Element => {
 												variant="contained"
 												type="submit"
 											>
-												<span className="button-label-with-icon">
-													Send Email
-												</span>
+												<span className="button-label-with-icon">Send Email</span>
 											</Button>
 										) : token != undefined ? (
 											<Button
@@ -623,9 +619,7 @@ const Login = (props: any): JSX.Element => {
 												variant="contained"
 												type="submit"
 											>
-												<span className="button-label-with-icon">
-													Change Password
-												</span>
+												<span className="button-label-with-icon">Change Password</span>
 												<span>
 													<PersonIcon className="button-icon" />
 												</span>
@@ -637,9 +631,7 @@ const Login = (props: any): JSX.Element => {
 												variant="contained"
 												type="submit"
 											>
-												<span className="button-label-with-icon">
-													Login
-												</span>
+												<span className="button-label-with-icon">Login</span>
 												<span>
 													<PersonIcon className="button-icon" />
 												</span>
