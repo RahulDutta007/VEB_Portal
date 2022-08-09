@@ -61,7 +61,7 @@
 }
 
 .admin-sidebar .toolbar-icon-badge .MuiBadge-colorPrimary {
-	background-color: #9370DB !important;
+	background-color: #85ce36 !important;
 }
 
 .admin-sidebar .list-item-accordion {
@@ -77,28 +77,28 @@
 }
 
 .admin-sidebar .list-item-accordion:hover {
-	background-color: #9370DB !important;
+	background-color: #85ce36 !important;
 	color: #4e4e4e !important;
 	font-weight: bold;
 }
 
 @media (min-width: 320px) and (max-width: 1024px) {
 	.admin-sidebar .toolbar {
-		background-image: linear-gradient(to right, #9370DB, #F8ACC6);
+		background-image: linear-gradient(to right, #9370db, #f8acc6);
 	}
 
 	.appbar-header {
-		color: #FFFFFF !important;
+		color: #ffffff !important;
 	}
 
 	.css-4t3x6l-MuiPaper-root-MuiDrawer-paper {
-		background-image: linear-gradient(180deg, #9370DB, #F8ACC6);
+		background-image: linear-gradient(180deg, #9370db, #f8acc6);
 		padding: 0 20px;
 	}
 
 	.css-1elwnq4-MuiPaper-root-MuiAccordion-root {
 		background-color: transparent !important;
-		color: #FFFFFF !important;
+		color: #ffffff !important;
 	}
 
 	.welcome-container {
@@ -107,33 +107,33 @@
 
 	.dashboard-type-text {
 		margin-bottom: 10px;
-		color: #FFFFFF !important;
+		color: #ffffff !important;
 	}
 
 	.welcome-text {
 		margin-top: 10px;
 		margin-bottom: 10px;
-		color: #FFFFFF !important;
+		color: #ffffff !important;
 	}
 
 	.css-9mgopn-MuiDivider-root {
-		border-color: #FFFFFF !important;
+		border-color: #ffffff !important;
 	}
 
 	.css-1elwnq4-MuiPaper-root-MuiAccordion-root {
 		position: initial;
-		border-bottom: 1px solid #FFFFFF;
+		border-bottom: 1px solid #ffffff;
 	}
 
 	.css-1elwnq4-MuiPaper-root-MuiAccordion-root:last-child {
 		border: none;
 	}
 
-	.MuiAccordionSummary-expandIconWrapper>svg {
-		color: #FFFFFF;
+	.MuiAccordionSummary-expandIconWrapper > svg {
+		color: #ffffff;
 	}
 
-	.MuiGrid-root .pf-label>div>.text-field-input>div:focus {
+	.MuiGrid-root .pf-label > div > .text-field-input > div:focus {
 		color: #000 !important;
 	}
 }

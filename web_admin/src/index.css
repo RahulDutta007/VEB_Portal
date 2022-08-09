@@ -32,3 +32,59 @@ button {
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
+/* Global button Style */
+
+.button {
+	margin: 0px 10px !important;
+	text-transform: none !important;
+}
+
+.button-green {
+	margin: 0px 10px !important;
+	text-transform: none !important;
+	background-color: #44b700 !important;
+	color: #ffff !important;
+}
+
+.button:hover {
+	filter: brightness(88%);
+	-webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.button-green:hover {
+	filter: brightness(88%);
+	-webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.button-black {
+	margin: 0px 10px !important;
+	text-transform: none !important;
+	background-color: #3a4652 !important;
+	color: #ffff !important;
+}
+
+.button-black:hover {
+	filter: brightness(88%);
+	-webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* Button Label With Icon */
+.button-label-with-icon {
+	margin-right: 10px !important;
+	font-size: 0.9rem !important;
+	font-weight: bold !important;
+	letter-spacing: 0.1em !important;
+	color: #ffff;
+}
+
+/* Icon Style */
+.button-icon {
+	font-size: 1.2rem !important;
+	font-weight: bold !important;
+	display: flex !important;
+	color: #ffff;
+}

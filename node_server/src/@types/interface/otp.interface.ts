@@ -1,8 +1,17 @@
-import { IObjectId } from "../objectId.interface";
+import { SchemaDefinitionProperty } from "mongoose";
+import { string } from "joi";
+
 export interface IOTPSchema {
-  email: string;
-  otp: number;
-  createdAt: Date
+	otp: string;
+	expiration_time: SchemaDefinitionProperty<Date>;
+	verified: boolean;
 }
 
-export interface IOTP extends IOTPSchema, IObjectId { }
+// import { IObjectId } from "../objectId.interface";
+// export interface IOTPSchema {
+//   email: string;
+//   otp: number;
+//   createdAt: Date
+// }
+
+// export interface IOTP extends IOTPSchema, IObjectId { }
