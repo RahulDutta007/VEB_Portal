@@ -33,7 +33,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import { useLocation, useParams } from "react-router-dom";
 
 import "./login.css";
-import { LazySnackbarAPI, SnackbarAPI } from "../../../shared";
+import { CustomDialog, LazySnackbarAPI, SnackbarAPI } from "../../../shared";
 import { SnackbarProps } from "../../../../@types/snackbarAPI.types";
 
 const Login = (props: any): JSX.Element => {
@@ -43,12 +43,19 @@ const Login = (props: any): JSX.Element => {
 	const [credential, setCredential] = useState<Credential>({
 		user_id: "",
 		role: "",
-		password: ""
+		password: "",
+		newPassword: "",
+		confirmPassword: ""
 	});
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [validation, setValidation] = useState<Validation>();
-	const [loginDialogProps, setLoginDialogProps] = useState<DialogProps>();
+	const [loginDialogProps, setLoginDialogProps] = useState({
+		openDialog: false,
+		title: "",
+		content: "",
+		actions: []
+	});
 	const [forgetPasswordUser, setForgetPasswordUser] = useState<null | string>("");
 	const [forgetUserId, setForgetUserId] = useState<null | string>("");
 	const [newPassword, setNewPassword] = useState<null | string>("");
@@ -70,36 +77,64 @@ const Login = (props: any): JSX.Element => {
 	const _validation = useRef<Validation>();
 	const navigate = useNavigate();
 
-	const handleValidation = useCallback(async () => {
-		const { role, user_id, password } = credential;
-		let flag = true;
-		_validation.current = {
-			role: null,
-			status: "invalid",
-			user_id: null
-		};
+	const handleValidation = useCallback(
+		(validationType: string) => {
+			// const { target, value } = event;
+			const { role, user_id, password } = credential;
+			let flag = true;
+			_validation.current = {
+				role: null,
+				status: "invalid",
+				user_id: null
+			};
 
-		if (role.length === 0) {
-			_validation.current["role"] = "Role is required";
-			_validation.current["status"] = "invalid";
-			flag = false;
-		}
-		if (user_id.length === 0) {
-			_validation.current["user_id"] = "User name/Email is required";
-			_validation.current["status"] = "invalid";
-			flag = false;
-		}
-		if (password.length === 0) {
-			_validation.current["password"] = "Password is required";
-			_validation.current["status"] = "invalid";
-			flag = false;
-		}
-		if (flag === true) _validation.current["status"] = "valid";
-		else _validation.current["status"] = "invalid";
+			if (role.length === 0) {
+				_validation.current["role"] = "Role is required";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
+			if (
+				user_id.length === 0 &&
+				(validationType === "Validate User" || validationType === "Send Email" || validationType === "Login")
+			) {
+				_validation.current["user_id"] = "User name/Email is required";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
+			if (password.length === 0 && validationType === "Login") {
+				_validation.current["password"] = "Password is required";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
+			if (validationType === "Change Password" && newPassword?.length) {
+				_validation.current["newPassword"] = "New Password is required";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
+			if (validationType === "Change Password" && confirmPassword?.length) {
+				_validation.current["newPassword"] = "Confirm Password is required";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
+			if (validationType === "Change Password" && confirmPassword !== newPassword) {
+				_validation.current["status"] = "invalid";
+				flag = false;
+				setSnackbarAPIProps(
+					Object.assign({}, snackbarAPIProps, {
+						open: true,
+						message: "New Password should match with Confirm Password",
+						severity: "success"
+					})
+				);
+			}
+			if (flag === true) _validation.current["status"] = "valid";
+			else _validation.current["status"] = "invalid";
 
-		setValidation(Object.assign({}, _validation.current));
-		return _validation.current["status"];
-	}, [credential]);
+			setValidation(Object.assign({}, _validation.current));
+			return _validation.current["status"];
+		},
+		[credential]
+	);
 
 	const handleShowPassword = useCallback((): void => {
 		setShowPassword(!showPassword);
@@ -113,11 +148,6 @@ const Login = (props: any): JSX.Element => {
 		[credential]
 	);
 
-	const handleForgotPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setForgetPasswordUser(value);
-	};
-
 	const handleNewPassowrdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setNewPassword(value);
@@ -128,59 +158,87 @@ const Login = (props: any): JSX.Element => {
 		setConfirmPassword(value);
 	};
 
-	const handleSubmitForgetPassword = useCallback(async () => {
-		// event.preventDefault();
-		const payload = {
-			credential: forgetPasswordUser
-		};
-		// const status = await handleValidation();
-		const response = await trackPromise(api.auth.forgetPassword(payload));
-		// console.log("55", response);
-		if (response) {
-			// setStatusMessage("Sent a Link Email to email for reset password");
-			navigate("/login");
-			setSnackbarAPIProps(
-				Object.assign({}, snackbarAPIProps, {
-					open: true,
-					message: "Sent a Link Email to email for reset password",
-					severity: "success"
-				})
-			);
-		} else {
-			setStatusMessage("Error Occurred");
-			navigate("/login");
-		}
-	}, [forgetPasswordUser, navigate, snackbarAPIProps]);
+	const handleSubmitForgetPassword = useCallback(
+		async (event: any) => {
+			event.preventDefault();
+			const payload = {
+				credential: credential.user_id,
+				role: credential.role.toUpperCase()
+			};
 
-	const handleChangeForgetUserId = (event: React.ChangeEvent<HTMLInputElement>) => {
-		// event.preventDefault();
-		const { value } = event.target;
-		setForgetUserId(value);
-	};
+			const { target, value } = event;
+			const validationResult = handleValidation(target.innerText);
+			if (validationResult === "invalid") {
+				return false;
+			} else {
+				const response = await api.auth.forgetPassword(payload);
+				// console.log("55", response);
+				if (response) {
+					// setStatusMessage("Sent a Link Email to email for reset password");
+					_validation.current = undefined;
+					setValidation(Object.assign({}, _validation.current));
+					setCredential({
+						user_id: "",
+						role: "",
+						password: "",
+						newPassword: "",
+						confirmPassword: ""
+					});
+					setSnackbarAPIProps(
+						Object.assign({}, snackbarAPIProps, {
+							open: true,
+							message: "Sent a Link Email to email for reset password",
+							severity: "success"
+						})
+					);
+					navigate("/login");
+				} else {
+					setStatusMessage("Error Occurred");
+					navigate("/login");
+				}
+			}
+		},
+		[credential.user_id, credential.role, handleValidation, snackbarAPIProps, navigate]
+	);
 
-	const handleSubmitForgetUserId = useCallback(async () => {
-		// event.preventDefault();
-		const payload = {
-			email: forgetUserId
-		};
-		// const status = await handleValidation();
-		const response = await trackPromise(api.auth.changeForgetUserId(payload));
-		console.log("55", response);
-		if (response) {
-			// setStatusMessage("Sent email with forget user id");
-			navigate("/login");
-			setSnackbarAPIProps(
-				Object.assign({}, snackbarAPIProps, {
-					open: true,
-					message: "Sent email with forget user id",
-					severity: "success"
-				})
-			);
-		} else {
-			setStatusMessage("Error Occurred");
-			navigate("/login");
-		}
-	}, [forgetUserId, navigate, snackbarAPIProps]);
+	const handleSubmitForgetUserId = useCallback(
+		async (event: any) => {
+			event.preventDefault();
+			const payload = {
+				email: credential.user_id,
+				role: credential.role
+			};
+			const validationResult = await handleValidation(event.target.innerText);
+			if (validationResult === "invalid") {
+				return false;
+			}
+			const response = await api.auth.changeForgetUserId(payload);
+			console.log("55", response);
+			if (response) {
+				_validation.current = undefined;
+				setValidation(Object.assign({}, _validation.current));
+				setCredential({
+					user_id: "",
+					role: "",
+					password: "",
+					newPassword: "",
+					confirmPassword: ""
+				});
+				navigate("/login");
+				setSnackbarAPIProps(
+					Object.assign({}, snackbarAPIProps, {
+						open: true,
+						message: "Sent email with forget user id",
+						severity: "success"
+					})
+				);
+			} else {
+				setStatusMessage("Error Occurred");
+				navigate("/login");
+			}
+		},
+		[credential.role, credential.user_id, handleValidation, navigate, snackbarAPIProps]
+	);
 
 	const handleSubmitChangePassword = useCallback(async () => {
 		// event.preventDefault();
@@ -188,7 +246,10 @@ const Login = (props: any): JSX.Element => {
 			new_password: newPassword,
 			confirm_password: confirmPassword
 		};
-		// const status = await handleValidation();
+		const validationResult = await handleValidation("Change Password");
+		if (validationResult === "invalid") {
+			return false;
+		}
 		const response = await trackPromise(api.auth.changeForgetPassword(payload, token));
 		console.log("55", response);
 		if (response) {
@@ -227,19 +288,19 @@ const Login = (props: any): JSX.Element => {
 	);
 
 	const handleSubmit = useCallback(
-		async (event: React.FormEvent<HTMLFormElement>) => {
+		async (event: any) => {
 			event.preventDefault();
 
-			const status = await handleValidation();
-
-			if (status === "valid") {
+			const validationResult = handleValidation("Login");
+			if (validationResult === "valid") {
 				try {
 					const _credential = {
-						...credential,
+						user_id: credential.user_id,
+						password: credential.password,
 						role: credential.role.toUpperCase()
 					};
 
-					const response = await trackPromise(api.auth.login(_credential));
+					const response = await api.auth.login(_credential);
 					console.log("Login Data", response);
 
 					if (response?.message === "Authentication Successful!") {
@@ -258,12 +319,13 @@ const Login = (props: any): JSX.Element => {
 						} else {
 							alert("Invalid role selected!");
 						}
-					} else if (response)
+					} else {
+						console.log("kdas", response?.message);
 						setLoginDialogProps(
 							Object.assign({}, loginDialogProps, {
 								openDialog: true,
 								title: "Login failed!",
-								content: "Invalid Role or Username or Password",
+								content: "Authorization failed",
 								actions: [
 									{
 										label: "Close",
@@ -277,6 +339,7 @@ const Login = (props: any): JSX.Element => {
 								]
 							})
 						);
+					}
 				} catch (err) {
 					setLoginDialogProps(
 						Object.assign({}, loginDialogProps, {
@@ -300,13 +363,16 @@ const Login = (props: any): JSX.Element => {
 				console.log("Form is invalid");
 			}
 		},
-		[handleValidation, loginDialogProps, credential]
+		[handleValidation, credential.user_id, credential.password, credential.role, navigate, loginDialogProps]
 	);
 
 	const { role, user_id, password } = credential;
 
 	return (
 		<div className="login" id="login">
+			<Suspense fallback={<div />}>
+				<CustomDialog dialogProps={loginDialogProps} />
+			</Suspense>
 			<div className="container-outer" id="container-outer">
 				<div className="container-inner" id="container-inner">
 					<Card className="card-container" elevation={5}>
@@ -318,7 +384,7 @@ const Login = (props: any): JSX.Element => {
 
 							<SnackbarAPI snackbarProps={snackbarAPIProps} />
 
-							<form onSubmit={handleSubmit} autoComplete="off" method="">
+							<form autoComplete="off" method="">
 								<FormControl className="form-container" id="form-container">
 									<div className="select-role-container" id="select-role-container">
 										<Button
@@ -354,23 +420,22 @@ const Login = (props: any): JSX.Element => {
 											</MenuItem>
 										</Menu>
 										{validation?.role ? (
-											<div className="details" style={{ paddingLeft: "12.7" }}>
+											<div className="details role-selected-value">
 												<span className="select-validation-text">{validation?.role}</span>
 											</div>
 										) : null}
 									</div>
 									{location.pathname === "/forgot-password" ? (
 										<TextField
-											className="form-field-input"
-											id="user-name-password"
-											name="user-name-password"
+											className="form-field-input auth-input-fields"
+											id="forget-user-name-password"
+											name="user_id"
 											label="Username/Email"
 											variant="outlined"
 											placeholder="Enter Username/Email"
-											value={forgetPasswordUser}
-											onChange={handleForgotPassword}
+											value={credential.user_id}
+											onChange={handleChange}
 											helperText={validation?.user_id ? validation.user_id : null}
-											style={{ width: "100%", borderRadius: 50 }}
 											InputProps={{
 												startAdornment: (
 													<InputAdornment position="start">
@@ -381,16 +446,15 @@ const Login = (props: any): JSX.Element => {
 										/>
 									) : location.pathname === "/forgot-user-id" ? (
 										<TextField
-											className="form-field-input"
+											className="form-field-input auth-input-fields"
 											id="forget-user-name"
 											name="user_id"
 											label="Username/Email"
 											variant="outlined"
 											placeholder="Enter Email"
-											value={forgetUserId}
-											onChange={handleChangeForgetUserId}
+											value={credential.user_id}
+											onChange={handleChange}
 											helperText={validation?.user_id ? validation.user_id : null}
-											style={{ width: "100%", borderRadius: 50 }}
 											InputProps={{
 												startAdornment: (
 													<InputAdornment position="start">
@@ -401,10 +465,10 @@ const Login = (props: any): JSX.Element => {
 										/>
 									) : (
 										<>
-											{token != undefined ? (
+											{location.pathname === "/change-password" || token != undefined ? (
 												<>
 													<TextField
-														className="form-field-input"
+														className="form-field-input auth-input-fields"
 														id="new-password"
 														name="new_password"
 														label="New Password"
@@ -412,8 +476,9 @@ const Login = (props: any): JSX.Element => {
 														placeholder="Enter New Password"
 														value={newPassword}
 														onChange={handleNewPassowrdChange}
-														helperText={validation?.user_id ? validation.user_id : null}
-														style={{ width: "100%", borderRadius: 50 }}
+														helperText={
+															validation?.newPassword ? validation.newPassword : null
+														}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
@@ -423,7 +488,7 @@ const Login = (props: any): JSX.Element => {
 														}}
 													/>
 													<TextField
-														className="form-field-input"
+														className="form-field-input auth-input-fields"
 														id="confirm-password"
 														name="confirm_password"
 														type={!showPassword ? "password" : "text"}
@@ -432,8 +497,11 @@ const Login = (props: any): JSX.Element => {
 														placeholder="Enter Confirm Password"
 														value={confirmPassword}
 														onChange={handleConfirmPassowrdChange}
-														helperText={validation?.password ? validation.password : null}
-														style={{ width: "100%" }}
+														helperText={
+															validation?.confirmPassword
+																? validation.confirmPassword
+																: null
+														}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
@@ -460,7 +528,7 @@ const Login = (props: any): JSX.Element => {
 												<>
 													<>
 														<TextField
-															className="form-field-input"
+															className="form-field-input auth-input-fields"
 															id="user-name-input"
 															name="user_id"
 															label="Username/Email"
@@ -469,7 +537,6 @@ const Login = (props: any): JSX.Element => {
 															value={user_id}
 															onChange={handleChange}
 															helperText={validation?.user_id ? validation.user_id : null}
-															style={{ width: "100%", borderRadius: 50 }}
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
@@ -479,7 +546,7 @@ const Login = (props: any): JSX.Element => {
 															}}
 														/>
 														<TextField
-															className="form-field-input"
+															className="form-field-input auth-input-fields"
 															id="password-name-input"
 															name="password"
 															type={!showPassword ? "password" : "text"}
@@ -491,7 +558,6 @@ const Login = (props: any): JSX.Element => {
 															helperText={
 																validation?.password ? validation.password : null
 															}
-															style={{ width: "100%" }}
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
@@ -537,68 +603,45 @@ const Login = (props: any): JSX.Element => {
 									<div className="login-button-container" id="login-button-container">
 										{location.pathname === "/forgot-password" ? (
 											<Button
-												className="button"
+												className="button theme-button-violet"
 												onClick={handleSubmitForgetPassword}
+												name="forget-password-button"
 												variant="contained"
 												type="submit"
-												style={{
-													backgroundColor: "#9c27b0",
-													color: "#ffff"
-												}}
 											>
-												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
-													Validate User
-												</span>
+												<span className="button-label-with-icon">Validate User</span>
 											</Button>
 										) : location.pathname === "/forgot-user-id" ? (
 											<Button
-												className="button"
+												className="button theme-button-violet"
 												onClick={handleSubmitForgetUserId}
 												variant="contained"
 												type="submit"
-												style={{
-													backgroundColor: "#9c27b0",
-													color: "#ffff"
-												}}
 											>
-												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
-													Send Email
-												</span>
+												<span className="button-label-with-icon">Send Email</span>
 											</Button>
 										) : token != undefined ? (
 											<Button
-												className="button"
+												className="button theme-button-violet"
 												onClick={handleSubmitChangePassword}
 												variant="contained"
 												type="submit"
-												style={{
-													backgroundColor: "#9c27b0",
-													color: "#ffff"
-												}}
 											>
-												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
-													Change Password
-												</span>
+												<span className="button-label-with-icon">Change Password</span>
 												<span>
-													<PersonIcon className="button-icon" style={{ color: "#ffff" }} />
+													<PersonIcon className="button-icon" />
 												</span>
 											</Button>
 										) : (
 											<Button
-												className="button"
-												//onClick={handleSubmit}
+												className="button theme-button-violet"
+												onClick={handleSubmit}
 												variant="contained"
 												type="submit"
-												style={{
-													backgroundColor: "#9c27b0",
-													color: "#ffff"
-												}}
 											>
-												<span className="button-label-with-icon" style={{ color: "#ffff" }}>
-													Login
-												</span>
+												<span className="button-label-with-icon">Login</span>
 												<span>
-													<PersonIcon className="button-icon" style={{ color: "#ffff" }} />
+													<PersonIcon className="button-icon" />
 												</span>
 											</Button>
 										)}

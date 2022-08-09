@@ -79,7 +79,7 @@ const SignUp = () => {
 		seconds: 59
 	});
 	const [confirm_password, setConfirmPassword] = useState("");
-	const ref = useRef<HTMLElement>(null);
+	const ref = useRef(null);
 	const [resendOTPButtonVisible, setResendOTPButtonVisible] = useState(true);
 	const [resentOTPCaptionVisible, setResentOTPCaptionVisible] = useState(false);
 	const [startTimer, setStartTimer] = useState(false);
@@ -182,37 +182,6 @@ const SignUp = () => {
 		return first_name;
 	}, [user]);
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	// const handlecredentialValidation = useCallback(async () => {
-	// 	const { user_name, password, confirm_password } = user;
-	// 	_validation.current = {
-	// 		..._validation.current,
-	// 		user: {}
-	// 	};
-	// 	let flag = true;
-
-	// 	if (user_name.length === 0) {
-	// 		_validation.current.user["user_name"] = "User Name is required";
-	// 		_validation.current.user["status"] = "invalid";
-	// 		flag = false;
-	// 	}
-	// 	if (password.length === 0) {
-	// 		_validation.current.user["password"] = "Password is required";
-	// 		_validation.current.user["status"] = "invalid";
-	// 		flag = false;
-	// 	}
-	// 	if (confirm_password !== password) {
-	// 		_validation.current.user["confirm_password"] = "Password doesn't match";
-	// 		_validation.current.user["status"] = "invalid";
-	// 		flag = false;
-	// 	}
-	// 	if (flag === true) _validation.current["status"] = "valid";
-	// 	else _validation.current["status"] = "invalid";
-
-	// 	setValidation(Object.assign({}, _validation.current));
-	// 	return _validation.current["status"];
-	// }, [user]);
-
 	const handleDateChange = useCallback(
 		(date: any, dateValue: any) => {
 			// const _date = new Date(dateValue);
@@ -240,17 +209,32 @@ const SignUp = () => {
 	const handleSendOTPToEmailClick = async () => {
 		const payload = {
 			email: user.email,
-			type: "VERIFICATION"
+			role: user.role.toUpperCase()
 		};
 		const response = await api.auth.sendOTP(payload);
 		if (response.result === "OTP Sent Successfully") {
-			alert("Email Id has been verified");
 			// eslint-disable-next-line arrow-parens
 			setOTPVerified(false);
-			alert("OTP Sent to Email");
+			setSnackbarAPIProps(
+				Object.assign({}, snackbarAPIProps, {
+					open: true,
+					message: "Sent OTP Successfully",
+					severity: "success"
+				})
+			);
 			setResendOTPButtonVisible(false);
 			// setCountDownTime(Date.now() + 1 * 60000);
 			setStartTimer(true);
+		} else {
+			setOTPVerified(false);
+			setSnackbarAPIProps(
+				Object.assign({}, snackbarAPIProps, {
+					open: true,
+					message: "Error while sending OTP",
+					severity: "error"
+				})
+			);
+			setResendOTPButtonVisible(true);
 		}
 	};
 
@@ -260,14 +244,6 @@ const SignUp = () => {
 			check: user.email,
 			verification_key: verificationToken
 		};
-		// const isVerified = await api.OTP.verifyOTP(payload);
-		// if (isVerified === true) {
-		// 	alert("Email Id has been verified");
-		// 	// eslint-disable-next-line arrow-parens
-		// 	setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		// 	setOTP("");
-		// 	setOTPVerified(true);
-		// }
 	};
 
 	const handleClose = useCallback(
@@ -589,16 +565,6 @@ const SignUp = () => {
 		[pasted, reEnteredSSN]
 	);
 
-	// const getUploadAdministration = useCallback(async () => {
-	// 	const uploadAdministration = await api.uploadAdminstration.getUploadAdministration();
-	// 	if (uploadAdministration) {
-	// 		setStatementOfUnderstanding(
-	// 			uploadAdministration.statementOfUnderstanding ? uploadAdministration.statementOfUnderstanding : ""
-	// 		);
-	// 		setRegistrationHelp(uploadAdministration.registrationHelp ? uploadAdministration.registrationHelp : "");
-	// 	}
-	// }, []);
-
 	const handleSubmit = useCallback(
 		async (event: { preventDefault: () => void }) => {
 			event.preventDefault();
@@ -621,15 +587,6 @@ const SignUp = () => {
 					alert("Please Reenter correct SSN");
 				} else {
 					setActiveStep(activeStep + 1);
-					// const data = await api.auth.createAdmin(user);
-					// navigate("/login");
-					// setSnackbarAPIProps(
-					// 	Object.assign({}, snackbarAPIProps, {
-					// 		open: true,
-					// 		message: `Create a ${user.role} successfully`,
-					// 		severity: "success"
-					// 	})
-					// );
 				}
 			} else if (activeStep === 3) {
 				const credentialValidation = "valid"; // await handlecredentialValidation();
@@ -703,47 +660,13 @@ const SignUp = () => {
 		]
 	);
 
-	// useEffect(() => {
-	// 	getUploadAdministration();
-	// }, [getUploadAdministration]);
-
-	// useEffect(() => {
-	// 	if (startTimer === true) {
-	// 		ref.current = setInterval(() => {
-	// 			const distance = countDownTime - Date.now();
-	// 			const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-	// 			const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-	// 			if (minutes === 0 && seconds === 0) {
-	// 				setStartTimer(false);
-	// 				setResendOTPButtonVisible(true);
-	// 				setResentOTPCaptionVisible(true);
-	// 			}
-	// 			setTimer(
-	// 				Object.assign(
-	// 					{},
-	// 					{
-	// 						minutes: String(minutes),
-	// 						seconds: seconds < 10 ? "0" + String(seconds) : String(seconds)
-	// 					}
-	// 				)
-	// 			);
-	// 		}, 1000);
-	// 	}
-
-	// 	return () => clearInterval(ref.current);
-	// }, [countDownTime, startTimer]);
-
 	return (
 		<div className="sign-up" id="sign-up">
 			<div className="container-outer" id="container-outer">
 				<div className="container-header">
 					<Grid container spacing={0} direction="column" alignItems="center">
 						<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-							<Stepper
-								activeStep={activeStep}
-								style={{ backgroundColor: "transparent", width: 500 }}
-								alternativeLabel
-							>
+							<Stepper activeStep={activeStep} className="sign-up-stepper" alternativeLabel>
 								{steps.map((label, index) => {
 									const stepProps = {};
 									const labelProps = {};
@@ -757,6 +680,7 @@ const SignUp = () => {
 						</Grid>
 					</Grid>
 				</div>
+				<SnackbarAPI snackbarProps={snackbarAPIProps} />
 				<Grid container spacing={0} direction="column" alignItems="center">
 					<Grid item xl={3} lg={3} md={3} sm={3} xs={3}>
 						<div className="container-inner" id="container-inner">
@@ -803,31 +727,22 @@ const SignUp = () => {
 													</MenuItem>
 												</Menu>
 												{validation.user.role ? (
-													<div className="details" style={{ paddingLeft: "12.7" }}>
+													<div className="details role-selected-value">
 														<span className="select-validation-text">
 															{validation.user.role}
 														</span>
 													</div>
 												) : null}
 											</div>
-											<div
-												className="sign-up-button-container"
-												id="sign-up-button-container"
-												style={{ marginTop: 50 }}
-											>
+											<div className="sign-up-button-container" id="sign-up-button-container">
 												<Button
 													className="button next-arrow-down"
 													onClick={handleSubmit}
 													variant="contained"
 												>
-													<span className="button-label-with-icon" style={{ color: "#ffff" }}>
-														Next
-													</span>
+													<span className="button-label-with-icon color-white">Next</span>
 													<span>
-														<ArrowForwardIosIcon
-															className="button-icon"
-															style={{ color: "#ffff" }}
-														/>
+														<ArrowForwardIosIcon className="button-icon color-white" />
 													</span>
 												</Button>
 											</div>
@@ -837,7 +752,7 @@ const SignUp = () => {
 											<FormControl className="form-container" id="form-container">
 												<div className="form-inner">
 													<TextField
-														className="form-field-input-lg-form"
+														className="form-field-input-lg-form auth-input-fields"
 														id="email-input"
 														disabled={OTPVerified}
 														name="email"
@@ -846,7 +761,6 @@ const SignUp = () => {
 														value={user.email}
 														variant="outlined"
 														onChange={handleChange}
-														style={{ width: "100%", borderRadius: 50 }}
 														helperText={
 															user.email.length === 0
 																? ""
@@ -875,7 +789,7 @@ const SignUp = () => {
 																		<Button
 																			variant="outlined"
 																			onClick={handleSendOTPToEmailClick}
-																			style={{ marginLeft: 5 }}
+																			className="margin-lf-5"
 																			disabled={
 																				user.email !== "" && !emailExists
 																					? false
@@ -892,7 +806,7 @@ const SignUp = () => {
 													/>
 													{startTimer && !OTPVerified ? (
 														<TextField
-															className="form-field-input"
+															className="form-field-input auth-input-fields"
 															id="OTP-input"
 															name="OTP"
 															label="OTP"
@@ -908,7 +822,6 @@ const SignUp = () => {
 															// }
 															variant="outlined"
 															onChange={handleOTPChange}
-															style={{ width: "100%", borderRadius: 50 }}
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
@@ -924,49 +837,27 @@ const SignUp = () => {
 														style={{ cursor: OTPVerified ? "auto" : "not-allowed" }}
 													>
 														<Button
-															className="button"
+															className="button button-back"
 															onClick={handleBack}
 															variant="contained"
-															style={{
-																backgroundColor: "#f5f5f5",
-																color: "#4e4e4e "
-															}}
 														>
 															<span>
-																<ArrowBackIosIcon
-																	className="button-icon"
-																	style={{ color: "#4e4e4e" }}
-																/>
+																<ArrowBackIosIcon className="button-icon icon-back" />
 															</span>
-															<span
-																className="button-label-with-icon"
-																style={{ color: "#4e4e4e" }}
-															>
+															<span className="button-label-with-icon icon-back">
 																Back
 															</span>
 														</Button>
 														<Button
-															className="button"
+															className="button theme-button-violet"
 															// disabled={!OTPVerified}
 															onClick={handleSubmit}
 															type="submit"
 															variant="contained"
-															style={{
-																backgroundColor: "#9c27b0",
-																color: "#ffff"
-															}}
 														>
-															<span
-																className="button-label-with-icon"
-																style={{ color: "#ffff" }}
-															>
-																Next
-															</span>
+															<span className="button-label-with-icon">Next</span>
 															<span>
-																<ArrowForwardIosIcon
-																	className="button-icon"
-																	style={{ color: "#ffff" }}
-																/>
+																<ArrowForwardIosIcon className="button-icon color-white" />
 															</span>
 														</Button>
 													</div>
@@ -981,7 +872,7 @@ const SignUp = () => {
 											>
 												<div className="form-inner form-inner-lg" id="form-inner">
 													<TextField
-														className="form-field-input-lg-form"
+														className="form-field-input-lg-form auth-input-fields"
 														id="first-name-input"
 														name="first_name"
 														value={user.first_name}
@@ -989,7 +880,6 @@ const SignUp = () => {
 														placeholder="Enter First Name"
 														variant="outlined"
 														onChange={handleChange}
-														style={{ width: "100%", borderRadius: 50 }}
 														helperText={validation.user.first_name}
 														InputProps={{
 															startAdornment: (
@@ -1000,7 +890,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form auth-input-fields"
 														id="middle-name-input"
 														name="middle_name"
 														label="Middle Name"
@@ -1008,7 +898,6 @@ const SignUp = () => {
 														value={user.middle_name}
 														variant="outlined"
 														onChange={handleChange}
-														style={{ width: "100%", borderRadius: 50 }}
 														// helperText={validation.user.middle_name}
 														InputProps={{
 															startAdornment: (
@@ -1019,7 +908,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form auth-input-fields"
 														id="last-name-input"
 														name="last_name"
 														label="Last Name"
@@ -1027,7 +916,6 @@ const SignUp = () => {
 														value={user.last_name}
 														variant="outlined"
 														onChange={handleChange}
-														style={{ width: "100%", borderRadius: 50 }}
 														helperText={validation.user.last_name}
 														InputProps={{
 															startAdornment: (
@@ -1040,7 +928,7 @@ const SignUp = () => {
 													<div className="date-picker">
 														<MuiPickersUtilsProvider utils={DateFnsUtils}>
 															<KeyboardDatePicker
-																className="form-field-input form-field-input-lg-form"
+																className="form-field-input form-field-input-lg-form auth-input-fields"
 																inputVariant="outlined"
 																label="Date of Birth"
 																placeholder="Enter Date of Birth"
@@ -1057,7 +945,6 @@ const SignUp = () => {
 																InputLabelProps={{
 																	shrink: true
 																}}
-																style={{ width: "100%", borderRadius: 50 }}
 																keyboardIcon={<EventIcon className="auth-input-icon" />}
 																KeyboardButtonProps={{
 																	"aria-label": "change date"
@@ -1067,7 +954,7 @@ const SignUp = () => {
 														</MuiPickersUtilsProvider>
 													</div>
 													<TextField
-														className="form-field-input form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form auth-input-fields"
 														id="SSN-input"
 														name="SSN"
 														value={user.SSN}
@@ -1077,7 +964,6 @@ const SignUp = () => {
 														onChange={handleChange}
 														onKeyDown={(event: any) => handleKeyCheck(event)}
 														onPaste={(event: any) => handlePaste(event)}
-														style={{ width: "100%", borderRadius: 50 }}
 														helperText={validation.user.SSN}
 														InputProps={{
 															startAdornment: (
@@ -1088,7 +974,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input form-field-input-lg-form"
+														className="form-field-input form-field-input-lg-form auth-input-fields"
 														id="Reenter-SSN-input"
 														name="reenterSSN"
 														value={reEnteredSSN}
@@ -1098,7 +984,6 @@ const SignUp = () => {
 														onChange={handleReEnteredSSNChange}
 														onKeyDown={(event: any) => handleKeyCheck(event)}
 														onPaste={(event: any) => handlePaste(event)}
-														style={{ width: "100%", borderRadius: 50 }}
 														//helperText={validation.user.SSN}
 														InputProps={{
 															startAdornment: (
@@ -1117,48 +1002,24 @@ const SignUp = () => {
 													id="sign-up-button-container"
 												>
 													<Button
-														className="button"
+														className="button button-back"
 														onClick={handleBack}
 														variant="contained"
-														style={{
-															backgroundColor: "#f5f5f5",
-															color: "#4e4e4e "
-														}}
 													>
 														<span>
-															<ArrowBackIosIcon
-																className="button-icon"
-																style={{ color: "#4e4e4e" }}
-															/>
+															<ArrowBackIosIcon className="button-icon icon-back" />
 														</span>
-														<span
-															className="button-label-with-icon"
-															style={{ color: "#4e4e4e" }}
-														>
-															Back
-														</span>
+														<span className="button-label-with-icon icon-back">Back</span>
 													</Button>
 													<Button
-														className="button"
+														className="button theme-button-violet"
 														//onClick={handleSubmit}
 														type="submit"
 														variant="contained"
-														style={{
-															backgroundColor: "#9c27b0",
-															color: "#ffff"
-														}}
 													>
-														<span
-															className="button-label-with-icon"
-															style={{ color: "#ffff" }}
-														>
-															Next
-														</span>
+														<span className="button-label-with-icon color-white">Next</span>
 														<span>
-															<ArrowForwardIosIcon
-																className="button-icon"
-																style={{ color: "#ffff" }}
-															/>
+															<ArrowForwardIosIcon className="button-icon color-white" />
 														</span>
 													</Button>
 												</div>
@@ -1169,7 +1030,7 @@ const SignUp = () => {
 											<FormControl className="form-container" id="form-container">
 												<div className="form-inner" id="form-inner">
 													<TextField
-														className="form-field-input"
+														className="form-field-input auth-input-fields"
 														id="user-name-input"
 														name="user_name"
 														label="Username"
@@ -1184,7 +1045,6 @@ const SignUp = () => {
 																? "Username must be between 4 to 20 characters and alpha-numeric!"
 																: validation.user.user_name
 														}
-														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
@@ -1194,7 +1054,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input"
+														className="form-field-input auth-input-fields"
 														id="password-input"
 														name="password"
 														type={!showPassword ? "password" : "text"}
@@ -1204,7 +1064,6 @@ const SignUp = () => {
 														variant="outlined"
 														onChange={handleChange}
 														helperText={validation.user.password}
-														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
@@ -1227,7 +1086,7 @@ const SignUp = () => {
 														}}
 													/>
 													<TextField
-														className="form-field-input"
+														className="form-field-input auth-input-fields"
 														id="confirm-password-input"
 														name="confirm_password"
 														type={!showConfirmPassword ? "password" : "text"}
@@ -1237,7 +1096,6 @@ const SignUp = () => {
 														variant="outlined"
 														onChange={handleChange}
 														helperText={validation.user.confirm_password}
-														style={{ width: "100%", borderRadius: 50 }}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
@@ -1259,109 +1117,33 @@ const SignUp = () => {
 															)
 														}}
 													/>
-													{/* <div
-														className="claim-notification-checkbox"
-														id="claim-notification-checkbox"
-													>
-														<Checkbox
-															icon={
-																<NotificationsIcon
-																	fontSize="small"
-																	style={{ color: "#9c27b0" }}
-																/>
-															}
-															checkedIcon={
-																<NotificationsNoneIcon
-																	fontSize="small"
-																	style={{ color: "#9c27b0" }}
-																/>
-															}
-															name="checkedI"
-															onChange={handleNotificationChange}
-														/>
-														Receive Processed Claim Notification
-													</div> */}
 												</div>
 												<div className="sign-up-button-container" id="sign-up-button-container">
-													{/* <Button
-                                                                variant="contained"
-                                                                onClick={handleBack}
-                                                                style={{
-                                                                    backgroundColor: "#f5f5f5",
-                                                                    letterSpacing: "1.5px",
-                                                                    fontSize: "1rem",
-                                                                    marginRight: 10
-                                                                }}
-                                                            >
-                                                                Back
-                                                            </Button>
-                                                            <Tooltip
-                                                                title={!hasReadStatementOfUnderstanding ? "Please read the statement of understanding before signing up" : ""}
-                                                                arrow
-                                                            >
-                                                                <Button
-                                                                    variant="contained"
-                                                                    disabled={!hasReadStatementOfUnderstanding}
-                                                                    onClick={handleSubmit}
-                                                                    style={{
-                                                                        backgroundColor: "#9c27b0",
-                                                                        color: "white",
-                                                                        letterSpacing: "1.5px",
-                                                                        fontSize: "1rem",
-                                                                        cursor: !hasReadStatementOfUnderstanding ? "not-allowed" : "pointer",
-                                                                        pointerEvents: "unset"
-                                                                    }}
-                                                                >
-                                                                    Sign Up
-                                                                </Button>
-                                                            </Tooltip> */}
 													<Button
-														className="button"
+														className="button button-back"
 														onClick={handleBack}
 														variant="contained"
-														style={{
-															backgroundColor: "#f5f5f5",
-															color: "#4e4e4e "
-														}}
 													>
 														<span>
-															<ArrowBackIosIcon
-																className="button-icon"
-																style={{ color: "#4e4e4e " }}
-															/>
+															<ArrowBackIosIcon className="button-icon icon-back" />
 														</span>
-														<span
-															className="button-label-with-icon"
-															style={{ color: "#4e4e4e " }}
-														>
-															Back
-														</span>
+														<span className="button-label-with-icon icon-back">Back</span>
 													</Button>
 													<Tooltip
 														title="Please read the statement of understanding before signing up"
 														arrow
 													>
 														<Button
-															className="button"
+															className="button theme-button-violet"
 															//onClick={handleSubmit}
 															type="submit"
 															variant="contained"
-															style={{
-																backgroundColor: "#9c27b0",
-																color: "#ffff"
-															}}
 														>
-															<span
-																className="button-label-with-icon"
-																style={{ color: "#ffff" }}
-															>
+															<span className="button-label-with-icon color-white">
 																Sign Up
 															</span>
 															<span>
-																<PersonAddIcon
-																	className="button-icon"
-																	style={{ color: "#ffff" }}
-																/>
+																<PersonAddIcon className="button-icon color-white" />
 															</span>
 														</Button>
 													</Tooltip>
@@ -1382,35 +1164,14 @@ const SignUp = () => {
 												className="sign-up-button-container-lg-form"
 												id="sign-up-button-container"
 											>
-												{/* <Button
-                                                            variant="contained"
-                                                            onClick={handleSubmit}
-                                                            style={{
-                                                                backgroundColor: "#9c27b0",
-                                                                color: "white",
-                                                                letterSpacing: "1.5px",
-                                                                fontSize: "1rem"
-                                                            }}
-                                                        >
-                                                            Login
-                                                        </Button> */}
 												<Button
-													className="button"
+													className="button theme-button-violet"
 													onClick={handleSubmit}
 													variant="contained"
-													style={{
-														backgroundColor: "#9c27b0",
-														color: "#ffff"
-													}}
 												>
-													<span className="button-label-with-icon" style={{ color: "#ffff" }}>
-														Login
-													</span>
+													<span className="button-label-with-icon color-white">Login</span>
 													<span>
-														<PersonIcon
-															className="button-icon"
-															style={{ color: "#ffff" }}
-														/>
+														<PersonIcon className="button-icon color-white" />
 													</span>
 												</Button>
 											</div>

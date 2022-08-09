@@ -1,4 +1,4 @@
-import { forwardRef, JSXElementConstructor, ReactElement } from "react";
+import { forwardRef, JSXElementConstructor, Key, ReactElement } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide } from "@mui/material";
 import { CustomDialogProps } from "../../../../@types/components/dialogProps.types";
 import { TransitionProps } from "@mui/material/transitions";
@@ -32,7 +32,7 @@ const CustomDialog = ({ dialogProps }: CustomDialogProps): JSX.Element => {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					{actions.map((action, index) => {
+					{actions.map((action: { label: any; callback: any }, index: Key | null | undefined) => {
 						const { label, callback } = action;
 						return (
 							<Button

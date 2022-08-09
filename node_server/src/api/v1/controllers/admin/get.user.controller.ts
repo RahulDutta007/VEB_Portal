@@ -22,17 +22,13 @@ export const FindUsername = async (req: Request, res: Response) => {
 		const UserInstance = await findUser(AdminModel, user_id);
 		if (UserInstance) {
 			return res.status(StatusCodes.OK).json({
-				message: MESSAGE.get.succ,
-				result: {
-					isRegistered: true
-				}
+				message: "User Name Exist",
+				isNameExist: true
 			});
 		} else {
 			return res.status(StatusCodes.OK).json({
-				message: MESSAGE.get.succ,
-				result: {
-					isRegistered: false
-				}
+				message: "User Name Not Exist",
+				isNameExist: false
 			});
 		}
 	} catch (err) {
@@ -84,19 +80,16 @@ export const FindEmail = async (req: Request, res: Response) => {
 			});
 		}
 		const UserInstance = await findUser(AdminModel, email);
+		console.log(UserInstance);
 		if (UserInstance) {
 			return res.status(StatusCodes.OK).json({
-				message: MESSAGE.get.succ,
-				result: {
-					isRegistered: true
-				}
+				message: "Email Exist",
+				emailExist: true
 			});
 		} else {
 			return res.status(StatusCodes.OK).json({
-				message: MESSAGE.get.succ,
-				result: {
-					isRegistered: false
-				}
+				message: "Email Not Exist",
+				emailExist: false
 			});
 		}
 	} catch (err) {
@@ -116,7 +109,7 @@ export const SendOTP = async (req: Request, res: Response) => {
 				result: "Please provide email"
 			});
 		}
-		const UserInstance = await findUser(AdminModel, email);
+		const UserInstance = await service.query.fetchOne(AdminModel, req.body);
 		if (UserInstance) {
 			const otp: number = Math.floor(100000 + Math.random() * 900000);
 			const text = `The OTP is ${otp}`;
@@ -182,7 +175,7 @@ export const VerifyOTP = async (req: Request, res: Response) => {
 const findUser = async (model: Model<any>, user: any) => {
 	const filter = user.includes("@")
 		? { email: user }
-		: { member_id: user };
+		: { admin_id: user };
 	return await service.query.fetchOne(model, filter);
 }
 

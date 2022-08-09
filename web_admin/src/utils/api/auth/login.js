@@ -14,7 +14,7 @@ export const login = async (_payload) => {
 	try {
 		const payload = JSON.stringify(_payload);
 		const endpoint = `${initialRoute}/login`;
-		const response = await post(endpoint, payload, headers);
+		const response = await post(endpoint, _payload);
 
 		if (response) {
 			const {
@@ -25,32 +25,15 @@ export const login = async (_payload) => {
 					data: { message, result, token }
 				} = response;
 				return { message, result, token };
+			} else {
+				return { message };
 			}
 		}
 		throw new Error();
 	} catch (error) {
 		if (error.response.status === StatusCodes.BAD_REQUEST) {
 			const { message } = error.response.data;
-
-			if (message === "Unauthorised Role!") {
-				alert("Unauthorised Role!");
-			} else if (message === MESSAGE.none) {
-				alert("No Such Data!");
-			} else if (message === "Login Unsuccessful!") {
-				alert("Login Unsuccessful!");
-			} else alert("Other Errors of Status Code 400");
-		} else if (error.response.status === StatusCodes.UNAUTHORIZED) {
-			const { message } = error.response.data;
-
-			if (message === "Authentication Failed!") {
-				alert("Authentication Failed!");
-				// throw error;
-			} else {
-				throw error;
-				//alert("Other Errors of Status Code 401");
-			}
-		} else {
-			throw error;
+			return { message };
 		}
 	}
 };
@@ -200,11 +183,14 @@ export const findEmail = async (email) => {
 	}
 };
 
-export const sendOTP = async (_payload) => {
+export const findUserName = async (userName) => {
 	try {
-		const payload = JSON.stringify(_payload);
-		const endpoint = `${initialRoute}/send-otp`;
-		const response = await patch(endpoint, _payload, _headers);
+		const endpoint = `${initialRoute}/find-user-name?user_name=${userName}`;
+		const token = localStorage.getItem("@jwt");
+		const _headers = Object.assign({}, headers, {
+			authorization: `${Bearer} ${token}`
+		});
+		const response = await get(endpoint, _headers);
 
 		if (response) {
 			const { data } = response;
@@ -230,6 +216,25 @@ export const sendOTP = async (_payload) => {
 				throw error;
 				//alert("Other Errors of Status Code 401");
 			}
+		} else {
+			throw error;
+		}
+	}
+};
+
+export const sendOTP = async (_payload) => {
+	try {
+		const payload = JSON.stringify(_payload);
+		const endpoint = `${initialRoute}/send-otp`;
+		const response = await patch(endpoint, _payload, headers);
+
+		if (response) {
+			const { data } = response;
+			return data;
+		}
+	} catch (error) {
+		if (error.response.status === StatusCodes.BAD_REQUEST) {
+			return "Error Occurred";
 		} else {
 			throw error;
 		}
@@ -318,7 +323,7 @@ export const createEnroller = async (_payload) => {
 		const endpoint = `${adminRoute}/enroller/creation`;
 		const token = localStorage.getItem("@jwt");
 		const _headers = Object.assign({}, headers, {
-			Authorization: `${Bearer} ${token}`
+			authorization: `${Bearer} ${token}`
 		});
 		const response = await post(endpoint, _payload, _headers);
 
@@ -336,25 +341,7 @@ export const createEnroller = async (_payload) => {
 	} catch (error) {
 		if (error.response.status === StatusCodes.BAD_REQUEST) {
 			const { message } = error.response.data;
-			if (message === "Unauthorised Role!") {
-				alert("Unauthorised Role!");
-			} else if (message === MESSAGE.none) {
-				alert("No Such Data!");
-			} else if (message === "Login Unsuccessful!") {
-				alert("Login Unsuccessful!");
-			} else alert("Other Errors of Status Code 400");
-		} else if (error.response.status === StatusCodes.UNAUTHORIZED) {
-			const { message } = error.response.data;
-
-			if (message === "Authentication Failed!") {
-				alert("Authentication Failed!");
-				// throw error;
-			} else {
-				throw error;
-				//alert("Other Errors of Status Code 401");
-			}
-		} else {
-			throw error;
+			return message;
 		}
 	}
 };

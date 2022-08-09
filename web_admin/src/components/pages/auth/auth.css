@@ -69,6 +69,44 @@
     width: 200 !important;
 }
 
+.role-selected-value {
+    padding-left: 12.7;
+}
+
+.auth-input-fields {
+    width: 100%;
+}
+
+.theme-button-violet {
+    background-color: #9c27b0 !important;
+    color: #FFFFFF !important;
+}
+
+.theme-button-violet>span {
+    color: #FFFFFF;
+}
+
+.color-white {
+    color: #FFFFFF;
+}
+
+.margin-lf-5 {
+    margin-left: 5px;
+}
+
+.button-back {
+    background-color: #f5f5f5;
+    color: #4e4e4e;
+}
+
+.icon-back {
+    color: #4e4e4e;
+}
+
+.icon-white {
+    color: #FFFFFF;
+}
+
 @media only screen and (max-width: 450px) {
     .card-container {
         padding: 0;

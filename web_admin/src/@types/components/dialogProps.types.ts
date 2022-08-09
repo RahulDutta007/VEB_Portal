@@ -1,7 +1,16 @@
 import { DialogProps } from "../dialogProps.types";
 
+export type Action = {
+	label: string;
+	callback: () => void;
+};
 export type CustomDialogProps = {
-	dialogProps: DialogProps;
+	dialogProps: {
+		openDialog: boolean;
+		title: string;
+		content: string;
+		actions: Action[];
+	};
 };
 
 export type CustomFullScreenDialogProps = {

@@ -1,6 +1,6 @@
 const roles = {
 	admin: "ADMIN",
-	enroller_admin: "ENROLLER_ADMIN",
+	enroller_admin: "ENROLLER ADMIN",
 	agent: "AGENT"
 };
 

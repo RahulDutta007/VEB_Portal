@@ -26,11 +26,11 @@ export const login = async (req: Request, res: Response) => {
 				message: MESSAGE.custom("Unauthorized Role!")
 			});
 		}
-
+		console.log(query + " " + role);
 		const user = await model.findOne({
 			$and: [query, { role }]
 		});
-
+		console.log(user);
 		if (!user) {
 			return res.status(StatusCodes.UNAUTHORIZED).json({
 				message: MESSAGE.custom("Authentication Failed!")
@@ -61,23 +61,6 @@ export const login = async (req: Request, res: Response) => {
 				user_name: user.user_name
 			};
 		}
-		// else if (role === ROLES.employee || role === ROLES.dependent) {
-		// 	// Updating Last login date with current system date
-		// 	user.last_login_date = Date.now();
-		// 	user.employee_status = "ACTIVE";
-
-		// 	// Creating JWT payload for Member login
-		// 	jwtPayload = {
-		// 		_id: user._id,
-		// 		email: user.email,
-		// 		role: user.role,
-		// 		first_name: user.first_name,
-		// 		last_name: user.last_name,
-		// 		user_name: user.user_name,
-		// 		employee_number: user.employee_number,
-		// 		dependent_number: user.dependent_number
-		// 	};
-		// }
 
 		// Generating JWT
 		const token: string = await service.auth.generateJWT(jwtPayload);

@@ -36,7 +36,7 @@ import EventIcon from "@material-ui/icons/Event";
 import { DynamicForm, DynamicFormField } from "../../../@types/dynamicForm.types";
 import { Validation } from "../../../@types/validation.types";
 
-import "./createGroupOwner.css";
+import "./createAdmin.css";
 
 const mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/;
 const specialCharacters = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
@@ -51,9 +51,10 @@ const GreenCheckbox = withStyles({
 	checked: {}
 })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
-const CreateGroupOwner = () => {
+const CreateAdmin = () => {
 	const [userForm, setUserForm] = useState<DynamicForm>();
 	const [emailExists, setEmailExists] = useState(false);
+	const [userNameExists, setUserNameExists] = useState(false);
 	const [checkInvalidEmail, setCheckInvalidEmail] = useState(false);
 	const [pasted, setPasted] = useState(false);
 	const [hasCreateClick, setHasCreateClick] = useState(false);
@@ -105,34 +106,31 @@ const CreateGroupOwner = () => {
 	});
 	const { setDashboardHeader } = useContext(UIContext);
 
-	const getAssignGroups = useCallback(async () => {
-		const params = {
-			user_id: user?._id
-		};
-		const response = await api.assignGroupsAndLocation.getGroupAndLocationAssignment(params);
-
-		if (response) {
-			const _assignedGroups: any[] = [];
-			response.groupsAndLocations.forEach((group: any) => {
-				if (group.assigned_group_info) {
-					_assignedGroups.push(group);
-				}
-			});
-
-			setAssignedGroups(Object.assign([], _assignedGroups));
-		}
-	}, [user?._id]);
-
 	const findUserEmail = useDebouncedCallback(async (value: string) => {
 		if (value !== "") {
-			const email = await api.auth.findEmail(value);
-			if (email === false) {
-				setEmailExists(false);
-			} else {
+			const data = await api.auth.findEmail(value);
+			if (data.emailExist) {
 				setEmailExists(true);
+				setCheckInvalidEmail(false);
+			} else {
+				setEmailExists(false);
+				setCheckInvalidEmail(false);
 			}
 		} else {
 			setEmailExists(false);
+		}
+	}, 500);
+
+	const findUserName = useDebouncedCallback(async (value: string) => {
+		if (value !== "") {
+			const data = await api.auth.findUserName(value);
+			if (data.isNameExist) {
+				setUserNameExists(true);
+			} else {
+				setUserNameExists(false);
+			}
+		} else {
+			setUserNameExists(false);
 		}
 	}, 500);
 
@@ -164,12 +162,24 @@ const CreateGroupOwner = () => {
 		};
 		let flag = true;
 
-		// createdUser validation checking
-		// if (user_id.length === 0 || user_id === undefined) {
-		// 	_validation.current.createdUser["user_id"] = "User Id is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
+		if (user_name.length === 0) {
+			_validation.current.createdUser["user_name"] = "User Name is required";
+			_validation.current["status"] = "invalid";
+			flag = false;
+		}
+
+		if (userNameExists) {
+			_validation.current.createdUser["user_name"] = "User Name is Exist";
+			_validation.current["status"] = "invalid";
+			flag = false;
+		}
+
+		if (emailExists) {
+			_validation.current.createdUser["email"] = "Email is Exist";
+			_validation.current["status"] = "invalid";
+			flag = false;
+		}
+
 		if (first_name.length === 0) {
 			_validation.current.createdUser["first_name"] = "First Name is required";
 			_validation.current["status"] = "invalid";
@@ -180,78 +190,51 @@ const CreateGroupOwner = () => {
 			_validation.current["status"] = "invalid";
 			flag = false;
 		}
-		// if (SSN === null || SSN === "") {
-		// 	_validation.current.createdUser["SSN"] = "SSN is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (SSN !== null) {
-		// 	var _SSN = SSN.replaceAll("-", "");
-		// 	if (String(_SSN).length !== 9) {
-		// 		_validation.current.createdUser["SSN"] = "Enter correct 9 digit SSN";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
-		// }
-		// if (SSN !== null) {
-		// 	if (SSN !== "") {
-		// 		var _SSN = SSN.replaceAll("-", "");
-		// 		if (String(_SSN).length !== 9) {
-		// 			_validation.current.createdUser["SSN"] = "Enter correct 9 digit SSN";
-		// 			_validation.current["status"] = "invalid";
-		// 			flag = false;
-		// 		}
-		// 	}
-		// }
-		// if (String(date_of_birth).length === 0) {
-		// 	_validation.current.createdUser["date_of_birth"] = "Date of birth is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (String(hire_date).length === 0) {
-		// 	_validation.current.createdUser["hire_date"] = "Hire Date is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (String(hire_date).length !== 0) {
-		// 	let hireDate = new Date(hire_date).getFullYear();
-		// 	let DOB = new Date(date_of_birth).getFullYear();
-		// 	let hireDateTime = new Date(hire_date).getTime();
-		// 	let DOBtime = new Date(date_of_birth).getTime();
-		// 	let age = hireDate - DOB;
 
-		// 	if (age <= 14) {
-		// 		_validation.current.createdUser["hire_date"] = "Age should be 14 years or above!";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
+		if (SSN !== null) {
+			if (SSN !== "") {
+				const _SSN = SSN.replaceAll("-", "");
+				if (String(_SSN).length !== 9) {
+					_validation.current.createdUser["SSN"] = "Enter correct 9 digit SSN";
+					_validation.current["status"] = "invalid";
+					flag = false;
+				}
+			}
+		}
+		if (String(date_of_birth).length === 0) {
+			_validation.current.createdUser["date_of_birth"] = "Date of birth is required";
+			_validation.current["status"] = "invalid";
+			flag = false;
+		}
+		if (String(hire_date).length === 0) {
+			_validation.current.createdUser["hire_date"] = "Hire Date is required";
+			_validation.current["status"] = "invalid";
+			flag = false;
+		}
+		if (String(hire_date).length !== 0) {
+			const hireDate = new Date(hire_date).getFullYear();
+			const DOB = new Date(date_of_birth).getFullYear();
+			const hireDateTime = new Date(hire_date).getTime();
+			const DOBtime = new Date(date_of_birth).getTime();
+			const age = hireDate - DOB;
 
-		// 	if (hireDateTime < DOBtime) {
-		// 		_validation.current.createdUser["hire_date"] = "Hire date cannot be less than Date of Birth!";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
-		// }
+			if (age <= 14) {
+				_validation.current.createdUser["hire_date"] = "Age should be 14 years or above!";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
+
+			if (hireDateTime < DOBtime) {
+				_validation.current.createdUser["hire_date"] = "Hire date cannot be less than Date of Birth!";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
+		}
 		if (role.length === 0) {
 			_validation.current.createdUser["role"] = "Role is required";
 			_validation.current["status"] = "invalid";
 			flag = false;
 		}
-		// if (gender.length === 0) {
-		// 	_validation.current.createdUser["gender"] = "Gender is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (marital_status.length === 0) {
-		// 	_validation.current.createdUser["marital_status"] = "Marital Status is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (contact_label.length === 0) {
-		// 	_validation.current.createdUser["contact_label"] = "Contact Label is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
 		if (email.length === 0) {
 			_validation.current.createdUser["email"] = "Email is required";
 			_validation.current["status"] = "invalid";
@@ -268,69 +251,6 @@ const CreateGroupOwner = () => {
 				setCheckInvalidEmail(true);
 			}
 		}
-		// if (mobile === null) {
-		// 	_validation.current.createdUser["mobile"] = "Phone number is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (mobile !== null) {
-		// 	if (String(mobile).length !== 10) {
-		// 		_validation.current.createdUser["mobile"] = "Enter valid 10 digit phone number";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
-		// }
-		// if (phone_extension === null) {
-		// 	_validation.current.createdUser["phone_extension"] = "Phone extension is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (phone_extension !== null) {
-		// 	if (String(phone_extension).length !== 3) {
-		// 		_validation.current.createdUser["phone_extension"] = "Enter Valid 3 digit Phone extension";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
-		// }
-		// if (address_line_1.length === 0) {
-		// 	_validation.current.createdUser["address_line_1"] = "Address line 1 is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (city.length === 0) {
-		// 	_validation.current.createdUser["city"] = "City is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (state.length === 0) {
-		// 	_validation.current.createdUser["state"] = "State is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (ZIP.length === 0) {
-		// 	_validation.current.createdUser["ZIP"] = "ZIP Code is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (ZIP.length === 0) {
-		// 	_validation.current.createdUser["ZIP"] = "ZIP Code is required";
-		// 	_validation.current["status"] = "invalid";
-		// 	flag = false;
-		// }
-		// if (ZIP.length !== 0) {
-		// 	var _zip = ZIP.replaceAll("-", "");
-		// 	if (_zip.length === 5) {
-		// 		_validation.current["status"] = "valid";
-		// 		flag = true;
-		// 	} else if (_zip.length === 9) {
-		// 		_validation.current["status"] = "valid";
-		// 		flag = true;
-		// 	} else {
-		// 		_validation.current.createdUser["ZIP"] = "Enter 5 or 9 digit ZIP Code!";
-		// 		_validation.current["status"] = "invalid";
-		// 		flag = false;
-		// 	}
-		// }
 
 		if (flag === true) _validation.current["status"] = "valid";
 		else {
@@ -339,7 +259,7 @@ const CreateGroupOwner = () => {
 		}
 		setValidation(Object.assign({}, _validation.current));
 		return _validation.current["status"];
-	}, [createdUser, validation]);
+	}, [createdUser, emailExists, userNameExists, validation]);
 
 	const handleKeyCheck = useCallback(
 		(event: React.KeyboardEvent<HTMLInputElement | HTMLDivElement>) => {
@@ -383,7 +303,7 @@ const CreateGroupOwner = () => {
 	};
 
 	const handleUserChange = useCallback(
-		(event: React.ChangeEvent<HTMLInputElement>) => {
+		async (event: React.ChangeEvent<HTMLInputElement>) => {
 			let { value } = event.target;
 			const { name } = event.target;
 			if (name === "first_name") {
@@ -394,9 +314,16 @@ const CreateGroupOwner = () => {
 				} else if (/\s/g.test(value)) {
 					setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 				}
-			} else if (name === "email") {
-				findUserEmail(value);
+			} else if (name === "user_name") {
 				setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+				await findUserName(value);
+			} else if (name === "email") {
+				setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+				if (validateEmail(value)) {
+					await findUserEmail(value);
+				} else {
+					setCheckInvalidEmail(true);
+				}
 			} else if (name === "SSN") {
 				if (!pasted) {
 					// console.log("Not Pasted");
@@ -563,7 +490,7 @@ const CreateGroupOwner = () => {
 				setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 			}
 		},
-		[createdUser, findUserEmail, pasted]
+		[createdUser, findUserEmail, findUserName, pasted]
 	);
 
 	const handleUserDateChange = useCallback(
@@ -641,11 +568,10 @@ const CreateGroupOwner = () => {
 					console.log("Payload", payload);
 					const response = await api.auth.createEnroller(payload.createdUser);
 
-					if (response) {
+					if (response?.message === "Data added successfully") {
 						setHasCreateClick(true);
 						console.log("Response", response);
 						setCreatedUsers(Object.assign({}, response as any));
-						alert("User Created Successfully!");
 						setSnackbarAPICallProps(
 							Object.assign({}, snackbarAPICallProps, {
 								open: true,
@@ -653,28 +579,66 @@ const CreateGroupOwner = () => {
 								severity: "success"
 							})
 						);
-
+						setHasCreateClick(false);
+						_validation.current = {
+							createdUser: {},
+							status: "invalid"
+						};
+						setCreatedUsers({
+							user_name: "", // This Id is mapped with Group HR (Group Specific)
+							admin_id: "",
+							first_name: "",
+							middle_name: "",
+							last_name: "",
+							role: "",
+							SSN: "",
+							date_of_birth: "",
+							hire_date: "",
+							gender: "",
+							marital_status: "",
+							email: "",
+							address_line_1: "",
+							address_line_2: "",
+							city: "",
+							state: "",
+							country: "USA - United States of America",
+							ZIP: "",
+							contact_label: null,
+							phone_number: null,
+							phone_extension: null,
+							group_number: null
+						});
 						navigate("/");
 						// setTimeout(() => {
 						// 	history.push("/");
 						// }, 2000);
+					} else {
+						setHasCreateClick(false);
+						setSnackbarAPICallProps(
+							Object.assign({}, snackbarAPICallProps, {
+								open: true,
+								message: "Member Creation Failed!",
+								severity: "error"
+							})
+						);
 					}
 				} else {
 					setHasCreateClick(false);
+					setSnackbarAPICallProps(
+						Object.assign({}, snackbarAPICallProps, {
+							open: true,
+							message: "Invalid!",
+							severity: "error"
+						})
+					);
 				}
 			} catch (error) {
 				setHasCreateClick(false);
 				alert("User creation unsuccessful!");
-				throw error;
 			}
 		},
-		[createdUser, handleValidation, navigate]
+		[createdUser, handleValidation, navigate, snackbarAPICallProps]
 	);
-
-	useEffect(() => {
-		setDashboardHeader(ADMIN_DASHBOARD_HEADER.create_user);
-		getAssignGroups();
-	}, [getAssignGroups, setDashboardHeader]);
 
 	useEffect(() => {
 		setUserForm(
@@ -691,8 +655,10 @@ const CreateGroupOwner = () => {
 							type: "select",
 							options:
 								user?.role === ROLES.admin
-									? [initCapitalize(ROLES.admin), initCapitalize(ROLES.enroller_admin)]
-									: [initCapitalize(ROLES.agent)]
+									? [initCapitalize(ROLES.enroller_admin), initCapitalize(ROLES.agent)]
+									: user?.role === ROLES.enroller_admin
+									? [initCapitalize(ROLES.agent)]
+									: []
 						}
 					],
 					"User Information": [
@@ -1005,7 +971,7 @@ const CreateGroupOwner = () => {
 														<Grid item xs={9} sm={9} md={9} lg={9} xl={9}>
 															{field.type === "textfield" ? (
 																<TextField
-																	className="text-field-input text-field-input-create-enroller"
+																	className="text-field-input text-field-input-create-enroller pointer-event-unset create-admin-input-width"
 																	id="text-field-input"
 																	name={field.name}
 																	placeholder={field.placeholder}
@@ -1027,39 +993,25 @@ const CreateGroupOwner = () => {
 																				: false
 																	}}
 																	helperText={
-																		emailExists && field.name === "email"
-																			? "Email exists!"
-																			: checkInvalidEmail &&
-																			  field.name === "email"
-																			? "Please enter a valid email address!"
-																			: validation.createdUser[field.name]
+																		field.name === "email"
+																			? !checkInvalidEmail && emailExists
+																				? "Email exists!"
+																				: checkInvalidEmail
+																				? "Please enter a valid email address!"
+																				: ""
+																			: field.name === "user_name" &&
+																			  userNameExists
+																			? "User Name exists!"
+																			: ""
 																	}
-																	//style={{ width: "70%", borderRadius: 50 }}
-																	//disabled={!isButtonSelected}
-																	//disableElevation={!isButtonSelected}
-																	style={{
-																		//cursor: !isButtonSelected?"not-allowed": "pointer",
-																		pointerEvents: "unset",
-																		width: "340px",
-																		borderRadius: 50
-																	}}
 																/>
 															) : field.type === "select" ? (
 																<>
 																	<Select
 																		id="text-align-options"
+																		className="pointer-event-unset select-input-style create-user-input-select"
 																		name={field.name}
 																		onChange={field.onChange}
-																		//disabled={!isButtonSelected}
-																		//disableElevation={!isButtonSelected}
-																		style={{
-																			//cursor: !isButtonSelected ? "not-allowed" : "pointer",
-																			pointerEvents: "unset",
-																			minWidth: 180,
-																			textAlign: "left",
-																			// zIndex: 10000,
-																			overflowY: "visible"
-																		}}
 																		MenuProps={{
 																			style: { zIndex: 35960 }
 																		}}
@@ -1095,7 +1047,7 @@ const CreateGroupOwner = () => {
 															) : field.type === "date" ? (
 																<MuiPickersUtilsProvider utils={DateFnsUtils}>
 																	<KeyboardDatePicker
-																		className="date-input"
+																		className="date-input pointer-event-unset create-admin-input-width create-user-input-date"
 																		id="date-input"
 																		inputVariant="outlined"
 																		label={field.label}
@@ -1113,20 +1065,11 @@ const CreateGroupOwner = () => {
 																		InputLabelProps={{
 																			shrink: true
 																		}}
-																		//style={{ width: "340px", borderRadius: 50 }}
 																		keyboardIcon={
-																			<EventIcon style={{ color: "#7cb342" }} />
+																			<EventIcon className="theme-color-green" />
 																		}
 																		KeyboardButtonProps={{
 																			"aria-label": "change date"
-																		}}
-																		// disabled={!isButtonSelected}
-																		// disableElevation={!isButtonSelected}
-																		style={{
-																			// cursor: !isButtonSelected ? "not-allowed" : "pointer",
-																			pointerEvents: "unset",
-																			width: "340px",
-																			borderRadius: 50
 																		}}
 																		helperText={validation.createdUser[field.name]}
 																	/>
@@ -1183,4 +1126,4 @@ const CreateGroupOwner = () => {
 	);
 };
 
-export default CreateGroupOwner;
+export default CreateAdmin;

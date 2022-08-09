@@ -9,7 +9,8 @@ import {
 	findEmail,
 	verifyOTP,
 	createAdmin,
-	createEnroller
+	createEnroller,
+	findUserName
 } from "./auth/login";
 
 export const api = {
@@ -22,7 +23,8 @@ export const api = {
 		findEmail,
 		verifyOTP,
 		createAdmin,
-		createEnroller
+		createEnroller,
+		findUserName
 	},
 	assignGroupsAndLocation: {
 		getGroupAndLocationAssignment: _assignGroupsAndLocation.getGroupAndLocationAssignment,

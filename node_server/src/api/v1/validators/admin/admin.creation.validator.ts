@@ -8,7 +8,7 @@ export const adminCreationValidator = Joi.object({
 	admin_id: Joi.string().required(),
 	first_name: Joi.string().min(3).max(30).required(),
 	last_name: Joi.string().min(3).max(30).required(),
-	middle_name: Joi.string().optional().allow(null),
+	middle_name: Joi.string().optional().allow(null, ""),
 	user_name: Joi.string().min(3).max(30).alphanum().min(3).max(30).required(),
 	role: Joi.string().required().valid(ROLES.enroller_admin, ROLES.agent).messages({
 		message: "Unauthorized Role!"
