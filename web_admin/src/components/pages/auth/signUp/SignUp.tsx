@@ -79,7 +79,7 @@ const SignUp = () => {
 		seconds: 59
 	});
 	const [confirm_password, setConfirmPassword] = useState("");
-	const ref = useRef<HTMLElement>(null);
+	const ref = useRef(null);
 	const [resendOTPButtonVisible, setResendOTPButtonVisible] = useState(true);
 	const [resentOTPCaptionVisible, setResentOTPCaptionVisible] = useState(false);
 	const [startTimer, setStartTimer] = useState(false);
@@ -182,37 +182,6 @@ const SignUp = () => {
 		return first_name;
 	}, [user]);
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	// const handlecredentialValidation = useCallback(async () => {
-	// 	const { user_name, password, confirm_password } = user;
-	// 	_validation.current = {
-	// 		..._validation.current,
-	// 		user: {}
-	// 	};
-	// 	let flag = true;
-
-	// 	if (user_name.length === 0) {
-	// 		_validation.current.user["user_name"] = "User Name is required";
-	// 		_validation.current.user["status"] = "invalid";
-	// 		flag = false;
-	// 	}
-	// 	if (password.length === 0) {
-	// 		_validation.current.user["password"] = "Password is required";
-	// 		_validation.current.user["status"] = "invalid";
-	// 		flag = false;
-	// 	}
-	// 	if (confirm_password !== password) {
-	// 		_validation.current.user["confirm_password"] = "Password doesn't match";
-	// 		_validation.current.user["status"] = "invalid";
-	// 		flag = false;
-	// 	}
-	// 	if (flag === true) _validation.current["status"] = "valid";
-	// 	else _validation.current["status"] = "invalid";
-
-	// 	setValidation(Object.assign({}, _validation.current));
-	// 	return _validation.current["status"];
-	// }, [user]);
-
 	const handleDateChange = useCallback(
 		(date: any, dateValue: any) => {
 			// const _date = new Date(dateValue);
@@ -240,17 +209,32 @@ const SignUp = () => {
 	const handleSendOTPToEmailClick = async () => {
 		const payload = {
 			email: user.email,
-			type: "VERIFICATION"
+			role: user.role.toUpperCase()
 		};
 		const response = await api.auth.sendOTP(payload);
 		if (response.result === "OTP Sent Successfully") {
-			alert("Email Id has been verified");
 			// eslint-disable-next-line arrow-parens
 			setOTPVerified(false);
-			alert("OTP Sent to Email");
+			setSnackbarAPIProps(
+				Object.assign({}, snackbarAPIProps, {
+					open: true,
+					message: "Sent OTP Successfully",
+					severity: "success"
+				})
+			);
 			setResendOTPButtonVisible(false);
 			// setCountDownTime(Date.now() + 1 * 60000);
 			setStartTimer(true);
+		} else {
+			setOTPVerified(false);
+			setSnackbarAPIProps(
+				Object.assign({}, snackbarAPIProps, {
+					open: true,
+					message: "Error while sending OTP",
+					severity: "error"
+				})
+			);
+			setResendOTPButtonVisible(true);
 		}
 	};
 
@@ -260,14 +244,6 @@ const SignUp = () => {
 			check: user.email,
 			verification_key: verificationToken
 		};
-		// const isVerified = await api.OTP.verifyOTP(payload);
-		// if (isVerified === true) {
-		// 	alert("Email Id has been verified");
-		// 	// eslint-disable-next-line arrow-parens
-		// 	setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		// 	setOTP("");
-		// 	setOTPVerified(true);
-		// }
 	};
 
 	const handleClose = useCallback(
@@ -589,16 +565,6 @@ const SignUp = () => {
 		[pasted, reEnteredSSN]
 	);
 
-	// const getUploadAdministration = useCallback(async () => {
-	// 	const uploadAdministration = await api.uploadAdminstration.getUploadAdministration();
-	// 	if (uploadAdministration) {
-	// 		setStatementOfUnderstanding(
-	// 			uploadAdministration.statementOfUnderstanding ? uploadAdministration.statementOfUnderstanding : ""
-	// 		);
-	// 		setRegistrationHelp(uploadAdministration.registrationHelp ? uploadAdministration.registrationHelp : "");
-	// 	}
-	// }, []);
-
 	const handleSubmit = useCallback(
 		async (event: { preventDefault: () => void }) => {
 			event.preventDefault();
@@ -621,15 +587,6 @@ const SignUp = () => {
 					alert("Please Reenter correct SSN");
 				} else {
 					setActiveStep(activeStep + 1);
-					// const data = await api.auth.createAdmin(user);
-					// navigate("/login");
-					// setSnackbarAPIProps(
-					// 	Object.assign({}, snackbarAPIProps, {
-					// 		open: true,
-					// 		message: `Create a ${user.role} successfully`,
-					// 		severity: "success"
-					// 	})
-					// );
 				}
 			} else if (activeStep === 3) {
 				const credentialValidation = "valid"; // await handlecredentialValidation();
@@ -703,47 +660,13 @@ const SignUp = () => {
 		]
 	);
 
-	// useEffect(() => {
-	// 	getUploadAdministration();
-	// }, [getUploadAdministration]);
-
-	// useEffect(() => {
-	// 	if (startTimer === true) {
-	// 		ref.current = setInterval(() => {
-	// 			const distance = countDownTime - Date.now();
-	// 			const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-	// 			const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-	// 			if (minutes === 0 && seconds === 0) {
-	// 				setStartTimer(false);
-	// 				setResendOTPButtonVisible(true);
-	// 				setResentOTPCaptionVisible(true);
-	// 			}
-	// 			setTimer(
-	// 				Object.assign(
-	// 					{},
-	// 					{
-	// 						minutes: String(minutes),
-	// 						seconds: seconds < 10 ? "0" + String(seconds) : String(seconds)
-	// 					}
-	// 				)
-	// 			);
-	// 		}, 1000);
-	// 	}
-
-	// 	return () => clearInterval(ref.current);
-	// }, [countDownTime, startTimer]);
-
 	return (
 		<div className="sign-up" id="sign-up">
 			<div className="container-outer" id="container-outer">
 				<div className="container-header">
 					<Grid container spacing={0} direction="column" alignItems="center">
 						<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-							<Stepper
-								activeStep={activeStep}
-								className="sign-up-stepper"
-								alternativeLabel
-							>
+							<Stepper activeStep={activeStep} className="sign-up-stepper" alternativeLabel>
 								{steps.map((label, index) => {
 									const stepProps = {};
 									const labelProps = {};
@@ -757,6 +680,7 @@ const SignUp = () => {
 						</Grid>
 					</Grid>
 				</div>
+				<SnackbarAPI snackbarProps={snackbarAPIProps} />
 				<Grid container spacing={0} direction="column" alignItems="center">
 					<Grid item xl={3} lg={3} md={3} sm={3} xs={3}>
 						<div className="container-inner" id="container-inner">
@@ -810,22 +734,15 @@ const SignUp = () => {
 													</div>
 												) : null}
 											</div>
-											<div
-												className="sign-up-button-container"
-												id="sign-up-button-container"
-											>
+											<div className="sign-up-button-container" id="sign-up-button-container">
 												<Button
 													className="button next-arrow-down"
 													onClick={handleSubmit}
 													variant="contained"
 												>
-													<span className="button-label-with-icon color-white" >
-														Next
-													</span>
+													<span className="button-label-with-icon color-white">Next</span>
 													<span>
-														<ArrowForwardIosIcon
-															className="button-icon color-white"
-														/>
+														<ArrowForwardIosIcon className="button-icon color-white" />
 													</span>
 												</Button>
 											</div>
@@ -848,8 +765,8 @@ const SignUp = () => {
 															user.email.length === 0
 																? ""
 																: emailExists
-																	? "Email is already exist"
-																	: ""
+																? "Email is already exist"
+																: ""
 														}
 														InputProps={{
 															startAdornment: (
@@ -859,8 +776,8 @@ const SignUp = () => {
 															),
 															endAdornment:
 																resendOTPButtonVisible &&
-																	user.email.match(mailformat) &&
-																	!OTPVerified ? (
+																user.email.match(mailformat) &&
+																!OTPVerified ? (
 																	<div
 																		style={{
 																			cursor:
@@ -925,13 +842,9 @@ const SignUp = () => {
 															variant="contained"
 														>
 															<span>
-																<ArrowBackIosIcon
-																	className="button-icon icon-back"
-																/>
+																<ArrowBackIosIcon className="button-icon icon-back" />
 															</span>
-															<span
-																className="button-label-with-icon icon-back"
-															>
+															<span className="button-label-with-icon icon-back">
 																Back
 															</span>
 														</Button>
@@ -942,15 +855,9 @@ const SignUp = () => {
 															type="submit"
 															variant="contained"
 														>
-															<span
-																className="button-label-with-icon"
-															>
-																Next
-															</span>
+															<span className="button-label-with-icon">Next</span>
 															<span>
-																<ArrowForwardIosIcon
-																	className="button-icon color-white"
-																/>
+																<ArrowForwardIosIcon className="button-icon color-white" />
 															</span>
 														</Button>
 													</div>
@@ -1100,15 +1007,9 @@ const SignUp = () => {
 														variant="contained"
 													>
 														<span>
-															<ArrowBackIosIcon
-																className="button-icon icon-back"
-															/>
+															<ArrowBackIosIcon className="button-icon icon-back" />
 														</span>
-														<span
-															className="button-label-with-icon icon-back"
-														>
-															Back
-														</span>
+														<span className="button-label-with-icon icon-back">Back</span>
 													</Button>
 													<Button
 														className="button theme-button-violet"
@@ -1116,15 +1017,9 @@ const SignUp = () => {
 														type="submit"
 														variant="contained"
 													>
-														<span
-															className="button-label-with-icon color-white"
-														>
-															Next
-														</span>
+														<span className="button-label-with-icon color-white">Next</span>
 														<span>
-															<ArrowForwardIosIcon
-																className="button-icon color-white"
-															/>
+															<ArrowForwardIosIcon className="button-icon color-white" />
 														</span>
 													</Button>
 												</div>
@@ -1147,8 +1042,8 @@ const SignUp = () => {
 															userNameExists
 																? "Username exists!"
 																: checkInvalidUserName
-																	? "Username must be between 4 to 20 characters and alpha-numeric!"
-																	: validation.user.user_name
+																? "Username must be between 4 to 20 characters and alpha-numeric!"
+																: validation.user.user_name
 														}
 														InputProps={{
 															startAdornment: (
@@ -1224,22 +1119,15 @@ const SignUp = () => {
 													/>
 												</div>
 												<div className="sign-up-button-container" id="sign-up-button-container">
-
 													<Button
 														className="button button-back"
 														onClick={handleBack}
 														variant="contained"
 													>
 														<span>
-															<ArrowBackIosIcon
-																className="button-icon icon-back"
-															/>
+															<ArrowBackIosIcon className="button-icon icon-back" />
 														</span>
-														<span
-															className="button-label-with-icon icon-back"
-														>
-															Back
-														</span>
+														<span className="button-label-with-icon icon-back">Back</span>
 													</Button>
 													<Tooltip
 														title="Please read the statement of understanding before signing up"
@@ -1251,15 +1139,11 @@ const SignUp = () => {
 															type="submit"
 															variant="contained"
 														>
-															<span
-																className="button-label-with-icon color-white"
-															>
+															<span className="button-label-with-icon color-white">
 																Sign Up
 															</span>
 															<span>
-																<PersonAddIcon
-																	className="button-icon color-white"
-																/>
+																<PersonAddIcon className="button-icon color-white" />
 															</span>
 														</Button>
 													</Tooltip>
@@ -1285,13 +1169,9 @@ const SignUp = () => {
 													onClick={handleSubmit}
 													variant="contained"
 												>
-													<span className="button-label-with-icon color-white" >
-														Login
-													</span>
+													<span className="button-label-with-icon color-white">Login</span>
 													<span>
-														<PersonIcon
-															className="button-icon color-white"
-														/>
+														<PersonIcon className="button-icon color-white" />
 													</span>
 												</Button>
 											</div>

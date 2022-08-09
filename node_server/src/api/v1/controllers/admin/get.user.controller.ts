@@ -109,7 +109,7 @@ export const SendOTP = async (req: Request, res: Response) => {
 				result: "Please provide email"
 			});
 		}
-		const UserInstance = await findUser(AdminModel, email);
+		const UserInstance = await service.query.fetchOne(AdminModel, req.body);
 		if (UserInstance) {
 			const otp: number = Math.floor(100000 + Math.random() * 900000);
 			const text = `The OTP is ${otp}`;
