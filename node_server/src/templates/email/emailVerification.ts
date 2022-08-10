@@ -1,4 +1,4 @@
-import { AtomicType } from "../../@types/types/atomicType.types";
+import { AtomicType } from "../../@types/atomicType.types";
 
 export const mailSubject = "OTP: For Email Verification";
 
