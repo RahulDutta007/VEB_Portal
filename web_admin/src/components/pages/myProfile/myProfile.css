@@ -1,0 +1,203 @@
+.my-profile .my-profile-container {
+	text-align: center;
+}
+
+.my-profile .card-content {
+}
+
+.my-profile .my-profile-action-button-container {
+	text-align: end;
+	margin-bottom: 1em;
+}
+
+.my-profile .Profile-info-text {
+	text-align: center;
+	font-size: 1.2rem;
+	font-weight: bold;
+	margin-top: 0.3em;
+	margin-bottom: 2em;
+}
+
+.my-profile .text-input {
+	margin-top: -1em;
+}
+.my-profile .form-label {
+	margin-bottom: 1em;
+}
+
+.my-profile .label-text {
+	text-align: left;
+	font-size: 1rem;
+	color: #424242;
+	font-weight: bold;
+	margin-top: -0.2em;
+	margin-bottom: 1em;
+	margin-right: 2em;
+}
+
+.my-profile .first-name-input {
+	padding-left: 1em;
+}
+
+.my-profile .last-name-input {
+	padding-left: 1em;
+}
+
+.my-profile .email-input {
+	padding-left: 1em;
+}
+
+.email-input .MuiInputBase-root {
+	margin-left: 4px !important;
+	margin-right: 0.3rem !important;
+}
+
+.my-profile .date-of-birth-input {
+	padding-left: 1em;
+}
+
+.date-of-birth-input .MuiButtonBase-root {
+	margin-left: -1.3rem !important;
+}
+
+.my-profile .date-picker .MuiInputBase-root {
+	display: inline-flex;
+	flex-direction: row-reverse;
+}
+
+.my-profile .ssn-input {
+	padding-left: 1em;
+}
+
+.my-profile .user-name-input {
+	padding-left: 1em;
+}
+
+.my-profile .claim-notification-checkbox {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 1em;
+	margin-left: 1em;
+	margin-right: 1em;
+}
+
+.my-profile .change-password-text {
+	text-align: center;
+	/* cursor: pointer; */
+}
+
+.my-profile .change-password-header {
+	text-align: center;
+	font-size: 1.2rem;
+	font-weight: bold;
+	margin-top: 0.3em;
+	margin-bottom: 2em;
+}
+
+.my-profile .close-icon {
+	text-align: end;
+}
+
+/* .my-profile .old-password-input{
+    padding-left: 0em;
+}
+
+.my-profile .new-password-input{
+    padding-left: 0em;
+
+}
+
+.my-profile .confirm-new-password-input{
+    padding-left: 0em;
+
+} */
+
+.my-profile .submit-button {
+	text-align: center;
+	margin-bottom: 1em;
+}
+
+.my-profile .change-password-icon-container {
+	position: absolute;
+}
+
+.required::after {
+	content: " *";
+	color: red;
+}
+
+@media screen and (max-width: 1919px) and (min-width: 962px) {
+	/* .my-profile .my-profile-action-button-container{
+        text-align: center;
+    } */
+
+	.my-profile .show-change-password {
+		text-align: center;
+	}
+}
+
+@media screen and (max-width: 1342px) and (min-width: 962px) {
+	/* .my-profile .old-password-input{
+        padding-left: inherit;
+    }
+
+    .my-profile .new-password-input{
+        padding-left: inherit;
+    } */
+
+	/* .my-profile .email-input{
+        padding-left: 1em;
+    }
+
+    .my-profile .ssn-input{
+        padding-left: 1em;
+    }
+
+    .my-profile .date-of-birth-input{
+        padding-left: 1em;
+    } */
+}
+
+@media (max-width: 1290px) {
+	/* .information-label {
+
+    } */
+}
+
+@media (max-width: 962px) {
+	.my-profile .my-profile-action-button-container {
+		text-align: center;
+	}
+
+	.my-profile .show-change-password {
+		text-align: center;
+	}
+}
+
+@media (max-width: 802px) {
+	.my-profile .my-profile-action-button-container {
+		text-align: center;
+	}
+	.my-profile .show-change-password {
+		text-align: center;
+	}
+
+	/* .my-profile .old-password-input{
+        padding-left: inherit;
+    }
+
+    .my-profile .new-password-input{
+        padding-left: inherit;
+    } */
+}
+
+/* @media (max-width: 802px) {
+    .my-profile .ssn-input{
+        padding-left: inherit;
+    }
+
+    .my-profile .email-input{
+        padding-left: inherit;
+    }
+} */
