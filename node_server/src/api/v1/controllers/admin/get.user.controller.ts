@@ -175,7 +175,7 @@ export const VerifyOTP = async (req: Request, res: Response) => {
 const findUser = async (model: Model<any>, user: any) => {
 	const filter = user.includes("@")
 		? { email: user }
-		: { admin_id: user };
+		: { user_name: user };
 	return await service.query.fetchOne(model, filter);
 }
 

@@ -180,8 +180,7 @@ const SignUp = () => {
 			_validation.current.user["email"] = "Email is required to send OTP";
 			_validation.current.user["status"] = "invalid";
 			flag = false;
-		}
-		else if (email.length > 0) {
+		} else if (email.length > 0) {
 			if (!email.match(mailformat)) {
 				_validation.current.user["email"] = "Valid Email is required";
 				_validation.current["status"] = "invalid";
@@ -242,7 +241,7 @@ const SignUp = () => {
 		}
 		if (SSN !== null) {
 			if (SSN !== "") {
-				var _SSN = SSN.replaceAll("-", "");
+				const _SSN = SSN.replaceAll("-", "");
 				if (String(_SSN).length !== 9) {
 					_validation.current.user["SSN"] = "Enter correct 9 digit SSN";
 					_validation.current["status"] = "invalid";
@@ -493,7 +492,7 @@ const SignUp = () => {
 					user: {}
 				};
 				if (email.match(mailformat)) {
-					_validation.current["status"] = "valid"
+					_validation.current["status"] = "valid";
 					setValidation(Object.assign({}, _validation.current));
 				}
 				findEmail(value);
@@ -574,8 +573,7 @@ const SignUp = () => {
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				setUser(Object.assign({}, user, { [name]: value }));
 			}
 		},
@@ -584,8 +582,8 @@ const SignUp = () => {
 
 	const handleConfirmPasswordChange = useCallback(
 		(event: { target: { value: any } }) => {
-			let { value } = event.target;
-			setConfirmPassword(value)
+			const { value } = event.target;
+			setConfirmPassword(value);
 		},
 		[confirm_password, setConfirmPassword]
 	);
@@ -673,11 +671,10 @@ const SignUp = () => {
 				const emailValidation = await handleEmailValidation();
 				if (emailValidation === "valid") {
 					if (OTPVerified) {
-						setActiveStep(activeStep + 1)
+						setActiveStep(activeStep + 1);
 					} else {
-						alert("Please very OTP")
+						alert("Please very OTP");
 					}
-
 				}
 			} else if (activeStep === 2) {
 				if (user.SSN !== reEnteredSSN) {
@@ -691,8 +688,7 @@ const SignUp = () => {
 			} else if (activeStep === 3) {
 				if (user.password !== confirm_password) {
 					alert("Please Reenter correct password");
-				}
-				else {
+				} else {
 					const credentialValidation = await handlecredentialValidation();
 					if (credentialValidation === "valid") {
 						const { role, date_of_birth } = user;
@@ -908,8 +904,8 @@ const SignUp = () => {
 															user.email.length === 0
 																? ""
 																: emailExists
-																	? "Email is already exist"
-																	: ""
+																? "Email is already exist"
+																: ""
 														}
 														InputProps={{
 															startAdornment: (
@@ -919,8 +915,8 @@ const SignUp = () => {
 															),
 															endAdornment:
 																resendOTPButtonVisible &&
-																	user.email.match(mailformat) &&
-																	!OTPVerified ? (
+																user.email.match(mailformat) &&
+																!OTPVerified ? (
 																	<div
 																		style={{
 																			cursor:
@@ -965,9 +961,9 @@ const SignUp = () => {
 															helperText={
 																startTimer
 																	? timer.minutes +
-																	":" +
-																	timer.seconds +
-																	" before expiration"
+																	  ":" +
+																	  timer.seconds +
+																	  " before expiration"
 																	: ""
 															}
 															variant="outlined"
@@ -1209,8 +1205,8 @@ const SignUp = () => {
 															userNameExists
 																? "Username exists!"
 																: checkInvalidUserName
-																	? "Username must be between 4 to 20 characters and alpha-numeric!"
-																	: validation.user.user_name
+																? "Username must be between 4 to 20 characters and alpha-numeric!"
+																: validation.user.user_name
 														}
 														InputProps={{
 															startAdornment: (

@@ -276,3 +276,8 @@
 		justify-content: flex-end !important;
 	}
 }
+
+.required::after {
+	content: " *";
+	color: red;
+}
