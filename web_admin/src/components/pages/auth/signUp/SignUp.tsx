@@ -209,32 +209,16 @@ const SignUp = () => {
 	const handleSendOTPToEmailClick = async () => {
 		const payload = {
 			email: user.email,
-			role: user.role.toUpperCase()
+			type: "VERIFICATION"
 		};
-		const response = await api.auth.sendOTP(payload);
-		if (response.result === "OTP Sent Successfully") {
-			// eslint-disable-next-line arrow-parens
+		const _verificationToken = await api.OTP.sendToEmail(payload);
+		if (_verificationToken) {
 			setOTPVerified(false);
-			setSnackbarAPIProps(
-				Object.assign({}, snackbarAPIProps, {
-					open: true,
-					message: "Sent OTP Successfully",
-					severity: "success"
-				})
-			);
+			alert("OTP Sent to Email");
 			setResendOTPButtonVisible(false);
 			// setCountDownTime(Date.now() + 1 * 60000);
 			setStartTimer(true);
-		} else {
-			setOTPVerified(false);
-			setSnackbarAPIProps(
-				Object.assign({}, snackbarAPIProps, {
-					open: true,
-					message: "Error while sending OTP",
-					severity: "error"
-				})
-			);
-			setResendOTPButtonVisible(true);
+			setVerificationToken(_verificationToken);
 		}
 	};
 
@@ -244,6 +228,13 @@ const SignUp = () => {
 			check: user.email,
 			verification_key: verificationToken
 		};
+		const isVerified = await api.OTP.verifyOTP(payload);
+		if (isVerified === true) {
+			alert("Email Id has been verified");
+			setActiveStep((prevActiveStep: number) => prevActiveStep + 1);
+			setOTP("");
+			setOTPVerified(true);
+		}
 	};
 
 	const handleClose = useCallback(
@@ -572,10 +563,11 @@ const SignUp = () => {
 				const roleValidation = await handleRoleValidation();
 				if (roleValidation === "valid") setActiveStep(activeStep + 1);
 			} else if (activeStep === 1) {
-				const otpVerify = await api.auth.verifyOTP({ otp: parseInt(OTP) }, user.email);
-				if (otpVerify.result === "OTP Verified Successfully") {
-					setActiveStep(activeStep + 1);
-				}
+				// const otpVerify = await api.auth.verifyOTP({ otp: parseInt(OTP) }, user.email);
+				// if (otpVerify.result === "OTP Verified Successfully") {
+				// 	setActiveStep(activeStep + 1);
+				// }
+				setActiveStep(activeStep + 1);
 			} else if (activeStep === 2) {
 				const personalDetailsValidation = await handlePersonalDetailsValidation();
 				if (personalDetailsValidation === "valid") {
@@ -650,12 +642,10 @@ const SignUp = () => {
 			activeStep,
 			handlePersonalDetailsValidation,
 			handleRoleValidation,
-			// handlecredentialValidation,
 			navigate,
 			reEnteredSSN,
 			signUpDialogProps,
 			user,
-			OTP,
 			snackbarAPIProps
 		]
 	);
@@ -822,11 +812,28 @@ const SignUp = () => {
 															// }
 															variant="outlined"
 															onChange={handleOTPChange}
+															style={{ width: "100%", borderRadius: 50 }}
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
-																		<VpnKeyIcon className="auth-input-icon" />
+																		<VpnKeyIcon style={{ color: "#7cb342" }} />
 																	</InputAdornment>
+																),
+																endAdornment: (
+																	<div
+																		style={{
+																			cursor: OTP === "" ? "not-allowed" : "auto"
+																		}}
+																	>
+																		<Button
+																			variant="outlined"
+																			onClick={handleVerifyOTPClick}
+																			style={{ marginLeft: 5 }}
+																			disabled={OTP === "" ? true : false}
+																		>
+																			Verify
+																		</Button>
+																	</div>
 																)
 															}}
 														/>
