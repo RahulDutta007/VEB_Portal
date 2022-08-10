@@ -34,7 +34,6 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 
 import "./myProfile.css";
-// import SnackbarAPICall from "../../shared/snackbar/SnackbarAPICall";
 
 const mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/;
 
@@ -69,7 +68,6 @@ const MyProfile = () => {
 			);
 		}
 	});
-
 	const { user, setUser } = useContext(AuthContext);
 	const [validation, setValidation] = useState<Validation>();
 	let _validation: Validation;
@@ -465,30 +463,34 @@ const MyProfile = () => {
 		setChangePassword(Object.assign({}, changePassword, { [name]: value }));
 	};
 
+	// const getUser = useCallback(async () => {
+	// 	const { Authorization, Bearer } = AUTHORIZATION;
+	// 	const token = localStorage.getItem("@jwt");
+	// 	try {
+	// 		const response = await trackPromise(
+	// 			axios.get(`${url}:${port}/api/v1/user`, {
+	// 				headers: {
+	// 					[Authorization]: `${Bearer} ${token}`
+	// 				}
+	// 			})
+	// 		);
+	// 		const { data } = response.data;
+	// 		console.log("getUser", data);
+	// 		const ssn = String(data.SSN);
+	// 		const ssnValue = ssn.substring(0, 3) + "-" + ssn.substring(3, 2) + "-" + ssn.substring(5);
+	// 		const _user = {
+	// 			...data,
+	// 			SSN: ssnValue
+	// 		};
+	// 		setUser(Object.assign({}, _user));
+	// 	} catch (err) {
+	// 		console.log("err", err);
+	// 	}
+	// }, [setUser]);
+
 	const getUser = useCallback(async () => {
-		const { Authorization, Bearer } = AUTHORIZATION;
-		const token = localStorage.getItem("@jwt");
-		try {
-			const response = await trackPromise(
-				axios.get(`${url}:${port}/api/v1/user`, {
-					headers: {
-						[Authorization]: `${Bearer} ${token}`
-					}
-				})
-			);
-			const { data } = response.data;
-			console.log("getUser", data);
-			const ssn = String(data.SSN);
-			const ssnValue = ssn.substr(0, 3) + "-" + ssn.substr(3, 2) + "-" + ssn.substr(5);
-			const _user = {
-				...data,
-				SSN: ssnValue
-			};
-			setUser(Object.assign({}, _user));
-		} catch (err) {
-			console.log("err", err);
-		}
-	}, [setUser]);
+		// console.log("User", user?.info);
+	}, []);
 
 	useEffect(() => {
 		getUser();

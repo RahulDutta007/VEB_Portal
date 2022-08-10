@@ -5,13 +5,13 @@ import {
 	forgetPassword,
 	changeForgetPassword,
 	changeForgetUserId,
-	sendOTP,
 	findEmail,
-	verifyOTP,
 	createAdmin,
 	createEnroller,
 	findUserName
 } from "./auth/login";
+
+import { OTP } from "./OTP/OTP";
 
 export const api = {
 	auth: {
@@ -19,12 +19,14 @@ export const api = {
 		forgetPassword,
 		changeForgetPassword,
 		changeForgetUserId,
-		sendOTP,
 		findEmail,
-		verifyOTP,
 		createAdmin,
 		createEnroller,
 		findUserName
+	},
+	OTP: {
+		sendToEmail: OTP.sendOTPToEmail,
+		verifyOTP: OTP.verifyOTP
 	},
 	assignGroupsAndLocation: {
 		getGroupAndLocationAssignment: _assignGroupsAndLocation.getGroupAndLocationAssignment,

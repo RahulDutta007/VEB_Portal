@@ -12,7 +12,7 @@ const SCOPES = [
 	"https://www.googleapis.com/auth/gmail.send"
 ];
 
-const TOKEN_PATH = "./config/gmail/token.json";
+const TOKEN_PATH = "./src/config/gmail/token.json";
 
 export function authorize(
 	credentials: { web: { client_secret: any; client_id: any; redirect_uris: any } },
@@ -22,7 +22,7 @@ export function authorize(
 			details: {
 				mailOptions: { to: any; from: any; subject: any; body: any };
 				res: {
-					status: (arg0: number) => { (): any; new (): any; send: { (arg0: any): void; new (): any } };
+					status: (arg0: number) => { (): any; new(): any; send: { (arg0: any): void; new(): any } };
 					send: () => void;
 				};
 			}
@@ -103,7 +103,7 @@ export function sendMessage(
 	details: {
 		mailOptions: { to: any; from: any; subject: any; body: any };
 		res: {
-			status: (arg0: number) => { (): any; new (): any; send: { (arg0: any): void; new (): any } };
+			status: (arg0: number) => { (): any; new(): any; send: { (arg0: any): void; new(): any } };
 			send: () => void;
 		};
 	}

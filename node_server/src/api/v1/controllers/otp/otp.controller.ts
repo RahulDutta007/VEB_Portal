@@ -9,6 +9,7 @@ import OTPModel from "../../../../models/otp/otp.model";
 export const sendOTPToEmail = async (req: Request, res: Response) => {
 	try {
 		const { email, type } = req.body;
+
 		const OTP = Math.floor(Math.random() * 90000) + 10000;
 		const now = Date.now();
 		const expirationTime = addMinutesToDate(now, 10);
@@ -30,6 +31,7 @@ export const sendOTPToEmail = async (req: Request, res: Response) => {
 		const encoded = await encode(JSON.stringify(details));
 
 		const mailContent = await getMailContent(type);
+
 		if (mailContent === null) {
 			return res.status(400).json({
 				message: MESSAGE.custom("Incorrect Type Provided"),
@@ -49,6 +51,7 @@ export const sendOTPToEmail = async (req: Request, res: Response) => {
 		};
 
 		await postEmail(mailDetails);
+
 
 		return res.status(200).json({
 			message: MESSAGE.post.succ,
