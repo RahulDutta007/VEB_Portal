@@ -6,7 +6,7 @@ import {
 	changeForgetPassword,
 	changeForgetUserId,
 	findEmail,
-	createAdmin,
+	signUpAdmin,
 	createEnroller,
 	findUserName
 } from "./auth/login";
@@ -20,7 +20,7 @@ export const api = {
 		changeForgetPassword,
 		changeForgetUserId,
 		findEmail,
-		createAdmin,
+		signUpAdmin,
 		createEnroller,
 		findUserName
 	},
