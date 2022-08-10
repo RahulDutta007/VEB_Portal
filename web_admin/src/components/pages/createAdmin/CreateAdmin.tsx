@@ -60,6 +60,7 @@ const CreateAdmin = () => {
 	const [hasCreateClick, setHasCreateClick] = useState(false);
 	const [assignedGroups, setAssignedGroups] = useState<any[]>([]);
 	const [selectedGroup, setSelectedGroup] = useState({});
+	const { setDashboardHeader } = useContext(UIContext);
 	const { user } = useContext(AuthContext); // Extracting logged in user from central storage.
 	const [createdUser, setCreatedUsers] = useState({
 		user_name: "", // This Id is mapped with Group HR (Group Specific)
@@ -104,7 +105,6 @@ const CreateAdmin = () => {
 			);
 		}
 	});
-	const { setDashboardHeader } = useContext(UIContext);
 
 	const findUserEmail = useDebouncedCallback(async (value: string) => {
 		if (value !== "") {
@@ -843,6 +843,10 @@ const CreateAdmin = () => {
 		handleUserDateChange,
 		user?.role
 	]);
+
+	useEffect(() => {
+		setDashboardHeader(ADMIN_DASHBOARD_HEADER.create_user);
+	}, [setDashboardHeader]);
 
 	return (
 		<div className="create-createdUser" id="create-createdUser">

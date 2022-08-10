@@ -492,8 +492,12 @@ const MyProfile = () => {
 
 	useEffect(() => {
 		getUser();
+	}, [getUser]);
+
+	useEffect(() => {
+		console.log(ADMIN_DASHBOARD_HEADER.my_profile);
 		setDashboardHeader(ADMIN_DASHBOARD_HEADER.my_profile);
-	}, [getUser, setDashboardHeader]);
+	}, [setDashboardHeader]);
 
 	useEffect(() => {
 		setChangePassword(Object.assign({}, changePassword, { user_name: user?.user_name }));

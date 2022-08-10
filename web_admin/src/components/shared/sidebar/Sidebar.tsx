@@ -1,42 +1,52 @@
 import { useState, useContext, useEffect, useCallback, Suspense } from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
-import MenuIcon from "@mui/icons-material/Menu";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import { Accordion, AccordionSummary, Avatar, AccordionDetails } from "@mui/material";
+import { SidebarProps } from "../../../@types/components/sidebar.types";
 import { UI_THEME } from "../../../constants/UITheme/UITheme";
-import Badge, { BadgeProps } from "@mui/material/Badge";
-import { styled } from "@mui/material/styles";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { keyframes } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import { UIContext, AuthContext } from "../../../contexts";
 import SIDEBAR_OPTIONS from "../../../constants/sidebarOptions";
 import { Tab } from "../../../@types/sidebarOptions.types";
-
 import { AUTHORIZATION } from "../../../constants/api/auth";
 import axios from "axios";
 import { url, port, headers } from "../../../config/config";
 import { trackPromise } from "react-promise-tracker";
+import { DialogProps, TDialogProps } from "../../../@types/dialogProps.types";
+import { ADMIN_DASHBOARD_HEADER } from "../../../constants/caption/dashboardHeader";
+
+import {
+	AppBar,
+	Box,
+	CssBaseline,
+	Divider,
+	Drawer,
+	IconButton,
+	Accordion,
+	AccordionSummary,
+	Avatar,
+	AccordionDetails,
+	Popover,
+	List,
+	ListItem,
+	ListItemButton,
+	ListItemIcon,
+	ListItemText,
+	ListItemAvatar,
+	Badge,
+	BadgeProps
+} from "@mui/material";
+
+import { styled } from "@mui/material/styles";
 
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PersonIcon from "@mui/icons-material/Person";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import MailIcon from "@mui/icons-material/Mail";
+import MenuIcon from "@mui/icons-material/Menu";
+import Toolbar from "@mui/material/Toolbar";
 
 import "./sidebar.css";
-import { SidebarProps } from "../../../@types/components/sidebar.types";
 
 const rippleKeyFrame = keyframes`
 	0% {
@@ -73,13 +83,25 @@ const drawerWidth = 240;
 
 const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 	const [mobileOpen, setMobileOpen] = useState(false);
-	const { dashboardHeader, selectedTab } = useContext(UIContext);
+	const { dashboardHeader, selectedTab, setDashboardHeader } = useContext(UIContext);
+
+	const [anchorEl, setAnchorEl] = useState<(EventTarget & (HTMLLIElement | HTMLButtonElement)) | null>(null);
+	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<(EventTarget & HTMLButtonElement) | null>(null);
+	const isMenuOpen = Boolean(anchorEl);
 	const { user, setUser } = useContext(AuthContext);
 	const navigate = useNavigate();
+	const [logoutDialogProps, setLogoutDialogProps] = useState<TDialogProps>({
+		openDialog: false,
+		title: "",
+		content: "",
+		actions: []
+	});
 
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
 	};
+
+	const handleMobileMenuClose = () => setMobileMoreAnchorEl(null);
 
 	const hClick = (route: any) => {
 		navigate(route);
@@ -110,16 +132,113 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 		}
 	}, [setUser]);
 
+	const handleProfileMenuOpen = (event: React.MouseEvent<HTMLLIElement | HTMLButtonElement>) => {
+		const { currentTarget } = event;
+		setAnchorEl(currentTarget);
+		const menuArrowElement = document.getElementById("menuArrow");
+		if (menuArrowElement) {
+			menuArrowElement.style.display = "block";
+		}
+	};
+
+	const handleMenuClose = () => {
+		setAnchorEl(null);
+		const menuArrowElement = document.getElementById("menuArrow");
+		if (menuArrowElement) {
+			menuArrowElement.style.display = "none";
+		}
+		handleMobileMenuClose();
+	};
+
+	const handleProfileClick = useCallback(() => {
+		navigate("/my-profile");
+		setAnchorEl(null);
+		handleMobileMenuClose();
+		const menuArrowElement = document.getElementById("menuArrow");
+		if (menuArrowElement) {
+			menuArrowElement.style.display = "none";
+		}
+	}, [navigate]);
+
+	const handleLogoutClick = useCallback(() => {
+		localStorage.removeItem("@jwt");
+		setLogoutDialogProps(
+			Object.assign({}, logoutDialogProps, {
+				openDialog: true,
+				title: "Thank you",
+				content: "You have successfully logged out of Nexcalibre Portal",
+				actions: [
+					{
+						label: "Okay",
+						callback: () => {
+							window.location.reload();
+							setLogoutDialogProps(Object.assign({}, logoutDialogProps, { openDialog: false }));
+						}
+					}
+				]
+			})
+		);
+	}, [logoutDialogProps]);
+
 	useEffect(() => {
 		getUser();
 	}, [getUser]);
+
+	// useEffect(() => {
+	// 	setDashboardHeader(ADMIN_DASHBOARD_HEADER.dashBoard);
+	// }, [setDashboardHeader]);
+
+	const menuId = "primary-search-account-menu";
+
+	const renderMenu = (
+		<Popover
+			id={menuId}
+			open={isMenuOpen}
+			anchorEl={anchorEl}
+			onClose={handleMenuClose}
+			anchorOrigin={{
+				vertical: "bottom",
+				horizontal: "center"
+			}}
+			transformOrigin={{
+				vertical: "top",
+				horizontal: "center"
+			}}
+			style={
+				{
+					//scrollbar: 5
+				}
+			}
+		>
+			<div className="profile-menu">
+				<List>
+					<ListItem button onClick={handleProfileClick}>
+						<ListItemAvatar>
+							<Avatar className="list-avatar">
+								<PersonIcon />
+							</Avatar>
+						</ListItemAvatar>
+						<ListItemText primary="My Profile" />
+					</ListItem>
+					<ListItem button onClick={handleLogoutClick}>
+						<ListItemAvatar>
+							<Avatar className="list-avatar">
+								<ExitToAppIcon /* style={{ color: "#44b700"}} */ />
+							</Avatar>
+						</ListItemAvatar>
+						<ListItemText primary="Logout" />
+					</ListItem>
+				</List>
+			</div>
+		</Popover>
+	);
 
 	const drawer = (
 		<div>
 			<Toolbar />
 			<div className="welcome-container">
 				<div className="dashboard-type-text" id="dashboard-type-text">
-					Admin Dashboard
+					Dashboard
 				</div>
 				<StyledBadge
 					overlap="circular"
@@ -220,6 +339,22 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 
 	return (
 		<div className="admin-sidebar">
+			<div
+				id="menuArrow"
+				style={{
+					width: "0",
+					height: "0",
+					borderLeft: "7px solid transparent",
+					borderRight: "7px solid transparent",
+					borderBottom: "15px solid #fff",
+					zIndex: 9999,
+					position: "absolute",
+					top: 43,
+					right: 30,
+					transition: "2s",
+					display: "none"
+				}}
+			></div>
 			<Box sx={{ display: "flex" }}>
 				<CssBaseline />
 				<AppBar
@@ -240,7 +375,7 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 							<MenuIcon />
 						</IconButton>
 						<div className="appbar-header" id="appbar-header">
-							{dashboardHeader ? "Dashboard Header" : "Dashboard Header"}
+							{dashboardHeader}
 						</div>
 						<div className="toolbar-grow" />
 						<Box sx={{ display: { xs: "none", md: "flex" } }}>
@@ -258,9 +393,9 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 								size="large"
 								edge="end"
 								aria-label="account of current user"
-								//aria-controls={menuId}
+								aria-controls={menuId}
 								aria-haspopup="true"
-								//onClick={handleProfileMenuOpen}
+								onClick={handleProfileMenuOpen}
 								color="inherit"
 							>
 								<AccountCircle className="toolbar-icon" />
@@ -268,6 +403,7 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 						</Box>
 					</Toolbar>
 				</AppBar>
+				{renderMenu}
 				<Box
 					component="nav"
 					sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
@@ -309,28 +445,6 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 				</Box>
 				<Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
 					<Toolbar />
-					{/* <Typography paragraph>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-						labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum facilisis leo
-						vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum quisque non
-						tellus. Convallis convallis tellus id interdum velit laoreet id donec ultrices. Odio morbi quis
-						commodo odio aenean sed adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies integer
-						quis. Cursus euismod quis viverra nibh cras. Metus vulputate eu scelerisque felis imperdiet
-						proin fermentum leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-						feugiat vivamus at augue. At augue eget arcu dictum varius duis at consectetur lorem. Velit sed
-						ullamcorper morbi tincidunt. Lorem donec massa sapien faucibus et molestie ac.
-					</Typography>
-					<Typography paragraph>
-						Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla facilisi
-						etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac tincidunt. Ornare
-						suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat consequat mauris.
-						Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed vulputate odio. Morbi
-						tincidunt ornare massa eget egestas purus viverra accumsan in. In hendrerit gravida rutrum
-						quisque non tellus orci ac. Pellentesque nec nam aliquam sem et tortor. Habitant morbi tristique
-						senectus et. Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean euismod
-						elementum nisi quis eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-						posuere sollicitudin aliquam ultrices sagittis orci a.
-					</Typography> */}
 					<Suspense fallback={<div />}>
 						<WrappedComponent />
 					</Suspense>
