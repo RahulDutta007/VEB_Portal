@@ -994,7 +994,8 @@ const CreateAdmin = () => {
 																	}}
 																	helperText={
 																		field.name === "email"
-																			? field.value.length === 0
+																			? field.value.length === 0 &&
+																			  _validation.current !== undefined
 																				? `${field.label} is required`
 																				: !checkInvalidEmail && emailExists
 																				? "Email exists!"
