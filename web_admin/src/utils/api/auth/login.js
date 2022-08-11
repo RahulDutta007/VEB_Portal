@@ -301,14 +301,14 @@ export const signUpAdmin = async (_payload) => {
 				alert("No Such Data!");
 			} else if (message === "Login Unsuccessful!") {
 				alert("Login Unsuccessful!");
-			} else if (message === "AGENT is already registered!") { return { message } }
-			else if (message) {
-				return { message }
+			} else if (message === "AGENT is already registered!") {
+				return { message };
+			} else if (message) {
+				return { message };
+			} else {
+				const message = "Please try with valid email and role";
+				return { message };
 			}
-			else {
-				const message = "Please try with valid email and role"
-				return { message }
-			};
 		} else if (error.response.status === StatusCodes.UNAUTHORIZED) {
 			const { message } = error.response.data;
 
