@@ -1002,10 +1002,16 @@ const CreateAdmin = () => {
 																				: checkInvalidEmail
 																				? "Please enter a valid email address!"
 																				: ""
-																			: field.name === "user_name" &&
-																			  userNameExists
-																			? "User Name exists!"
-																			: _validation?.current?.status ===
+																			: field.name === "user_name"
+																			? field.value.length === 0 &&
+																			  _validation.current !== undefined
+																				? `${field.label} is required`
+																				: userNameExists
+																				? "User Name exists!"
+																				: ""
+																			: field.name !== "email" &&
+																			  field.name !== "user_name" &&
+																			  _validation?.current?.status ===
 																					"invalid" &&
 																			  Object.keys(
 																					_validation?.current?.createdUser
