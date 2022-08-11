@@ -352,8 +352,8 @@ const SignUp = () => {
 	const handleBack = () => {
 		// eslint-disable-next-line arrow-parens
 		if (activeStep === 2) {
-			setUser(Object.assign({}, user, { email: "" }));
-			setOTP("");
+			// setUser(Object.assign({}, user, { email: "" }));
+			// setOTP("");
 		}
 		// eslint-disable-next-line arrow-parens
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -904,8 +904,8 @@ const SignUp = () => {
 															user.email.length === 0
 																? ""
 																: emailExists
-																? "Email is already exist"
-																: ""
+																	? "Email is already exist"
+																	: ""
 														}
 														InputProps={{
 															startAdornment: (
@@ -915,8 +915,8 @@ const SignUp = () => {
 															),
 															endAdornment:
 																resendOTPButtonVisible &&
-																user.email.match(mailformat) &&
-																!OTPVerified ? (
+																	user.email.match(mailformat) &&
+																	!OTPVerified ? (
 																	<div
 																		style={{
 																			cursor:
@@ -961,9 +961,9 @@ const SignUp = () => {
 															helperText={
 																startTimer
 																	? timer.minutes +
-																	  ":" +
-																	  timer.seconds +
-																	  " before expiration"
+																	":" +
+																	timer.seconds +
+																	" before expiration"
 																	: ""
 															}
 															variant="outlined"
@@ -1205,8 +1205,8 @@ const SignUp = () => {
 															userNameExists
 																? "Username exists!"
 																: checkInvalidUserName
-																? "Username must be between 4 to 20 characters and alpha-numeric!"
-																: validation.user.user_name
+																	? "Username must be between 4 to 20 characters and alpha-numeric!"
+																	: validation.user.user_name
 														}
 														InputProps={{
 															startAdornment: (

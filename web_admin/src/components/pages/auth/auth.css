@@ -144,6 +144,11 @@
         color: #FFFFFF !important;
     }
 
+    .login .MuiFormLabel-root.Mui-disabled,
+    .sign-up .MuiFormLabel-root.Mui-disabled {
+        color: #FFFFFF !important;
+    }
+
     .login .MuiFormLabel-root.Mui-focused,
     .MuiInputBase-root.Mui-focused,
     .sign-up .MuiFormLabel-root.Mui-focused,
