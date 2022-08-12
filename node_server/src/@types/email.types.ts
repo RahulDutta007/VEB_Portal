@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { AtomicType } from "./atomicType.types";
+import { AtomicType, LinkType, TokenType } from "./atomicType.types";
 
 export type MailContent = {
 	mailBody: (OTP: AtomicType) => string;
@@ -14,4 +14,9 @@ export type MailDetails = {
 		body: any;
 	};
 	res: Response<any, Record<string, any>>;
+};
+
+export type MailHTMLContent = {
+	mailBody: (link: LinkType, token: TokenType) => string;
+	mailSubject: string;
 };
