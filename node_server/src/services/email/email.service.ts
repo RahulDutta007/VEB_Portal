@@ -1,7 +1,7 @@
-import { MailContent, MailDetails } from "../../@types/email.types";
+import { MailContent, MailDetails, MailHTMLContent } from "../../@types/email.types";
 import { authorize, sendMessage } from "../../config/gmail/gmail";
 import fs from "fs";
-import { AtomicType } from "../../@types/atomicType.types";
+import { AtomicType, LinkType, TokenType } from "../../@types/atomicType.types";
 import { EMAIL_TYPE } from "../../constants/emailType";
 
 export const verificationEmailSubject = "OTP: For Email Verification";
@@ -43,6 +43,18 @@ export const forgetUserIdBody = (user_id: AtomicType): string => {
 	);
 };
 
+export const forgetPasswordSubject = "Reset Password";
+
+export const forgetPasswordBody = (link: LinkType, token: TokenType): string => {
+	return (
+		"Dear User, \n\n" +
+		`<a href="${link}/forget-password/verify-token/${token}" target="_blank" > Click here to Reset Password within 15 minutes. </a> \n\n` +
+		"This is a auto-generated email. Please do not reply to this email.\n\n" +
+		"Regards\n" +
+		"Nexcaliber\n\n"
+	);
+};
+
 export const getMailContent = async (type: string): Promise<MailContent | null> => {
 	if (type === EMAIL_TYPE.verification) {
 		const mailSubject = verificationEmailSubject;
@@ -56,8 +68,17 @@ export const getMailContent = async (type: string): Promise<MailContent | null> 
 		const mailSubject = forgetUserIdSubject;
 		const mailBody = forgetUserIdBody;
 		return { mailSubject, mailBody };
+	} else {
+		return null;
 	}
-	else {
+};
+
+export const getHTMLMailContent = async (type: string): Promise<MailHTMLContent | null> => {
+	if (type === EMAIL_TYPE.forget_password) {
+		const mailSubject = forgetPasswordSubject;
+		const mailBody = forgetPasswordBody;
+		return { mailSubject, mailBody };
+	} else {
 		return null;
 	}
 };
