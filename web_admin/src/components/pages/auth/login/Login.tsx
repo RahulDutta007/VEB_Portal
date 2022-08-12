@@ -243,15 +243,14 @@ const Login = (props: any): JSX.Element => {
 	const handleSubmitChangePassword = useCallback(async () => {
 		// event.preventDefault();
 		const payload = {
-			new_password: newPassword,
-			confirm_password: confirmPassword
+			new_password: newPassword
 		};
 		const validationResult = await handleValidation("Change Password");
 		if (validationResult === "invalid") {
 			return false;
 		}
 		const response = await trackPromise(api.auth.changeForgetPassword(payload, token));
-		console.log("55", response);
+
 		if (response) {
 			setStatusMessage("Password Changed Successfully");
 			navigate("/login");
@@ -266,7 +265,7 @@ const Login = (props: any): JSX.Element => {
 			setStatusMessage("Error Occurred");
 			navigate("/login");
 		}
-	}, [newPassword, confirmPassword, navigate, token, snackbarAPIProps]);
+	}, [newPassword, handleValidation, token, navigate, snackbarAPIProps]);
 
 	const handleRoleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		const { currentTarget } = event;

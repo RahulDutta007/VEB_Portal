@@ -45,25 +45,40 @@ export const forgetPassword = async (_payload) => {
 		const response = await post(endpoint, _payload, headers);
 
 		if (response) {
-			const { data } = response;
-			return data;
+			const {
+				data: { message }
+			} = response;
+			if (message === MESSAGE.post.succ) {
+				const {
+					data: { result }
+				} = response;
+				return result;
+			}
 		}
 	} catch (error) {
 		if (error.response.status === StatusCodes.BAD_REQUEST) {
 			const { message } = error.response.data;
 
-			if (message === "Unauthorised Role!") {
-				alert("Unauthorised Role!");
-			} else if (message === MESSAGE.none) {
-				alert("No Such Data!");
-			} else if (message === "Login Unsuccessful!") {
-				alert("Login Unsuccessful!");
+			if (message === "Incorrect Type Provided!") {
+				alert("Incorrect Type Provided!");
+			} else if (message === MESSAGE.post.fail) {
+				alert("Failed to Send Mail!");
 			} else alert("Other Errors of Status Code 400");
 		} else if (error.response.status === StatusCodes.UNAUTHORIZED) {
 			const { message } = error.response.data;
 
 			if (message === "Authentication Failed!") {
 				alert("Authentication Failed!");
+				// throw error;
+			} else {
+				throw error;
+				//alert("Other Errors of Status Code 401");
+			}
+		} else if (error.response.status === StatusCodes.NOT_FOUND) {
+			const { message } = error.response.data;
+
+			if (message === "No Member Found With given information") {
+				alert("No Member Found With given information");
 				// throw error;
 			} else {
 				throw error;
@@ -79,11 +94,18 @@ export const changeForgetPassword = async (_payload, token) => {
 	try {
 		const payload = JSON.stringify(_payload);
 		const endpoint = `${initialRoute}/forget-password/verify-token/${token}`;
-		const response = await post(endpoint, _payload, headers);
+		const response = await post(endpoint, payload, headers);
 
 		if (response) {
-			const { data } = response;
-			return data;
+			const {
+				data: { message }
+			} = response;
+			if (message === MESSAGE.post.succ) {
+				const {
+					data: { result }
+				} = response;
+				return result;
+			}
 		}
 	} catch (error) {
 		if (error.response.status === StatusCodes.BAD_REQUEST) {
@@ -93,15 +115,27 @@ export const changeForgetPassword = async (_payload, token) => {
 				alert("Unauthorised Role!");
 			} else if (message === MESSAGE.none) {
 				alert("No Such Data!");
-			} else if (message === "Login Unsuccessful!") {
-				alert("Login Unsuccessful!");
+			} else if (message === "New password cannot be same as old password!") {
+				alert("New password cannot be same as old password!");
+			} else if (message === "Timeout!") {
+				alert("Timeout!");
 			} else alert("Other Errors of Status Code 400");
 		} else if (error.response.status === StatusCodes.UNAUTHORIZED) {
 			const { message } = error.response.data;
 
-			if (message === "Authentication Failed!") {
-				alert("Authentication Failed!");
+			if (message === "New password cannot be same as old password!") {
+				alert("New password cannot be same as old password!");
 				// throw error;
+			} else if (error.response.status === StatusCodes.NOT_FOUND) {
+				const { message } = error.response.data;
+
+				if (message === "No Member Found With given information") {
+					alert("No Member Found With given information");
+					// throw error;
+				} else {
+					throw error;
+					//alert("Other Errors of Status Code 401");
+				}
 			} else {
 				throw error;
 				//alert("Other Errors of Status Code 401");
