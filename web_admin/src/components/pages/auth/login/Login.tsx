@@ -206,14 +206,14 @@ const Login = (props: any): JSX.Element => {
 			event.preventDefault();
 			const payload = {
 				email: credential.user_id,
-				role: credential.role
+				role: credential.role.toUpperCase()
 			};
 			const validationResult = await handleValidation(event.target.innerText);
 			if (validationResult === "invalid") {
 				return false;
 			}
 			const response = await api.auth.changeForgetUserId(payload);
-			console.log("55", response);
+			console.log("Forget User Id", response);
 			if (response) {
 				_validation.current = undefined;
 				setValidation(Object.assign({}, _validation.current));
@@ -234,7 +234,7 @@ const Login = (props: any): JSX.Element => {
 				);
 			} else {
 				setStatusMessage("Error Occurred");
-				navigate("/login");
+				// navigate("/login");
 			}
 		},
 		[credential.role, credential.user_id, handleValidation, navigate, snackbarAPIProps]
