@@ -3,7 +3,7 @@ import { OTP_TYPE } from "../../../../constants/OTP/OTP";
 
 export const sendOTPToEmailValidator = Joi.object({
 	email: Joi.string().email().required(),
-	type: Joi.valid(OTP_TYPE.verification, OTP_TYPE.changePassowrd)
+	type: Joi.valid(OTP_TYPE.verification, OTP_TYPE.change_Password)
 });
 
 export const verifyOTPValidator = Joi.object({
