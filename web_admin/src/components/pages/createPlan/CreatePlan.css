@@ -1,0 +1,83 @@
+.theme-color-green {
+	color: #7cb342;
+}
+
+.pointer-event-unset {
+	pointer-events: unset;
+}
+
+.create-admin-input-width {
+	width: 340px;
+}
+
+.select-input-style {
+	min-width: 180px;
+	text-align: left;
+	overflow-y: visible;
+}
+
+.zindex-35960 {
+	z-index: 35960;
+}
+
+.select-validation-text2 {
+	color: #e91e63 !important;
+	font-size: 11pt !important;
+}
+
+.create-user-input-select {
+	margin-bottom: 10px;
+}
+
+.text-field-input-create-enroller:last-child {
+	margin-bottom: 10px;
+}
+
+@media (min-width: 320px) and (max-width: 1024px) {
+	/* .MuiSelect-select.MuiSelect-select,
+    .MuiOutlinedInput-inputAdornedEnd {
+        color: #000000 !important;
+    } */
+
+	.create-admin-input-width {
+		width: 100%;
+	}
+
+	.select-input-style {
+		min-width: none;
+	}
+
+	.MuiGrid-grid-xs-9 {
+		max-width: 100% !important;
+		flex-basis: 100% !important;
+	}
+
+	.text-field-input-create-enroller {
+		border: 1px solid #4e4e4e !important;
+		border-radius: 5px;
+	}
+
+	.text-field-input-create-enroller > div > input,
+	.create-user-input-select > div > input,
+	.create-user-input-date > div > input {
+		color: #000000 !important;
+	}
+
+	.create-user-input-select > div {
+		color: #000000 !important;
+	}
+
+	.create-user-input-select {
+		min-width: 100%;
+	}
+
+	.create-user-input-date {
+		border: 1px solid !important;
+		border-radius: 5px;
+	}
+
+	.create-user-input-date > label {
+		background-color: #ffffff;
+		padding: 0px 7px;
+	}
+}

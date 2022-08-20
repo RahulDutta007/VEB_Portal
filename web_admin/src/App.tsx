@@ -7,6 +7,7 @@ import "./globalStyles/paperFormStyles.css";
 import "./App.css";
 import { CreateAdmin, SignUp, Login, MyProfile } from "./components/pages";
 import { Sidebar } from "./components/shared";
+import CreatePlan from "./components/pages/createPlan/CreatePlan";
 
 const App = (): JSX.Element => {
 	return (
@@ -26,6 +27,7 @@ const App = (): JSX.Element => {
 							<Route path="/sign-up" element={<SignUp />} />
 							<Route path="/enroller" element={<Sidebar WrappedComponent={CreateAdmin} />} />
 							<Route path="/my-profile" element={<Sidebar WrappedComponent={MyProfile} />} />
+							<Route path="/create-plan" element={<Sidebar WrappedComponent={CreatePlan} />} />
 						</Routes>
 					</BrowserRouter>
 				</UIContextProvider>

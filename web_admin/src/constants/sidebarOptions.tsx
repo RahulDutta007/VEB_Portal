@@ -60,6 +60,12 @@ const sidebarOptions: SidebarOptions = {
 			route: "/",
 			icon: () => <WorkIcon />,
 			subTabs: []
+		},
+		{
+			caption: "Create Plan",
+			route: "/create-plan",
+			icon: () => <WorkIcon />,
+			subTabs: []
 		}
 	],
 	ENROLLER: [
