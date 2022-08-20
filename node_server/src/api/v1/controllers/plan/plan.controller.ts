@@ -107,3 +107,75 @@ export const GetAllPlan = async (req: Request, res: Response) => {
         });
     }
 }
+
+//Get plan by name or code
+export const GetPlanByNameOrCode = async (req: Request, res: Response) => {
+    try {
+        const planIdentifier = req.params.code;
+        if (!req.user) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                message: MESSAGE.get.fail,
+                result: "Not authorized!"
+            });
+        }
+        if (!planIdentifier) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                message: MESSAGE.get.fail,
+                result: "Plane name or code is required to find the plan details"
+            });
+        }
+        const plan = await service.plan.GetPlan(PlanModel, planIdentifier);
+        if (plan) {
+            return res.status(StatusCodes.OK).json({
+                message: "Success",
+                data: plan
+            });
+        } else {
+            return res.status(StatusCodes.OK).json({
+                message: "No plan found"
+            });
+        }
+    } catch (err) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            message: MESSAGE.get.fail,
+            err
+        });
+    }
+}
+
+//Check plan code exist or not
+export const GetPlanCode = async (req: Request, res: Response) => {
+    try {
+        const code = req.query.plan_code;
+        console.log(111, code, typeof (code));
+        if (!req.user) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                message: MESSAGE.get.fail,
+                result: "Not authorized!"
+            });
+        }
+        if (!code) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                message: MESSAGE.get.fail,
+                result: "Plane code is required to find the plan details"
+            });
+        }
+        const isDuplicateCode = await service.plan.isDuplicatePlanCodeService(PlanModel, code.toString());
+        if (isDuplicateCode) {
+            return res.status(StatusCodes.OK).json({
+                message: "Code Exist",
+                codeExist: true
+            });
+        } else {
+            return res.status(StatusCodes.OK).json({
+                message: "Code does not exist",
+                codeExist: false
+            });
+        }
+    } catch (err) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            message: MESSAGE.get.fail,
+            err
+        });
+    }
+}

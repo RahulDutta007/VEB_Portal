@@ -16,7 +16,7 @@ import {
 } from "./auth/auth.service";
 import { insert, fetchAll, fetchOne, findOneAndUpdate } from "./query/query.service";
 
-import { isDuplicateActivePlanNameService, isDuplicateActivePlanCodeService, GetPlans } from "./plan/plan.service";
+import { isDuplicateActivePlanNameService, isDuplicateActivePlanCodeService, GetPlans, GetPlan, isDuplicatePlanCodeService } from "./plan/plan.service";
 
 const service = {
 	auth: {
@@ -47,7 +47,9 @@ const service = {
 	plan: {
 		isDuplicateActivePlanNameService,
 		isDuplicateActivePlanCodeService,
-		GetPlans
+		GetPlans,
+		GetPlan,
+		isDuplicatePlanCodeService
 	}
 };
 

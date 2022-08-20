@@ -53,3 +53,51 @@ export const GetPlans = async (
         throw err;
     }
 };
+
+export const GetPlan = async (
+    planModel: Model<any>,
+    plan: string
+): Promise<any> => {
+    try {
+        const filter = {
+            $and: [
+                {
+                    $or: [
+                        { name: plan },
+                        { code: plan }
+                    ]
+                },
+                {
+                    is_active: true
+                }
+            ]
+        }
+        const planInstance = await planModel.find(filter);
+
+        if (planInstance) {
+            return planInstance;
+        } else {
+            return [];
+        }
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const isDuplicatePlanCodeService = async (
+    planModel: Model<any>,
+    code: string
+): Promise<boolean> => {
+    try {
+        const filter = { code, is_active: true };
+        const codeInstance = await planModel.findOne(filter);
+
+        if (codeInstance) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (err) {
+        throw err;
+    }
+};
