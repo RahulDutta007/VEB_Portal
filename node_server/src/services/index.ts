@@ -16,6 +16,8 @@ import {
 } from "./auth/auth.service";
 import { insert, fetchAll, fetchOne, findOneAndUpdate } from "./query/query.service";
 
+import { isDuplicateActivePlanNameService, isDuplicateActivePlanCodeService, GetPlans } from "./plan/plan.service";
+
 const service = {
 	auth: {
 		isDuplicateGroupOwnerEmailService,
@@ -41,6 +43,11 @@ const service = {
 	},
 	date: {
 		formateMongoDateService
+	},
+	plan: {
+		isDuplicateActivePlanNameService,
+		isDuplicateActivePlanCodeService,
+		GetPlans
 	}
 };
 
