@@ -1,1 +1,12 @@
+import { lazy } from "react";
+
 export { default as VEBPlanCard } from "./VEBPlanCard/VEBPlanCard";
+
+export { default as PlanHeader } from "./enrollment/planHeader/PlanHeader";
+export const LazyPlanHeader = import("./enrollment/planHeader/PlanHeader");
+
+export const LazyPlanActions = lazy(() => import("./enrollment/planActions/PlanActions"));
+
+export const LazyCustomInput = lazy(() => import("./customInput/CustomInput"));
+export const LazyCustomSelectInput = lazy(() => import("./customInput/CustomSelectInput"));
+export const LazyCustomFilledInput = lazy(() => import("./customInput/CustomFilledInput"));

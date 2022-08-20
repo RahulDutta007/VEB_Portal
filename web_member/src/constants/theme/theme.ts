@@ -4,8 +4,8 @@ const theme: Theme = {
 	primary_color: "#E02826",
 	secondary_color: "",
 	button: {
-		color: "#E02826",
-		background_color: "#ffffff"
+		color: "#ffffff",
+		background_color: "#E02826"
 	},
 	top_bar: {
 		color: "#ffffff",

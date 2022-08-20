@@ -1,0 +1,18 @@
+.plan-actions button {
+	font-family: "Quicksand", sans-serif !important;
+	-webkit-font-smoothing: antialiased !important;
+	-moz-osx-font-smoothing: grayscale !important;
+}
+
+.plan-actions .skip {
+}
+
+.plan-actions .waive {
+	background-color: #eeeeee !important;
+	color: #424242;
+}
+
+.plan-actions button {
+	font-weight: bold;
+	width: 100% !important;
+}
