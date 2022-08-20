@@ -64,7 +64,7 @@ const CreateAdmin = () => {
 	const { user } = useContext(AuthContext); // Extracting logged in user from central storage.
 	const [createdUser, setCreatedUsers] = useState({
 		user_name: "", // This Id is mapped with Group HR (Group Specific)
-		admin_id: "",
+		admin_id: null,
 		first_name: "",
 		middle_name: "",
 		last_name: "",
@@ -75,8 +75,8 @@ const CreateAdmin = () => {
 		gender: "",
 		marital_status: "",
 		email: "",
-		address_line_1: "",
-		address_line_2: "",
+		address_line_1: null,
+		address_line_2: null,
 		city: "",
 		state: "",
 		country: "USA - United States of America",
@@ -134,7 +134,7 @@ const CreateAdmin = () => {
 		}
 	}, 500);
 
-	const handleValidation = useCallback(async () => {
+	const handleValidation = useCallback(() => {
 		const {
 			user_name, // This Id is mapped with Group HR (Group Specific)
 			admin_id,
@@ -144,16 +144,7 @@ const CreateAdmin = () => {
 			SSN,
 			date_of_birth,
 			hire_date,
-			gender,
-			marital_status,
-			email,
-			address_line_1,
-			city,
-			state,
-			ZIP,
-			contact_label,
-			phone_number,
-			phone_extension
+			email
 		} = createdUser;
 		_validation.current = {
 			...validation,
@@ -201,17 +192,17 @@ const CreateAdmin = () => {
 				}
 			}
 		}
-		if (String(date_of_birth).length === 0) {
-			_validation.current.createdUser["date_of_birth"] = "Date of birth is required";
-			_validation.current["status"] = "invalid";
-			flag = false;
-		}
-		if (String(hire_date).length === 0) {
-			_validation.current.createdUser["hire_date"] = "Hire Date is required";
-			_validation.current["status"] = "invalid";
-			flag = false;
-		}
-		if (String(hire_date).length !== 0) {
+		// if (String(date_of_birth).length === 0) {
+		// 	_validation.current.createdUser["date_of_birth"] = "Date of birth is required";
+		// 	_validation.current["status"] = "invalid";
+		// 	flag = false;
+		// }
+		// if (String(hire_date).length === 0) {
+		// 	_validation.current.createdUser["hire_date"] = "Hire Date is required";
+		// 	_validation.current["status"] = "invalid";
+		// 	flag = false;
+		// }
+		if (String(date_of_birth).length > 0 && String(hire_date).length > 0 && String(hire_date).length !== 0) {
 			const hireDate = new Date(hire_date).getFullYear();
 			const DOB = new Date(date_of_birth).getFullYear();
 			const hireDateTime = new Date(hire_date).getTime();
@@ -535,7 +526,7 @@ const CreateAdmin = () => {
 		async (event: React.MouseEvent<HTMLButtonElement>) => {
 			try {
 				event.preventDefault();
-				const validation = await handleValidation();
+				const validation = handleValidation();
 				if (validation === "valid") {
 					const { date_of_birth, hire_date } = createdUser;
 					const DOB = date_of_birth ? new Date(date_of_birth) : null;
@@ -559,9 +550,15 @@ const CreateAdmin = () => {
 									  hireDate.getDate()
 									: hireDate,
 							SSN: createdUser.SSN ? createdUser?.SSN?.replaceAll("-", "").toString() : null,
-							ZIP: createdUser.ZIP ? createdUser.ZIP.replaceAll("-", "") : null,
-							gender: createdUser.gender.toUpperCase(),
-							marital_status: createdUser?.marital_status.toUpperCase()
+							ZIP:
+								createdUser.ZIP && createdUser.ZIP.length > 0
+									? createdUser.ZIP.replaceAll("-", "")
+									: null,
+							state: createdUser.state && createdUser.state.length > 0 ? createdUser.state : null,
+							city: createdUser.city && createdUser.city.length > 0 ? createdUser.city : null,
+							gender: createdUser.gender !== "" ? createdUser.gender.toUpperCase() : null,
+							marital_status:
+								createdUser.marital_status !== "" ? createdUser.marital_status.toUpperCase() : null
 						}
 					};
 
@@ -569,9 +566,7 @@ const CreateAdmin = () => {
 					const response = await api.auth.createEnroller(payload.createdUser);
 
 					if (response?.message === "Data added successfully") {
-						setHasCreateClick(true);
 						console.log("Response", response);
-						setCreatedUsers(Object.assign({}, response as any));
 						setSnackbarAPICallProps(
 							Object.assign({}, snackbarAPICallProps, {
 								open: true,
@@ -586,19 +581,19 @@ const CreateAdmin = () => {
 						};
 						setCreatedUsers({
 							user_name: "", // This Id is mapped with Group HR (Group Specific)
-							admin_id: "",
+							admin_id: null,
 							first_name: "",
 							middle_name: "",
 							last_name: "",
-							role: "",
+							role: createdUser.role,
 							SSN: "",
 							date_of_birth: "",
 							hire_date: "",
 							gender: "",
 							marital_status: "",
 							email: "",
-							address_line_1: "",
-							address_line_2: "",
+							address_line_1: null,
+							address_line_2: null,
 							city: "",
 							state: "",
 							country: "USA - United States of America",
@@ -608,12 +603,13 @@ const CreateAdmin = () => {
 							phone_extension: null,
 							group_number: null
 						});
+						setUserNameExists(false);
+						setEmailExists(false);
 						navigate("/");
 						// setTimeout(() => {
 						// 	history.push("/");
 						// }, 2000);
 					} else {
-						setHasCreateClick(false);
 						setSnackbarAPICallProps(
 							Object.assign({}, snackbarAPICallProps, {
 								open: true,
@@ -623,7 +619,6 @@ const CreateAdmin = () => {
 						);
 					}
 				} else {
-					setHasCreateClick(false);
 					setSnackbarAPICallProps(
 						Object.assign({}, snackbarAPICallProps, {
 							open: true,
@@ -954,6 +949,7 @@ const CreateAdmin = () => {
 															<div
 																className={
 																	field.name === "first_name" ||
+																	field.name === "user_name" ||
 																	field.name === "last_name" ||
 																	field.name === "email" ||
 																	field.name === "group_number" ||
@@ -998,14 +994,29 @@ const CreateAdmin = () => {
 																	}}
 																	helperText={
 																		field.name === "email"
-																			? !checkInvalidEmail && emailExists
+																			? field.value.length === 0 &&
+																			  _validation.current !== undefined
+																				? `${field.label} is required`
+																				: !checkInvalidEmail && emailExists
 																				? "Email exists!"
 																				: checkInvalidEmail
 																				? "Please enter a valid email address!"
 																				: ""
-																			: field.name === "user_name" &&
-																			  userNameExists
-																			? "User Name exists!"
+																			: field.name === "user_name"
+																			? field.value.length === 0 &&
+																			  _validation.current !== undefined
+																				? `${field.label} is required`
+																				: userNameExists
+																				? "User Name exists!"
+																				: ""
+																			: field.name !== "email" &&
+																			  field.name !== "user_name" &&
+																			  _validation?.current?.status ===
+																					"invalid" &&
+																			  Object.keys(
+																					_validation?.current?.createdUser
+																			  ).indexOf(field.name) > -1
+																			? `${field.label} is required`
 																			: ""
 																	}
 																/>

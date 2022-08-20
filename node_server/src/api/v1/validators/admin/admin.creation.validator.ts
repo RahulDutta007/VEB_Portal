@@ -5,22 +5,21 @@ import { MARITAL_STATUS } from "../../../../constants/marital.status";
 import { UPLOAD_TYPE } from "../../../../constants/upload.types";
 
 export const adminCreationValidator = Joi.object({
-	admin_id: Joi.string().required(),
+	admin_id: Joi.string().optional().allow(null, ""),
 	first_name: Joi.string().min(3).max(30).required(),
 	last_name: Joi.string().min(3).max(30).required(),
 	middle_name: Joi.string().optional().allow(null, ""),
-	user_name: Joi.string().min(3).max(30).alphanum().min(3).max(30).required(),
+	user_name: Joi.string().min(3).max(30).min(3).max(30).required(),
 	role: Joi.string().required().valid(ROLES.enroller_admin, ROLES.agent).messages({
 		message: "Unauthorized Role!"
 	}),
 	email: Joi.string().email().required(),
-	SSN: Joi.string().pattern(new RegExp("^[0-9]{9}$")).required(),
+	SSN: Joi.string().optional().allow(null).pattern(new RegExp("^[0-9]{9}$")),
 	date_of_birth: Joi.date().optional().allow(null),
-	gender: Joi.string().required().valid(GENDER.male, GENDER.female, GENDER.others).messages({
+	gender: Joi.string().optional().allow(null).valid(GENDER.male, GENDER.female, GENDER.others).messages({
 		message: "Please provide correct gender!"
 	}),
-	marital_status: Joi.string()
-		.required()
+	marital_status: Joi.string().optional().allow(null)
 		.valid(
 			MARITAL_STATUS.single,
 			MARITAL_STATUS.married,

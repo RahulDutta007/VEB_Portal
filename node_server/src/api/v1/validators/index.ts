@@ -5,6 +5,7 @@ import { adminCreationValidator } from "./admin/admin.creation.validator";
 import { changePasswordValidator } from "./admin/change.password.validator";
 import { forgetPasswordValidator, verifyPasswordValidator } from "./admin/forgot.password.validator";
 import { sendOTPToEmailValidator, verifyOTPValidator } from "./OTP/OTP.validator";
+import { forgetUserIdValidator } from "./admin/forgetUserId.validator";
 
 export const validators = {
 	testValidator,
@@ -13,6 +14,7 @@ export const validators = {
 	loginValidator,
 	adminCreationValidator,
 	changePasswordValidator,
+	forgetUserIdValidator,
 	forgetPasswordValidator,
 	verifyPasswordValidator,
 	sendOTPToEmailValidator,

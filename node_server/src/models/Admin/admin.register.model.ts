@@ -43,8 +43,8 @@ const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 		},
 		SSN: {
 			type: String,
-			required: true,
-			length: [9, "SSN should be 9 digit"]
+			length: [9, "SSN should be 9 digit"],
+			default: null
 		},
 		date_of_birth: {
 			type: Date,
@@ -52,7 +52,8 @@ const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 		},
 		gender: {
 			type: String,
-			enum: [GENDER.male, GENDER.female, GENDER.others]
+			enum: [GENDER.male, GENDER.female, GENDER.others, null],
+			default: null
 		},
 		marital_status: {
 			type: String,
@@ -60,8 +61,9 @@ const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 				MARITAL_STATUS.single,
 				MARITAL_STATUS.married,
 				MARITAL_STATUS.divorced,
-				MARITAL_STATUS.common_law_marriage
-			]
+				MARITAL_STATUS.common_law_marriage, null
+			],
+			default: null
 		},
 		address_line_1: {
 			type: String,

@@ -20,18 +20,27 @@ export const adminCreation = async (req: Request, res: Response) => {
 			SSN = null;
 
 		//Disallow agent for enroller creation
-		console.log("role", creatorRole !== ROLES.admin);
-		if (creatorRole !== ROLES.admin && createdRole == ROLES.enroller_admin) {
+		if (creatorRole === createdRole) {
 			return res.status(StatusCodes.BAD_REQUEST).json({
 				message: MESSAGE.custom("Unauthorized Role!")
 			});
 		}
-
-		//Group owner and enroller can only create agent
-		if (!(creatorRole == ROLES.admin || creatorRole !== ROLES.enroller_admin) && createdRole == ROLES.agent) {
-			return res.status(StatusCodes.BAD_REQUEST).json({
-				message: MESSAGE.custom("Group owner and enroller can only create agent")
-			});
+		else if (creatorRole === ROLES.admin) {
+			// Can create enroller admin, agent 
+		}
+		else if (creatorRole === ROLES.enroller_admin) {
+			if (createdRole === ROLES.admin) {
+				return res.status(StatusCodes.BAD_REQUEST).json({
+					message: MESSAGE.custom("Unauthorized Role!")
+				});
+			}
+		}
+		else if (creatorRole === ROLES.agent) {
+			if (createdRole === ROLES.admin || createdRole === ROLES.enroller_admin) {
+				return res.status(StatusCodes.BAD_REQUEST).json({
+					message: MESSAGE.custom("Unauthorized Role!")
+				});
+			}
 		}
 
 		// Check if email is valid or not

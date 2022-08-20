@@ -1,6 +1,6 @@
 const OTPType = {
 	verification: "VERIFICATION",
-	changePassowrd: "CHANGE PASSWORD"
+	change_Password: "CHANGE PASSWORD"
 };
 
 export const OTP_TYPE = OTPType;

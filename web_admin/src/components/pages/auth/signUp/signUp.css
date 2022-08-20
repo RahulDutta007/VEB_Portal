@@ -291,6 +291,7 @@
 .sign-up-stepper {
     background-color: transparent;
     width: 500;
+    display: none !important;
 }
 
 .sign-up-button-container {

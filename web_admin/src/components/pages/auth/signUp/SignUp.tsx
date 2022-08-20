@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState, useContext, Suspense, useCallback } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import axios from "axios";
 import {
 	FormControl,
 	TextField,
@@ -12,7 +11,6 @@ import {
 	Step,
 	Stepper,
 	StepLabel,
-	Checkbox,
 	Menu,
 	MenuItem,
 	Grid,
@@ -21,9 +19,6 @@ import {
 	CardActions,
 	Backdrop
 } from "@material-ui/core";
-import SpeedDial from "@mui/material/SpeedDial";
-import SpeedDialIcon from "@mui/material/SpeedDialIcon";
-import SpeedDialAction from "@mui/material/AccordionActions";
 import { Logo } from "../../../../assets";
 import { Link, useNavigate } from "react-router-dom";
 import ROLES from "../../../../constants/roles";
@@ -42,30 +37,29 @@ import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SecurityIcon from "@material-ui/icons/Security";
 import EventIcon from "@material-ui/icons/Event";
-import LockIcon from "@material-ui/icons/Lock";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import AuthContext from "../../../../contexts/authContext/authContext";
 import React from "react";
 import EmailIcon from "@material-ui/icons/Email";
 import EnhancedEncryptionIcon from "@material-ui/icons/EnhancedEncryption";
-import NotificationsNoneIcon from "@material-ui/icons/NotificationsNone";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import HelpIcon from "@material-ui/icons/Help";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import PersonIcon from "@material-ui/icons/Person";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import { CustomDialog, LazySnackbarAPI, SnackbarAPI } from "../../../shared";
 
 import "./signUp.css";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { LazySnackbarAPI, SnackbarAPI } from "../../../shared";
 import { SnackbarProps } from "../../../../@types/snackbarAPI.types";
 import { Admin } from "../../../../@types/admin.types";
+import { Validation } from "../../../../@types/validation.types";
+import { Timer } from "../../../../@types/timer.types";
+import { convertToObject } from "typescript";
+import { verifyOTP } from "../../../../utils/api/auth/login";
 
 const getSteps = () => ["Roles", "Personal Information", "Sign Up", "Completed"];
 
@@ -74,17 +68,17 @@ const mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-
 const SignUp = () => {
 	const [activeStep, setActiveStep] = useState(0);
 	const [OTP, setOTP] = useState("");
-	const [timer, setTimer] = useState({
+	const [timer, setTimer] = useState<Timer>({
 		minutes: 9,
 		seconds: 59
 	});
 	const [confirm_password, setConfirmPassword] = useState("");
-	const ref = useRef(null);
+	const ref = useRef<any>();
 	const [resendOTPButtonVisible, setResendOTPButtonVisible] = useState(true);
 	const [resentOTPCaptionVisible, setResentOTPCaptionVisible] = useState(false);
 	const [startTimer, setStartTimer] = useState(false);
 	const [OTPVerified, setOTPVerified] = useState(false);
-	const [countDownTime, setCountDownTime] = useState(null);
+	const [countDownTime, setCountDownTime] = useState(0);
 	const [verificationToken, setVerificationToken] = useState(null);
 	const [showPassword, setShowPassword] = useState(false);
 	const [statementOfUnderstanding, setStatementOfUnderstanding] = useState("");
@@ -94,10 +88,9 @@ const SignUp = () => {
 	const [checkInvalidUserName, setCheckInvalidUserName] = useState(false);
 	const [emailExists, setEmailExists] = useState(false);
 	const [pasted, setPasted] = useState(false);
-	const [rePaste, setRePaste] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [anchorEl, setAnchorEl] = useState(null);
-	const [dateValue, setDateValue] = useState(moment());
+	const [dateValue, setDateValue] = useState(null);
 	const [snackbarAPIProps, setSnackbarAPIProps] = useState<SnackbarProps>({
 		open: false,
 		severity: undefined,
@@ -135,13 +128,13 @@ const SignUp = () => {
 		last_name: "",
 		email: "",
 		role: "",
-		date_of_birth: moment().format("MM/DD/YYYY"),
+		date_of_birth: "",
 		SSN: "",
 		user_name: "",
 		password: ""
 	});
 	const steps = getSteps();
-	const [validation, setValidation] = useState({
+	const [validation, setValidation] = useState<Validation>({
 		user: {
 			role: "",
 			last_name: "",
@@ -149,43 +142,150 @@ const SignUp = () => {
 			date_of_birth: "",
 			SSN: "",
 			user_name: "",
-			confirm_password: "",
 			password: ""
-		}
+		},
+		status: "invalid"
 	});
 	const navigate = useNavigate();
-	const _validation = useRef();
-
-	const [speedDialopen, setSpeedDialOpen] = React.useState(false);
-	const [speedDialhidden, setSpeedDialHidden] = React.useState(false);
-
-	const handleSpeedDialVisibility = () => {
-		// eslint-disable-next-line arrow-parens
-		setSpeedDialHidden((prevHidden) => !prevHidden);
-	};
-
-	const handleSpeedDialOpen = () => {
-		setSpeedDialOpen(true);
-	};
-
-	const handleSpeedDialClose = () => {
-		setSpeedDialOpen(false);
-	};
+	const _validation = useRef<Validation>();
 
 	const handleRoleValidation = useCallback(async () => {
 		const { role } = user;
-		return role;
+		_validation.current = {
+			...validation,
+			user: {}
+		};
+		let flag = true;
+
+		if (role.length === 0) {
+			_validation.current.user["role"] = "Role is required";
+			_validation.current.user["status"] = "invalid";
+			flag = false;
+		}
+		if (flag === true) _validation.current["status"] = "valid";
+		else _validation.current["status"] = "invalid";
+		setValidation(Object.assign({}, _validation.current));
+		return _validation.current["status"];
+	}, [user, validation]);
+
+	const handleEmailValidation = useCallback(async () => {
+		const { email } = user;
+		_validation.current = {
+			...validation,
+			user: {}
+		};
+		let flag = true;
+
+		if (email.length === 0) {
+			_validation.current.user["email"] = "Email is required to send OTP";
+			_validation.current.user["status"] = "invalid";
+			flag = false;
+		} else if (email.length > 0) {
+			if (!email.match(mailformat)) {
+				_validation.current.user["email"] = "Valid Email is required";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			} else {
+				flag === true;
+			}
+		}
+		if (flag === true) _validation.current["status"] = "valid";
+		else _validation.current["status"] = "invalid";
+		setValidation(Object.assign({}, _validation.current));
+		return _validation.current["status"];
 	}, [user, validation]);
 
 	const handlePersonalDetailsValidation = useCallback(async () => {
 		const { first_name, last_name, date_of_birth, SSN } = user;
-		return first_name;
+		_validation.current = {
+			...validation,
+			user: {}
+		};
+		let flag = true;
+
+		if (first_name !== null) {
+			if (first_name.length === 0) {
+				_validation.current.user["first_name"] = "First Name is required";
+				_validation.current.user["status"] = "invalid";
+				flag = false;
+			}
+		}
+		if (last_name !== null) {
+			if (last_name.length === 0) {
+				_validation.current.user["last_name"] = "Last Name is required";
+				_validation.current.user["status"] = "invalid";
+				flag = false;
+			}
+		}
+		if (date_of_birth !== null) {
+			if (date_of_birth.length === 0) {
+				_validation.current.user["date_of_birth"] = "Date of Birth is required";
+				_validation.current.user["status"] = "invalid";
+				flag = false;
+			}
+		}
+		if (String(date_of_birth).length === 0) {
+			_validation.current.user["date_of_birth"] = "Date of birth is required";
+			_validation.current["status"] = "invalid";
+			flag = false;
+		}
+		if (date_of_birth === null) {
+			_validation.current.user["date_of_birth"] = "Date of Birth is required";
+			_validation.current.user["status"] = "invalid";
+			flag = false;
+		}
+		if (SSN === null || SSN === "") {
+			_validation.current.user["SSN"] = "SSN is required";
+			_validation.current.user["status"] = "invalid";
+			flag = false;
+		}
+		if (SSN !== null) {
+			if (SSN !== "") {
+				const _SSN = SSN.replaceAll("-", "");
+				if (String(_SSN).length !== 9) {
+					_validation.current.user["SSN"] = "Enter correct 9 digit SSN";
+					_validation.current["status"] = "invalid";
+					flag = false;
+				}
+			}
+		}
+		if (flag === true) _validation.current["status"] = "valid";
+		else _validation.current["status"] = "invalid";
+		setValidation(Object.assign({}, _validation.current));
+		return _validation.current["status"];
+	}, [user]);
+
+	const handlecredentialValidation = useCallback(async () => {
+		const { user_name, password } = user;
+		_validation.current = {
+			...validation,
+			user: {}
+		};
+		let flag = true;
+
+		if (user_name !== null) {
+			if (user_name.length === 0) {
+				_validation.current.user["user_name"] = "User Name is required";
+				_validation.current.user["status"] = "invalid";
+				flag = false;
+			}
+		}
+		if (password !== null) {
+			if (password.length === 0) {
+				_validation.current.user["password"] = "Password is required";
+				_validation.current.user["status"] = "invalid";
+				flag = false;
+			}
+		}
+
+		if (flag === true) _validation.current["status"] = "valid";
+		else _validation.current["status"] = "invalid";
+		setValidation(Object.assign({}, _validation.current));
+		return _validation.current["status"];
 	}, [user]);
 
 	const handleDateChange = useCallback(
 		(date: any, dateValue: any) => {
-			// const _date = new Date(dateValue);
-			//console.log("DOB", _date);
 			const _user = {
 				...user,
 				date_of_birth: dateValue
@@ -216,7 +316,7 @@ const SignUp = () => {
 			setOTPVerified(false);
 			alert("OTP Sent to Email");
 			setResendOTPButtonVisible(false);
-			// setCountDownTime(Date.now() + 1 * 60000);
+			setCountDownTime(Date.now() + 1 * 60000);
 			setStartTimer(true);
 			setVerificationToken(_verificationToken);
 		}
@@ -252,8 +352,8 @@ const SignUp = () => {
 	const handleBack = () => {
 		// eslint-disable-next-line arrow-parens
 		if (activeStep === 2) {
-			setUser(Object.assign({}, user, { email: "" }));
-			setOTP("");
+			// setUser(Object.assign({}, user, { email: "" }));
+			// setOTP("");
 		}
 		// eslint-disable-next-line arrow-parens
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -386,6 +486,15 @@ const SignUp = () => {
 
 				setUser(Object.assign({}, user, { [name]: value }));
 			} else if (name === "email") {
+				const { email } = user;
+				_validation.current = {
+					...validation,
+					user: {}
+				};
+				if (email.match(mailformat)) {
+					_validation.current["status"] = "valid";
+					setValidation(Object.assign({}, _validation.current));
+				}
 				findEmail(value);
 				setUser(Object.assign({}, user, { [name]: value }));
 			} else if (name === "first_name") {
@@ -398,7 +507,6 @@ const SignUp = () => {
 				}
 			} else if (name === "SSN") {
 				if (!pasted) {
-					// console.log("Not Pasted");
 					const _value = Number(value.replaceAll("-", ""));
 					if (!isNaN(_value)) {
 						const ssn = value;
@@ -422,7 +530,6 @@ const SignUp = () => {
 						event.target.value = user.SSN;
 					}
 				} else {
-					// console.log("Pasted");
 					setPasted(false);
 					if (!isNaN(value)) {
 						if (value.length > 9) {
@@ -430,7 +537,6 @@ const SignUp = () => {
 							event.target.value = user.SSN;
 							alert("Please enter a valid 9 digit SSN!");
 						} else {
-							// console.log("Inside Number");
 							const ssn = value;
 
 							if (ssn.length === 4) {
@@ -444,9 +550,7 @@ const SignUp = () => {
 							setUser(Object.assign({}, user, { [name]: value }));
 						}
 					} else {
-						// console.log("Inside alpha-numeric");
 						let ssnValue = value.replace(/[^0-9]/g, "").replace(/[^\w\s]/gi, "");
-						//console.log("replaced string", ssnValue);
 						alert("You have pasted alpha-numeric SSN!");
 
 						if (ssnValue.length > 9) {
@@ -469,13 +573,19 @@ const SignUp = () => {
 						}
 					}
 				}
-			} else if (name === "confirm_password") {
-				setConfirmPassword(value);
 			} else {
 				setUser(Object.assign({}, user, { [name]: value }));
 			}
 		},
 		[findEmail, findUserName, pasted, setUser, user]
+	);
+
+	const handleConfirmPasswordChange = useCallback(
+		(event: { target: { value: any } }) => {
+			const { value } = event.target;
+			setConfirmPassword(value);
+		},
+		[confirm_password, setConfirmPassword]
 	);
 
 	const handleReEnteredSSNChange = useCallback(
@@ -498,7 +608,6 @@ const SignUp = () => {
 					} else if (ssn.length === 6) {
 						ssn = ssn.substr(0, 7) + "-" + ssn.substr(7);
 					} else if (ssn.length === 3) {
-						// value = value.substr(0, 3) + "-" + value.substr(3);
 						ssn = ssn.substr(0, 3) + "-" + ssn.substr(3);
 					}
 					setReEnteredSSN(ssn);
@@ -507,7 +616,6 @@ const SignUp = () => {
 					event.target.value = reEnteredSSN;
 				}
 			} else {
-				// console.log("Pasted");
 				setPasted(false);
 				if (!isNaN(value)) {
 					if (value.length > 9) {
@@ -515,7 +623,6 @@ const SignUp = () => {
 						event.target.value = reEnteredSSN;
 						alert("Please enter a valid 9 digit SSN!");
 					} else {
-						// console.log("Inside Number");
 						const ssn = value;
 
 						if (ssn.length === 4) {
@@ -528,9 +635,7 @@ const SignUp = () => {
 						setReEnteredSSN(value);
 					}
 				} else {
-					// console.log("Inside alpha-numeric");
 					let ssnValue = value.replace(/[^0-9]/g, "").replace(/[^\w\s]/gi, "");
-					//console.log("replaced string", ssnValue);
 					alert("You have pasted alpha-numeric SSN!");
 
 					if (ssnValue.length > 9) {
@@ -563,75 +668,94 @@ const SignUp = () => {
 				const roleValidation = await handleRoleValidation();
 				if (roleValidation === "valid") setActiveStep(activeStep + 1);
 			} else if (activeStep === 1) {
-				// const otpVerify = await api.auth.verifyOTP({ otp: parseInt(OTP) }, user.email);
-				// if (otpVerify.result === "OTP Verified Successfully") {
-				// 	setActiveStep(activeStep + 1);
-				// }
-				setActiveStep(activeStep + 1);
-			} else if (activeStep === 2) {
-				const personalDetailsValidation = await handlePersonalDetailsValidation();
-				if (personalDetailsValidation === "valid") {
-					setActiveStep(activeStep + 1);
+				const emailValidation = await handleEmailValidation();
+				if (emailValidation === "valid") {
+					if (OTPVerified) {
+						setActiveStep(activeStep + 1);
+					} else {
+						alert("Please very OTP");
+					}
 				}
+			} else if (activeStep === 2) {
 				if (user.SSN !== reEnteredSSN) {
-					console.log("Reenterd SSN", reEnteredSSN);
-					console.log("SSN", user.SSN);
 					alert("Please Reenter correct SSN");
 				} else {
-					setActiveStep(activeStep + 1);
+					const personalDetailsValidation = await handlePersonalDetailsValidation();
+					if (personalDetailsValidation === "valid") {
+						setActiveStep(activeStep + 1);
+					}
 				}
 			} else if (activeStep === 3) {
-				const credentialValidation = "valid"; // await handlecredentialValidation();
-				if (credentialValidation === "valid") {
-					const { role, date_of_birth } = user;
-					const _role = role.toUpperCase();
-					const date = new Date(date_of_birth);
-					const _user = {
-						...user,
-						SSN: Number(user.SSN.replaceAll("-", "")).toString(),
-						role: user.role.toUpperCase(),
-						date_of_birth: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
-					};
-					console.log("_user", _user);
-					try {
-						if (_user.middle_name === "") {
-							delete _user.middle_name;
-						}
-						// Old sign up integration
-						const response = await api.auth.createAdmin(_user);
-						console.log("user response.status", response?.message);
-						console.log("user response", response);
-						if (response?.message === "Data edited successfully") {
-							const data = await api.auth.createAdmin(user);
-							navigate("/login");
-							setSnackbarAPIProps(
-								Object.assign({}, snackbarAPIProps, {
-									open: true,
-									message: `Create a ${user.role} successfully`,
-									severity: "success"
+				if (user.password !== confirm_password) {
+					alert("Please Reenter correct password");
+				} else {
+					const credentialValidation = await handlecredentialValidation();
+					if (credentialValidation === "valid") {
+						const { role, date_of_birth } = user;
+						const _role = role.toUpperCase();
+						const date = new Date(date_of_birth);
+						const _user = {
+							...user,
+							SSN: Number(user.SSN.replaceAll("-", "")).toString(),
+							role: user.role.toUpperCase(),
+							date_of_birth: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+						};
+						console.log("_user", _user);
+						try {
+							if (!_user.middle_name) {
+								delete _user.middle_name;
+							}
+							// Old sign up integration
+							const response = await api.auth.signUpAdmin(_user);
+							if (response?.message === "Data edited successfully") {
+								setSnackbarAPIProps(
+									Object.assign({}, snackbarAPIProps, {
+										open: true,
+										message: `Create a ${user.role} successfully`,
+										severity: "success"
+									})
+								);
+								navigate("/login");
+							} else {
+								setSignUpDialogProps(
+									Object.assign({}, signUpDialogProps, {
+										openDialog: true,
+										title: "Unsuccessfull Sign Up",
+										content: response?.message,
+										actions: [
+											{
+												label: "Close",
+												callback: () =>
+													setSignUpDialogProps(
+														Object.assign({}, signUpDialogProps, {
+															openDialog: false
+														})
+													)
+											}
+										]
+									})
+								);
+							}
+						} catch (err) {
+							setSignUpDialogProps(
+								Object.assign({}, signUpDialogProps, {
+									openDialog: true,
+									title: "Unsuccessfull Sign Up",
+									content: "Unable to sign up. Please try again",
+									actions: [
+										{
+											label: "Close",
+											callback: () =>
+												setSignUpDialogProps(
+													Object.assign({}, signUpDialogProps, {
+														openDialog: false
+													})
+												)
+										}
+									]
 								})
 							);
 						}
-					} catch (err) {
-						console.log("err", err);
-						setSignUpDialogProps(
-							Object.assign({}, signUpDialogProps, {
-								openDialog: true,
-								title: "Unsuccessfull Sign Up",
-								content: "Unable to sign up. Please try again",
-								actions: [
-									{
-										label: "Close",
-										callback: () =>
-											setSignUpDialogProps(
-												Object.assign({}, signUpDialogProps, {
-													openDialog: false
-												})
-											)
-									}
-								]
-							})
-						);
 					}
 				}
 			} else if (activeStep === 4) {
@@ -646,12 +770,42 @@ const SignUp = () => {
 			reEnteredSSN,
 			signUpDialogProps,
 			user,
-			snackbarAPIProps
+			snackbarAPIProps,
+			confirm_password
 		]
 	);
 
+	useEffect(() => {
+		if (startTimer === true) {
+			ref.current = setInterval(() => {
+				const distance = countDownTime - Date.now();
+				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+				if (minutes === 0 && seconds === 0) {
+					setStartTimer(false);
+					setResendOTPButtonVisible(true);
+					setResentOTPCaptionVisible(true);
+				}
+				setTimer(
+					Object.assign(
+						{},
+						{
+							minutes: minutes,
+							seconds: seconds
+						}
+					)
+				);
+			}, 1000);
+		}
+
+		return () => clearInterval(ref.current);
+	}, [countDownTime, startTimer]);
+
 	return (
 		<div className="sign-up" id="sign-up">
+			<Suspense fallback={<div />}>
+				<CustomDialog dialogProps={signUpDialogProps} />
+			</Suspense>
 			<div className="container-outer" id="container-outer">
 				<div className="container-header">
 					<Grid container spacing={0} direction="column" alignItems="center">
@@ -700,11 +854,6 @@ const SignUp = () => {
 													open={Boolean(anchorEl)}
 													onClose={() => handleClose(null)}
 												>
-													{/* <MenuItem
-														onClick={() => handleClose(initCapitalize(ROLES.super_admin))}
-													>
-														{initCapitalize(ROLES.super_admin)}
-													</MenuItem> */}
 													<MenuItem
 														onClick={() =>
 															handleClose(initCapitalize(ROLES.enroller_admin))
@@ -755,8 +904,8 @@ const SignUp = () => {
 															user.email.length === 0
 																? ""
 																: emailExists
-																? "Email is already exist"
-																: ""
+																	? "Email is already exist"
+																	: ""
 														}
 														InputProps={{
 															startAdornment: (
@@ -766,8 +915,8 @@ const SignUp = () => {
 															),
 															endAdornment:
 																resendOTPButtonVisible &&
-																user.email.match(mailformat) &&
-																!OTPVerified ? (
+																	user.email.match(mailformat) &&
+																	!OTPVerified ? (
 																	<div
 																		style={{
 																			cursor:
@@ -794,6 +943,13 @@ const SignUp = () => {
 																) : null
 														}}
 													/>
+													{validation.user.email ? (
+														<div className="details role-selected-value">
+															<span className="select-validation-text">
+																{validation.user.email}
+															</span>
+														</div>
+													) : null}
 													{startTimer && !OTPVerified ? (
 														<TextField
 															className="form-field-input auth-input-fields"
@@ -802,21 +958,20 @@ const SignUp = () => {
 															label="OTP"
 															placeholder="Enter OTP"
 															value={OTP}
-															// helperText={
-															// 	startTimer
-															// 		? timer.minutes +
-															// 		  ":" +
-															// 		  timer.seconds +
-															// 		  " before expiration"
-															// 		: ""
-															// }
+															helperText={
+																startTimer
+																	? timer.minutes +
+																	":" +
+																	timer.seconds +
+																	" before expiration"
+																	: ""
+															}
 															variant="outlined"
 															onChange={handleOTPChange}
-															style={{ width: "100%", borderRadius: 50 }}
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
-																		<VpnKeyIcon style={{ color: "#7cb342" }} />
+																		<VpnKeyIcon className="icon-white" />
 																	</InputAdornment>
 																),
 																endAdornment: (
@@ -828,7 +983,7 @@ const SignUp = () => {
 																		<Button
 																			variant="outlined"
 																			onClick={handleVerifyOTPClick}
-																			style={{ marginLeft: 5 }}
+																			className="margin-lf-5"
 																			disabled={OTP === "" ? true : false}
 																		>
 																			Verify
@@ -980,6 +1135,7 @@ const SignUp = () => {
 															)
 														}}
 													/>
+
 													<TextField
 														className="form-field-input form-field-input-lg-form auth-input-fields"
 														id="Reenter-SSN-input"
@@ -991,7 +1147,7 @@ const SignUp = () => {
 														onChange={handleReEnteredSSNChange}
 														onKeyDown={(event: any) => handleKeyCheck(event)}
 														onPaste={(event: any) => handlePaste(event)}
-														//helperText={validation.user.SSN}
+														//helperText={validation.user.confirm_SSN}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
@@ -1049,8 +1205,8 @@ const SignUp = () => {
 															userNameExists
 																? "Username exists!"
 																: checkInvalidUserName
-																? "Username must be between 4 to 20 characters and alpha-numeric!"
-																: validation.user.user_name
+																	? "Username must be between 4 to 20 characters and alpha-numeric!"
+																	: validation.user.user_name
 														}
 														InputProps={{
 															startAdornment: (
@@ -1101,8 +1257,8 @@ const SignUp = () => {
 														placeholder="Enter Confirm Password"
 														value={confirm_password}
 														variant="outlined"
-														onChange={handleChange}
-														helperText={validation.user.confirm_password}
+														onChange={handleConfirmPasswordChange}
+														//helperText={validation.user.validate_password}
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
