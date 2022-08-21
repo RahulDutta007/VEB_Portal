@@ -1,12 +1,13 @@
 import { Model } from "mongoose";
 import PlanModel from "../../models/plan/plan.model";
+import { PLAN_STATUS } from "../../constants/planStatus";
 
 export const isDuplicateActivePlanNameService = async (
     planModel: Model<any>,
-    name: string,
+    plan_name: string,
 ): Promise<boolean> => {
     try {
-        const filter = { name, is_active: true };
+        const filter = { plan_name, status: PLAN_STATUS.active };
         const planInstance = await planModel.findOne(filter);
 
         if (planInstance) {
@@ -21,10 +22,10 @@ export const isDuplicateActivePlanNameService = async (
 
 export const isDuplicateActivePlanCodeService = async (
     planModel: Model<any>,
-    code: string,
+    plan_code: string,
 ): Promise<boolean> => {
     try {
-        const filter = { code, is_active: true };
+        const filter = { plan_code, status: PLAN_STATUS.active };
         const planInstance = await planModel.findOne(filter);
 
         if (planInstance) {
@@ -38,10 +39,11 @@ export const isDuplicateActivePlanCodeService = async (
 };
 
 export const GetPlans = async (
-    planModel: Model<any>
+    planModel: Model<any>,
+    status: string
 ): Promise<any> => {
     try {
-        const filter = { is_active: true };
+        const filter = status !== "" ? { status } : {};
         const plans = await planModel.find(filter);
 
         if (plans) {
@@ -56,22 +58,29 @@ export const GetPlans = async (
 
 export const GetPlan = async (
     planModel: Model<any>,
-    plan: string
+    plan: string,
+    status: string
 ): Promise<any> => {
     try {
-        const filter = {
+        const filter = status !== "" ? {
             $and: [
                 {
                     $or: [
-                        { name: plan },
-                        { code: plan }
+                        { plan_name: plan },
+                        { plan_code: plan }
                     ]
                 },
                 {
-                    is_active: true
+                    status: PLAN_STATUS.active
                 }
             ]
-        }
+        } :
+            {
+                $or: [
+                    { plan_name: plan },
+                    { plan_code: plan }
+                ]
+            }
         const planInstance = await planModel.find(filter);
 
         if (planInstance) {
@@ -86,10 +95,10 @@ export const GetPlan = async (
 
 export const isDuplicatePlanCodeService = async (
     planModel: Model<any>,
-    code: string
+    plan_code: string
 ): Promise<boolean> => {
     try {
-        const filter = { code, is_active: true };
+        const filter = { plan_code, status: PLAN_STATUS.active };
         const codeInstance = await planModel.findOne(filter);
 
         if (codeInstance) {

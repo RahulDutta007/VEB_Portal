@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { IPlan } from "../../@types/interface/plan.interface";
+import { PLAN_STATUS } from "../../constants/planStatus";
 
 const CreatedSchema = {
   by: {
@@ -14,11 +15,11 @@ const CreatedSchema = {
 
 const PlanSchema: Schema<IPlan> = new Schema(
   {
-    name: {
+    plan_name: {
       type: String,
       required: [true, "Plan name is required"]
     },
-    code: {
+    plan_code: {
       type: String,
       required: [true, "Plan code is required"]
     },
@@ -30,8 +31,9 @@ const PlanSchema: Schema<IPlan> = new Schema(
       type: Date,
       default: null
     },
-    is_active: {
-      type: Boolean,
+    status: {
+      type: String,
+      enum: [PLAN_STATUS.active, PLAN_STATUS.expired, null],
       default: null
     },
     created: CreatedSchema

@@ -2,6 +2,7 @@ import moment from "moment";
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { ROLES } from "../../../../constants/roles";
+import { PLAN_STATUS } from "../../../../constants/planStatus";
 import MESSAGE from "../../../../constants/message";
 import service from "../../../../services";
 import PlanModel from "../../../../models/plan/plan.model";
@@ -11,7 +12,7 @@ import { IObjectId } from "../../../../@types/objectId.interface";
 // Plan creation
 export const PlanCreation = async (req: Request, res: Response) => {
     try {
-        const { name, code, start_date, end_date } = req.body;
+        const { plan_name, plan_code, start_date, end_date } = req.body;
         const planCreatorRole = req.user.role.toUpperCase(); // Extracting this role from the JWT
         let plan_start_date = null;
         let plan_end_date = null;
@@ -34,20 +35,20 @@ export const PlanCreation = async (req: Request, res: Response) => {
         }
 
         // Email of Group Owner cannot be duplicated.
-        const isDuplicatePlanName = await service.plan.isDuplicateActivePlanNameService(PlanModel, name);
+        const isDuplicatePlanName = await service.plan.isDuplicateActivePlanNameService(PlanModel, plan_name);
 
         if (isDuplicatePlanName) {
             return res.status(StatusCodes.BAD_REQUEST).json({
-                message: MESSAGE.custom(`Plan: ${name} is already created and in active status`)
+                message: MESSAGE.custom(`Plan: ${plan_name} is already created and in active status`)
             });
         }
 
         // Email of Group Owner cannot be duplicated.
-        const isDuplicatePlanCode = await service.plan.isDuplicateActivePlanCodeService(PlanModel, code);
+        const isDuplicatePlanCode = await service.plan.isDuplicateActivePlanCodeService(PlanModel, plan_code);
 
         if (isDuplicatePlanCode) {
             return res.status(StatusCodes.BAD_REQUEST).json({
-                message: MESSAGE.custom(`Plan with code: ${code} is already created and in active status`)
+                message: MESSAGE.custom(`Plan with code: ${plan_code} is already created and in active status`)
             });
         }
 
@@ -58,7 +59,7 @@ export const PlanCreation = async (req: Request, res: Response) => {
             ...req.body,
             start_date: plan_start_date,
             end_date: plan_end_date,
-            is_active: true,
+            status: PLAN_STATUS.active,
             created: {
                 by: req.user.user_name,
                 on: created_date
@@ -83,13 +84,14 @@ export const PlanCreation = async (req: Request, res: Response) => {
 //Get all plan
 export const GetAllPlan = async (req: Request, res: Response) => {
     try {
+        const status = req.query.status ? req.query.status : "";
         if (!req.user) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 message: MESSAGE.get.fail,
                 result: "Not authorized!"
             });
         }
-        const plans = await service.plan.GetPlans(PlanModel);
+        const plans = await service.plan.GetPlans(PlanModel, status.toString());
         if (plans) {
             return res.status(StatusCodes.OK).json({
                 message: "Success",
@@ -112,6 +114,7 @@ export const GetAllPlan = async (req: Request, res: Response) => {
 export const GetPlanByNameOrCode = async (req: Request, res: Response) => {
     try {
         const planIdentifier = req.params.code;
+        const status = req.query.status ? req.query.status : "";
         if (!req.user) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 message: MESSAGE.get.fail,
@@ -124,7 +127,7 @@ export const GetPlanByNameOrCode = async (req: Request, res: Response) => {
                 result: "Plane name or code is required to find the plan details"
             });
         }
-        const plan = await service.plan.GetPlan(PlanModel, planIdentifier);
+        const plan = await service.plan.GetPlan(PlanModel, planIdentifier, status.toString());
         if (plan) {
             return res.status(StatusCodes.OK).json({
                 message: "Success",

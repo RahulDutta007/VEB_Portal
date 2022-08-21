@@ -7,7 +7,7 @@ import { validators } from "../../validators";
 const router = express.Router();
 
 router.route("/").post(validator(validators.planCreationValidator, null), verifyToken, PlanCreation);
-router.route("/").get(verifyToken, GetAllPlan);
+router.route("/get-all-plan").get(verifyToken, GetAllPlan);
 router.route("/get-plan/:code").get(verifyToken, GetPlanByNameOrCode);
 router.route("/check-plan-code").get(verifyToken, GetPlanCode);
 
