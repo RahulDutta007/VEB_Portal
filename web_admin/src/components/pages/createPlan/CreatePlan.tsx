@@ -18,11 +18,12 @@ const CreatePlan = () => {
 	const [userForm, setUserForm] = useState<DynamicForm>();
 	const [hasCreatePlanClick, setHasCreatePlanClick] = useState(false);
 	const [isPlanCodeExist, setIsPlanCodeExist] = useState(false);
+	const [addedPlan, setAddedPlan] = useState<null | string>(null);
 	const [createdPlan, setCreatedPlan] = useState({
 		plan_code: "",
 		plan_name: "",
-		plan_start_date: "",
-		plan_end_date: ""
+		start_date: "",
+		end_date: ""
 	});
 	const [validation, setValidation] = useState<Validation>({
 		createdPlan: {},
@@ -82,7 +83,7 @@ const CreatePlan = () => {
 	);
 
 	const handleValidation = useCallback(() => {
-		const { plan_code, plan_name, plan_start_date, plan_end_date } = createdPlan;
+		const { plan_code, plan_name, start_date, end_date } = createdPlan;
 		_validation.current = {
 			...validation,
 			createdPlan: {},
@@ -100,18 +101,17 @@ const CreatePlan = () => {
 			_validation.current["status"] = "invalid";
 			flag = false;
 		}
-		if (String(plan_start_date).length === 0) {
-			_validation.current.createdPlan["plan_start_date"] = "Plan Start is required";
+		if (String(start_date).length === 0) {
+			_validation.current.createdPlan["start_date"] = "Plan Start is required";
 			_validation.current["status"] = "invalid";
 			flag = false;
 		}
-		if (String(plan_start_date).length > 0 && String(plan_end_date).length > 0) {
-			const planStartDate = new Date(plan_start_date).getTime();
-			const planEndDate = new Date(plan_end_date).getTime();
+		if (String(start_date).length > 0 && String(end_date).length > 0) {
+			const planStartDate = new Date(start_date).getTime();
+			const planEndDate = new Date(end_date).getTime();
 
 			if (planStartDate > planEndDate) {
-				_validation.current.createdPlan["plan_start_date"] =
-					"Plan Start Date cannot be less than Plan End Date";
+				_validation.current.createdPlan["start_date"] = "Plan Start Date cannot be less than Plan End Date";
 				_validation.current["status"] = "invalid";
 				flag = false;
 			}
@@ -132,13 +132,13 @@ const CreatePlan = () => {
 			setHasCreatePlanClick(true);
 			const validation = handleValidation();
 			if (validation === "valid" && !isPlanCodeExist) {
-				const { plan_end_date } = createdPlan;
-				const planEndDate = plan_end_date.length > 0 ? plan_end_date : null;
+				const { end_date } = createdPlan;
+				const planEndDate = end_date.length > 0 ? end_date : null;
 
 				const payload = {
-					name: createdPlan.plan_name,
-					code: createdPlan.plan_code,
-					start_date: createdPlan.plan_start_date,
+					plan_name: createdPlan.plan_name,
+					plan_code: createdPlan.plan_code,
+					start_date: createdPlan.start_date,
 					end_date: planEndDate
 				};
 				const response = await api.plan.createPlan(payload);
@@ -147,17 +147,18 @@ const CreatePlan = () => {
 						Object.assign({}, createdPlan, {
 							plan_code: "",
 							plan_name: "",
-							plan_start_date: "",
-							plan_end_date: ""
+							start_date: "",
+							end_date: ""
 						})
 					);
 					setHasCreatePlanClick(false);
+					setAddedPlan(createdPlan.plan_name);
 					setCreatedPlan(
 						Object.assign({}, createdPlan, {
 							plan_code: "",
 							plan_name: "",
-							plan_start_date: "",
-							plan_end_date: ""
+							start_date: "",
+							end_date: ""
 						})
 					);
 					setSnackbarAPICallProps(
@@ -173,8 +174,8 @@ const CreatePlan = () => {
 						Object.assign({}, createdPlan, {
 							plan_code: "",
 							plan_name: "",
-							plan_start_date: "",
-							plan_end_date: ""
+							start_date: "",
+							end_date: ""
 						})
 					);
 					setSnackbarAPICallProps(
@@ -218,61 +219,73 @@ const CreatePlan = () => {
 	);
 
 	useEffect(() => {
-		setUserForm(
-			Object.assign(
-				{},
-				{
-					"Create Plan": [
+		async function fetchData() {
+			const response = await api.plan.getAllPlan("ACTIVE");
+			if (response.message === "Success") {
+				setUserForm(
+					Object.assign(
+						{},
 						{
-							label: "Plan Code",
-							name: "plan_code",
-							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handlePlanChange(event),
-							placeholder: "Enter Plan Code",
-							value: createdPlan.plan_code,
-							type: "textfield"
-						},
-						{
-							label: "Plan Name",
-							name: "plan_name",
-							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handlePlanChange(event),
-							placeholder: "Select Plan Name",
-							value: createdPlan.plan_name,
-							type: "select",
-							options: [
-								"",
-								"Accident",
-								"Cancer",
-								"Short Term Disability",
-								"Hospital Indemnity",
-								"Critical Illness Group",
-								"Whole Life "
+							Create_Plan: [
+								{
+									label: "Plan Code",
+									name: "plan_code",
+									onChange: (event: React.ChangeEvent<HTMLInputElement>) => handlePlanChange(event),
+									placeholder: "Enter Plan Code",
+									value: createdPlan.plan_code,
+									type: "textfield"
+								},
+								{
+									label: "Plan Name",
+									name: "plan_name",
+									onChange: (event: React.ChangeEvent<HTMLInputElement>) => handlePlanChange(event),
+									placeholder: "Select Plan Name",
+									value: createdPlan.plan_name,
+									type: "select",
+									options: [
+										"",
+										"Accident",
+										"Cancer",
+										"Short Term Disability",
+										"Hospital Indemnity",
+										"Critical Illness Group",
+										"Whole Life"
+									].filter((plan: string) => {
+										return !response.data.some((dbPlan: any) => {
+											return dbPlan.plan_name === plan;
+										});
+									})
+								},
+								{
+									label: "Plan Start Date",
+									name: "start_date",
+									onChange: (date: MaterialUiPickersDate, name: string) =>
+										handleUserDateChange(date, name),
+									placeholder: "Enter Plan Start Date",
+									value: createdPlan.start_date,
+									type: "date"
+								},
+								{
+									label: "Plan End Date",
+									name: "end_date",
+									onChange: (date: MaterialUiPickersDate, name: string) =>
+										handleUserDateChange(date, name),
+									placeholder: "Enter Plan End Date",
+									value: createdPlan.end_date,
+									type: "date"
+								}
 							]
-						},
-						{
-							label: "Plan Start Date",
-							name: "plan_start_date",
-							onChange: (date: MaterialUiPickersDate, name: string) => handleUserDateChange(date, name),
-							placeholder: "Enter Plan Start Date",
-							value: createdPlan.plan_start_date,
-							type: "date"
-						},
-						{
-							label: "Plan End Date",
-							name: "plan_end_date",
-							onChange: (date: MaterialUiPickersDate, name: string) => handleUserDateChange(date, name),
-							placeholder: "Enter Plan End Date",
-							value: createdPlan.plan_end_date,
-							type: "date"
 						}
-					]
-				}
-			)
-		);
+					)
+				);
+			}
+		}
+		fetchData();
 	}, [
 		createdPlan.plan_code,
-		createdPlan.plan_end_date,
+		createdPlan.end_date,
 		createdPlan.plan_name,
-		createdPlan.plan_start_date,
+		createdPlan.start_date,
 		handlePlanChange,
 		handleUserDateChange
 	]);
@@ -286,17 +299,34 @@ const CreatePlan = () => {
 					Object.entries(userForm).map(([key, value], index) => {
 						return (
 							<div key={index}>
-								<div className="pf-title">{key}</div>
+								<div className="pf-title">Create Plan</div>
 								<Suspense fallback={<div />}>
+									<div className="pf-action-button-container" id="pf-action-button-container">
+										<Button
+											className="button-green"
+											onClick={handleCreatePlan}
+											variant="contained"
+											disabled={hasCreatePlanClick}
+											disableElevation={hasCreatePlanClick}
+											style={{
+												cursor: hasCreatePlanClick ? "not-allowed" : "pointer",
+												pointerEvents: "unset"
+											}}
+										>
+											<span className="button-label-with-icon">Create Plan</span>
+										</Button>
+									</div>
 									<Paper className="pf-paper-container" elevation={3} variant="outlined">
 										{value.map((field: DynamicFormField, index: number) => {
 											return (
 												<Grid key={index} item xl={12} lg={12} md={12} sm={12} xs={12}>
 													<Grid container spacing={1} className="pf-label">
-														<Grid item>
+														<Grid item xs={2} sm={2} md={2} lg={2} xl={2}>
 															<div
 																className={
-																	field.name === "plan_code"
+																	field.name === "plan_code" ||
+																	field.name === "plan_name" ||
+																	field.name === "start_date"
 																		? "pf-label-text required"
 																		: "pf-label-text"
 																}
@@ -305,7 +335,7 @@ const CreatePlan = () => {
 																{field.label}
 															</div>
 														</Grid>
-														<Grid item xs={9} sm={9} md={9} lg={9} xl={9}>
+														<Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
 															{field.type === "textfield" ? (
 																<TextField
 																	className="text-field-input text-field-input-create-enroller pointer-event-unset create-admin-input-width"
@@ -349,11 +379,15 @@ const CreatePlan = () => {
 																		<MenuItem value="" disabled>
 																			Select Value
 																		</MenuItem>
-																		{field?.options?.map((option: any) => (
-																			<MenuItem key={option} value={option}>
-																				{option}
-																			</MenuItem>
-																		))}
+																		{field?.options
+																			?.filter(
+																				(option: any) => option !== addedPlan
+																			)
+																			.map((option: any) => (
+																				<MenuItem key={option} value={option}>
+																					{option}
+																				</MenuItem>
+																			))}
 																	</Select>
 																	{validation &&
 																	validation.createdPlan[field.name] ? (

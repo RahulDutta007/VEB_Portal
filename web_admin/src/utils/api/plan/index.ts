@@ -18,7 +18,7 @@ type CreatePlanPayload = CreatePlan;
 */
 export const createPlan = async (_payload: CreatePlanPayload): Promise<any> => {
 	try {
-		const payload = JSON.stringify(_payload);
+		// const payload = JSON.stringify(_payload);
 		const endpoint: Endpoint = `${initialRoute}/`;
 		/*
 			Add response type here in next line
@@ -27,7 +27,7 @@ export const createPlan = async (_payload: CreatePlanPayload): Promise<any> => {
 		const _headers = Object.assign({}, headers, {
 			authorization: `${Bearer} ${token}`
 		});
-		const response = await post(endpoint, payload, _headers);
+		const response = await post(endpoint, _payload, _headers);
 		if (response) {
 			const {
 				data: { message }
@@ -78,7 +78,35 @@ export const findPlanCode = async (planCode: string): Promise<any> => {
 	}
 };
 
+export const getAllPlan = async (status: string): Promise<any> => {
+	try {
+		const endpoint: Endpoint = `${initialRoute}/get-all-plan?status=${status}`;
+		/*
+			Add response type here in next line
+		*/
+		const token = localStorage.getItem("@jwt");
+		const _headers = Object.assign({}, headers, {
+			authorization: `${Bearer} ${token}`
+		});
+		const response = await get(endpoint, _headers);
+		if (response?.data?.message === "Success") {
+			const {
+				data: { message, data }
+			} = response;
+			return { message, data };
+		} else {
+			return { message: "Error Occurred" };
+		}
+	} catch (error: any) {
+		if (error.response.status === 400) {
+			const { message } = error.response.data;
+			return message;
+		}
+	}
+};
+
 export const plan = {
 	createPlan,
-	findPlanCode
+	findPlanCode,
+	getAllPlan
 };

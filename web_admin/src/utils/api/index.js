@@ -38,6 +38,7 @@ export const api = {
 	},
 	plan: {
 		createPlan: plan.createPlan,
-		findPlanCode: plan.findPlanCode
+		findPlanCode: plan.findPlanCode,
+		getAllPlan: plan.getAllPlan
 	}
 };
