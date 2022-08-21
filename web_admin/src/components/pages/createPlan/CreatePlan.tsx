@@ -11,6 +11,7 @@ import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import EventIcon from "@material-ui/icons/Event";
 import DateFnsUtils from "@date-io/date-fns";
 import { Validation } from "../../../@types/validation.types";
+import { api } from "../../../utils/api";
 
 const CreatePlan = () => {
 	const [userForm, setUserForm] = useState<DynamicForm>();
@@ -102,6 +103,7 @@ const CreatePlan = () => {
 	const handleCreatePlan = useCallback(
 		async (event: React.MouseEvent<HTMLButtonElement>) => {
 			event.preventDefault();
+			setHasCreatePlanClick(true);
 			const validation = handleValidation();
 			if (validation === "valid") {
 				const { plan_start_date, plan_end_date } = createdPlan;
@@ -114,9 +116,62 @@ const CreatePlan = () => {
 					start_date: createdPlan.plan_start_date,
 					end_date: createdPlan.plan_end_date
 				};
+				const response = await api.plan.createPlan(payload);
+				if (response.message === "Data added successfully") {
+					setCreatedPlan(
+						Object.assign({}, createdPlan, {
+							plan_code: "",
+							plan_name: "",
+							plan_start_date: "",
+							plan_end_date: ""
+						})
+					);
+					setHasCreatePlanClick(false);
+					setCreatedPlan(
+						Object.assign({}, createdPlan, {
+							plan_code: "",
+							plan_name: "",
+							plan_start_date: "",
+							plan_end_date: ""
+						})
+					);
+					setSnackbarAPICallProps(
+						Object.assign({}, snackbarAPICallProps, {
+							open: true,
+							message: "Plan Creation Successful",
+							severity: "success"
+						})
+					);
+				} else {
+					setHasCreatePlanClick(false);
+					setCreatedPlan(
+						Object.assign({}, createdPlan, {
+							plan_code: "",
+							plan_name: "",
+							plan_start_date: "",
+							plan_end_date: ""
+						})
+					);
+					setSnackbarAPICallProps(
+						Object.assign({}, snackbarAPICallProps, {
+							open: true,
+							message: "Plan Creation Failed!",
+							severity: "error"
+						})
+					);
+				}
+			} else {
+				setHasCreatePlanClick(false);
+				setSnackbarAPICallProps(
+					Object.assign({}, snackbarAPICallProps, {
+						open: true,
+						message: "Plan Creation Failed!",
+						severity: "error"
+					})
+				);
 			}
 		},
-		[createdPlan, handleValidation]
+		[createdPlan, handleValidation, snackbarAPICallProps]
 	);
 
 	const handleKeyCheck = useCallback((event: React.KeyboardEvent<HTMLInputElement | HTMLDivElement>) => {

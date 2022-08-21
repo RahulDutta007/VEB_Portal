@@ -51,7 +51,7 @@ export const PlanCreation = async (req: Request, res: Response) => {
             });
         }
 
-        created_date = new Date(service.date.formateMongoDateService(moment().format('YYYY-MM-DD')));
+        created_date = new Date(service.date.formateMongoDateService(moment().format("YYYY-MM-DD")));
 
         // Saving data to Database
         const payload = {

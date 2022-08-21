@@ -10,6 +10,7 @@ import {
 	createEnroller,
 	findUserName
 } from "./auth/login";
+import { plan } from "./plan/index";
 
 import { OTP } from "./OTP/OTP";
 
@@ -34,5 +35,8 @@ export const api = {
 		assignLocations: _assignGroupsAndLocation.assignLocations,
 		assignAllGroups: _assignGroupsAndLocation.assignAllGroups,
 		assignAllLocations: _assignGroupsAndLocation.assignAllLocations
+	},
+	plan: {
+		createPlan: plan.createPlan
 	}
 };
