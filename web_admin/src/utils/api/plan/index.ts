@@ -47,6 +47,38 @@ export const createPlan = async (_payload: CreatePlanPayload): Promise<any> => {
 	}
 };
 
+export const findPlanCode = async (planCode: string): Promise<any> => {
+	try {
+		const endpoint: Endpoint = `${initialRoute}/check-plan-code?plan_code=${planCode}`;
+		/*
+			Add response type here in next line
+		*/
+		const token = localStorage.getItem("@jwt");
+		const _headers = Object.assign({}, headers, {
+			authorization: `${Bearer} ${token}`
+		});
+		const response = await get(endpoint, _headers);
+		if (response) {
+			const {
+				data: { message, codeExist }
+			} = response;
+			if (codeExist !== undefined && codeExist === true) {
+				return { message, codeExist };
+			} else if (codeExist !== undefined && codeExist === false) {
+				return { message, codeExist };
+			} else {
+				return { message: "Error Occurred" };
+			}
+		}
+	} catch (error: any) {
+		if (error.response.status === 400) {
+			const { message } = error.response.data;
+			return message;
+		}
+	}
+};
+
 export const plan = {
-	createPlan
+	createPlan,
+	findPlanCode
 };

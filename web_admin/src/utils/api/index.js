@@ -37,6 +37,7 @@ export const api = {
 		assignAllLocations: _assignGroupsAndLocation.assignAllLocations
 	},
 	plan: {
-		createPlan: plan.createPlan
+		createPlan: plan.createPlan,
+		findPlanCode: plan.findPlanCode
 	}
 };

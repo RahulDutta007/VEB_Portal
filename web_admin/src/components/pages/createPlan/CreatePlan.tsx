@@ -12,10 +12,12 @@ import EventIcon from "@material-ui/icons/Event";
 import DateFnsUtils from "@date-io/date-fns";
 import { Validation } from "../../../@types/validation.types";
 import { api } from "../../../utils/api";
+import { useDebouncedCallback } from "use-debounce";
 
 const CreatePlan = () => {
 	const [userForm, setUserForm] = useState<DynamicForm>();
 	const [hasCreatePlanClick, setHasCreatePlanClick] = useState(false);
+	const [isPlanCodeExist, setIsPlanCodeExist] = useState(false);
 	const [createdPlan, setCreatedPlan] = useState({
 		plan_code: "",
 		plan_name: "",
@@ -40,19 +42,43 @@ const CreatePlan = () => {
 			);
 		}
 	});
+
+	const findPlanCode = useDebouncedCallback(async (value: string) => {
+		if (value !== "") {
+			const planResponse = await api.plan.findPlanCode(value);
+			if (planResponse && planResponse.codeExist !== undefined && planResponse.codeExist === true) {
+				setIsPlanCodeExist(true);
+			} else if (planResponse && planResponse.codeExist !== undefined && planResponse.codeExist === false) {
+				setIsPlanCodeExist(false);
+			} else {
+				setIsPlanCodeExist(false);
+				setSnackbarAPICallProps(
+					Object.assign({}, snackbarAPICallProps, {
+						open: true,
+						message: "Error Occurred",
+						severity: "error"
+					})
+				);
+			}
+		} else {
+			console.log("error");
+		}
+	}, 500);
+
 	const handlePlanChange = useCallback(
 		async (event: React.ChangeEvent<HTMLInputElement>) => {
 			const { value } = event.target;
 			const { name } = event.target;
 			if (name === "plan_code") {
 				setCreatedPlan(Object.assign({}, createdPlan, { [name]: value }));
+				await findPlanCode(value);
 			} else if (name === "plan_name") {
 				setCreatedPlan(Object.assign({}, createdPlan, { [name]: value }));
 			} else {
 				setCreatedPlan(Object.assign({}, createdPlan, { [name]: value }));
 			}
 		},
-		[createdPlan]
+		[createdPlan, findPlanCode]
 	);
 
 	const handleValidation = useCallback(() => {
@@ -105,16 +131,15 @@ const CreatePlan = () => {
 			event.preventDefault();
 			setHasCreatePlanClick(true);
 			const validation = handleValidation();
-			if (validation === "valid") {
-				const { plan_start_date, plan_end_date } = createdPlan;
-				const planStartDate = plan_start_date ? new Date(plan_start_date) : null;
-				const planEndDate = plan_end_date ? new Date(plan_end_date) : null;
+			if (validation === "valid" && !isPlanCodeExist) {
+				const { plan_end_date } = createdPlan;
+				const planEndDate = plan_end_date.length > 0 ? plan_end_date : null;
 
 				const payload = {
 					name: createdPlan.plan_name,
 					code: createdPlan.plan_code,
 					start_date: createdPlan.plan_start_date,
-					end_date: createdPlan.plan_end_date
+					end_date: planEndDate
 				};
 				const response = await api.plan.createPlan(payload);
 				if (response.message === "Data added successfully") {
@@ -171,7 +196,7 @@ const CreatePlan = () => {
 				);
 			}
 		},
-		[createdPlan, handleValidation, snackbarAPICallProps]
+		[createdPlan, handleValidation, isPlanCodeExist, snackbarAPICallProps]
 	);
 
 	const handleKeyCheck = useCallback((event: React.KeyboardEvent<HTMLInputElement | HTMLDivElement>) => {
@@ -291,12 +316,17 @@ const CreatePlan = () => {
 																	onChange={field.onChange}
 																	variant="outlined"
 																	helperText={
-																		_validation.current !== undefined &&
-																		_validation?.current?.status === "invalid" &&
-																		Object.keys(
-																			_validation?.current?.createdPlan
-																		).indexOf(field.name) > -1 &&
-																		field.type === "textfield"
+																		field.name === "plan_code" &&
+																		field.value.length > 0 &&
+																		isPlanCodeExist
+																			? "Plan Code Exist"
+																			: _validation.current !== undefined &&
+																			  _validation?.current?.status ===
+																					"invalid" &&
+																			  Object.keys(
+																					_validation?.current?.createdPlan
+																			  ).indexOf(field.name) > -1 &&
+																			  field.type === "textfield"
 																			? _validation?.current?.createdPlan[
 																					field.name
 																			  ]
@@ -314,22 +344,14 @@ const CreatePlan = () => {
 																			style: { zIndex: 35960 }
 																		}}
 																		inputProps={{ "aria-label": "Without label" }}
+																		value={field.value}
 																	>
 																		<MenuItem value="" disabled>
 																			Select Value
 																		</MenuItem>
 																		{field?.options?.map((option: any) => (
-																			<MenuItem
-																				key={option}
-																				value={
-																					field.name === "group_number"
-																						? option?.group_number!
-																						: option
-																				}
-																			>
-																				{field.name === "group_number"
-																					? option?.physical_name!
-																					: option}
+																			<MenuItem key={option} value={option}>
+																				{option}
 																			</MenuItem>
 																		))}
 																	</Select>
