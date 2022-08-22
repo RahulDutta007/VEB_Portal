@@ -2715,6 +2715,18 @@
     "loader-utils" "^2.0.0"
     "regex-parser" "^2.2.11"
 
+"ag-grid-community@^26.1.0":
+  "integrity" "sha512-vGnbiaxN6TxsDGcC2uIOrgjx+zwXlBK99aYiWcuiyzSPvNpz1fG29nSNx/fMeVRzc3FOru8h8vvk41vszh5AMg=="
+  "resolved" "https://registry.npmjs.org/ag-grid-community/-/ag-grid-community-26.1.0.tgz"
+  "version" "26.1.0"
+
+"ag-grid-react@^26.1.0":
+  "integrity" "sha512-W+NTwpbCbMUCYadqn7GFPi+zWzU5UBklVPoKxjx3BkFIa/63Mb0dLm/ynr/hLIRVQCZriUBlHPFU7QrZJXptLg=="
+  "resolved" "https://registry.npmjs.org/ag-grid-react/-/ag-grid-react-26.1.0.tgz"
+  "version" "26.1.0"
+  dependencies:
+    "prop-types" "^15.6.2"
+
 "agent-base@6":
   "integrity" "sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ=="
   "resolved" "https://registry.npmjs.org/agent-base/-/agent-base-6.0.2.tgz"
