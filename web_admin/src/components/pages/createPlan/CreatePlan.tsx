@@ -5,7 +5,17 @@ import { DynamicForm, DynamicFormField } from "../../../@types/dynamicForm.types
 import { LazySnackbarAPI } from "../../shared";
 import { SnackbarProps } from "../../../@types/snackbarAPI.types";
 import "./CreatePlan.css";
-import { Button, Grid, MenuItem, Paper, Select, TextField } from "@material-ui/core";
+import {
+	Button,
+	Grid,
+	MenuItem,
+	Paper,
+	Select,
+	TextField,
+	Checkbox,
+	CheckboxProps,
+	withStyles
+} from "@material-ui/core";
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import EventIcon from "@material-ui/icons/Event";
@@ -13,6 +23,17 @@ import DateFnsUtils from "@date-io/date-fns";
 import { Validation } from "../../../@types/validation.types";
 import { api } from "../../../utils/api";
 import { useDebouncedCallback } from "use-debounce";
+import { green } from "@material-ui/core/colors";
+
+const GreenCheckbox = withStyles({
+	root: {
+		color: green[400],
+		"&$checked": {
+			color: green[600]
+		}
+	},
+	checked: {}
+})((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
 const CreatePlan = () => {
 	const [userForm, setUserForm] = useState<DynamicForm>();
@@ -23,7 +44,8 @@ const CreatePlan = () => {
 		plan_code: "",
 		plan_name: "",
 		start_date: "",
-		end_date: ""
+		end_date: "",
+		has_end_date: false
 	});
 	const [validation, setValidation] = useState<Validation>({
 		createdPlan: {},
@@ -65,6 +87,14 @@ const CreatePlan = () => {
 			console.log("error");
 		}
 	}, 500);
+
+	const handleEnableCheckbox = useCallback(
+		(event: React.ChangeEvent<HTMLInputElement>) => {
+			const { name, checked } = event.target;
+			setCreatedPlan(Object.assign({}, createdPlan, { [name]: checked }));
+		},
+		[createdPlan]
+	);
 
 	const handlePlanChange = useCallback(
 		async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -266,6 +296,14 @@ const CreatePlan = () => {
 									type: "date"
 								},
 								{
+									label: "Plan has End Date?",
+									name: "has_end_date",
+									onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+										handleEnableCheckbox(event),
+									value: createdPlan.has_end_date,
+									type: "checkbox"
+								},
+								{
 									label: "Plan End Date",
 									name: "end_date",
 									onChange: (date: MaterialUiPickersDate, name: string) =>
@@ -287,7 +325,9 @@ const CreatePlan = () => {
 		createdPlan.plan_name,
 		createdPlan.start_date,
 		handlePlanChange,
-		handleUserDateChange
+		handleUserDateChange,
+		createdPlan.has_end_date,
+		handleEnableCheckbox
 	]);
 	return (
 		<div className="create-createdUser" id="create-createdUser">
@@ -332,7 +372,10 @@ const CreatePlan = () => {
 																}
 																id="pf-label-text"
 															>
-																{field.label}
+																{createdPlan.has_end_date === false &&
+																field.name === "end_date"
+																	? null
+																	: field.label}
 															</div>
 														</Grid>
 														<Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
@@ -398,7 +441,11 @@ const CreatePlan = () => {
 																		</div>
 																	) : null}
 																</>
-															) : field.type === "date" ? (
+															) : (field.type === "date" &&
+																	field.name === "start_date") ||
+															  (field.type === "date" &&
+																	field.name === "end_date" &&
+																	createdPlan.has_end_date === true) ? (
 																<MuiPickersUtilsProvider utils={DateFnsUtils}>
 																	<KeyboardDatePicker
 																		className="date-input pointer-event-unset create-admin-input-width create-user-input-date"
@@ -440,6 +487,24 @@ const CreatePlan = () => {
 																		}
 																	/>
 																</MuiPickersUtilsProvider>
+															) : field.type === "checkbox" ? (
+																<>
+																	<div className="check-support" id="check-support">
+																		<span>
+																			<GreenCheckbox
+																				onChange={field.onChange}
+																				name={field.name}
+																				checked={field.value}
+																			/>
+																		</span>
+																		<span
+																			className="pf-label-text"
+																			id="pf-label-text"
+																		>
+																			{field.label}
+																		</span>
+																	</div>
+																</>
 															) : null}
 														</Grid>
 													</Grid>

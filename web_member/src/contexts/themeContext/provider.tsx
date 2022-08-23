@@ -7,7 +7,7 @@ import ThemeContext from "./themeContext";
 import { Theme } from "../../@types/theme.types";
 import { ThemeContextProps } from "../../@types/contexts/themeContext/themeContextProps.types";
 
-const ThemeContextProvider = ({ children }: ContextProviderProps): JSX.Element => {
+const ThemeContextProvider = ({ children }: ContextProviderProps) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const value: ThemeContextProps = {
 		theme: state.theme,
