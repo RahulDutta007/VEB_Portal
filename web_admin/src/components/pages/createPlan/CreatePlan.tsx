@@ -372,8 +372,9 @@ const CreatePlan = () => {
 																}
 																id="pf-label-text"
 															>
-																{createdPlan.has_end_date === false &&
-																field.name === "end_date"
+																{(createdPlan.has_end_date === false &&
+																	field.name === "end_date") ||
+																field.name === "has_end_date"
 																	? null
 																	: field.label}
 															</div>
