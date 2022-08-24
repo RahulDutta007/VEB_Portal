@@ -4,3 +4,11 @@ export type CreatePlan = {
 	start_date: string;
 	end_date: string | null;
 };
+
+export type Plan = {
+	plan_code: string;
+	plan_name: string;
+	start_date: string;
+	end_date: string;
+	has_end_date: boolean;
+};

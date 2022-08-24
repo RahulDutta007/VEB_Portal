@@ -1,10 +1,7 @@
-/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useState, useEffect, useRef, Suspense, useCallback, useContext } from "react";
+import React, { useState, useEffect, useRef, Suspense, useCallback } from "react";
 import { DynamicForm, DynamicFormField } from "../../../@types/dynamicForm.types";
 import { LazySnackbarAPI } from "../../shared";
 import { SnackbarProps } from "../../../@types/snackbarAPI.types";
-import "./CreatePlan.css";
 import {
 	Button,
 	Grid,
@@ -24,6 +21,9 @@ import { Validation } from "../../../@types/validation.types";
 import { api } from "../../../utils/api";
 import { useDebouncedCallback } from "use-debounce";
 import { green } from "@material-ui/core/colors";
+import { Plan } from "../../../@types/plan.types";
+
+import "./createPlan.css";
 
 const GreenCheckbox = withStyles({
 	root: {
@@ -36,11 +36,10 @@ const GreenCheckbox = withStyles({
 })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
 const CreatePlan = () => {
-	const [userForm, setUserForm] = useState<DynamicForm>();
+	const [planForm, setPlanForm] = useState<DynamicForm>();
 	const [hasCreatePlanClick, setHasCreatePlanClick] = useState(false);
 	const [isPlanCodeExist, setIsPlanCodeExist] = useState(false);
-	const [addedPlan, setAddedPlan] = useState<null | string>(null);
-	const [createdPlan, setCreatedPlan] = useState({
+	const [plan, setPlan] = useState<Plan>({
 		plan_code: "",
 		plan_name: "",
 		start_date: "",
@@ -48,7 +47,7 @@ const CreatePlan = () => {
 		has_end_date: false
 	});
 	const [validation, setValidation] = useState<Validation>({
-		createdPlan: {},
+		plan: {},
 		status: "invalid"
 	});
 	const _validation = useRef<Validation>();
@@ -91,9 +90,9 @@ const CreatePlan = () => {
 	const handleEnableCheckbox = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			const { name, checked } = event.target;
-			setCreatedPlan(Object.assign({}, createdPlan, { [name]: checked }));
+			setPlan(Object.assign({}, plan, { [name]: checked }));
 		},
-		[createdPlan]
+		[plan]
 	);
 
 	const handlePlanChange = useCallback(
@@ -101,38 +100,38 @@ const CreatePlan = () => {
 			const { value } = event.target;
 			const { name } = event.target;
 			if (name === "plan_code") {
-				setCreatedPlan(Object.assign({}, createdPlan, { [name]: value }));
+				setPlan(Object.assign({}, plan, { [name]: value }));
 				await findPlanCode(value);
 			} else if (name === "plan_name") {
-				setCreatedPlan(Object.assign({}, createdPlan, { [name]: value }));
+				setPlan(Object.assign({}, plan, { [name]: value }));
 			} else {
-				setCreatedPlan(Object.assign({}, createdPlan, { [name]: value }));
+				setPlan(Object.assign({}, plan, { [name]: value }));
 			}
 		},
-		[createdPlan, findPlanCode]
+		[plan, findPlanCode]
 	);
 
 	const handleValidation = useCallback(() => {
-		const { plan_code, plan_name, start_date, end_date } = createdPlan;
+		const { plan_code, plan_name, start_date, end_date } = plan;
 		_validation.current = {
 			...validation,
-			createdPlan: {},
+			plan: {},
 			status: "invalid"
 		};
 		let flag = true;
 
 		if (plan_code.length === 0) {
-			_validation.current.createdPlan["plan_code"] = "Plan Code is required";
+			_validation.current.plan["plan_code"] = "Plan Code is required";
 			_validation.current["status"] = "invalid";
 			flag = false;
 		}
 		if (plan_name.length === 0) {
-			_validation.current.createdPlan["plan_name"] = "Plan Name is required";
+			_validation.current.plan["plan_name"] = "Plan Name is required";
 			_validation.current["status"] = "invalid";
 			flag = false;
 		}
 		if (String(start_date).length === 0) {
-			_validation.current.createdPlan["start_date"] = "Plan Start is required";
+			_validation.current.plan["start_date"] = "Plan Start is required";
 			_validation.current["status"] = "invalid";
 			flag = false;
 		}
@@ -141,7 +140,7 @@ const CreatePlan = () => {
 			const planEndDate = new Date(end_date).getTime();
 
 			if (planStartDate > planEndDate) {
-				_validation.current.createdPlan["start_date"] = "Plan Start Date cannot be less than Plan End Date";
+				_validation.current.plan["start_date"] = "Plan Start Date cannot be less than Plan End Date";
 				_validation.current["status"] = "invalid";
 				flag = false;
 			}
@@ -154,27 +153,27 @@ const CreatePlan = () => {
 		}
 		setValidation(Object.assign({}, _validation.current));
 		return _validation.current["status"];
-	}, [createdPlan, validation]);
+	}, [plan, validation]);
 
-	const handleCreatePlan = useCallback(
+	const handleCreatePlanClick = useCallback(
 		async (event: React.MouseEvent<HTMLButtonElement>) => {
 			event.preventDefault();
 			setHasCreatePlanClick(true);
 			const validation = handleValidation();
 			if (validation === "valid" && !isPlanCodeExist) {
-				const { end_date } = createdPlan;
+				const { end_date } = plan;
 				const planEndDate = end_date.length > 0 ? end_date : null;
 
 				const payload = {
-					plan_name: createdPlan.plan_name,
-					plan_code: createdPlan.plan_code,
-					start_date: createdPlan.start_date,
+					plan_name: plan.plan_name,
+					plan_code: plan.plan_code,
+					start_date: plan.start_date,
 					end_date: planEndDate
 				};
 				const response = await api.plan.createPlan(payload);
 				if (response.message === "Data added successfully") {
-					setCreatedPlan(
-						Object.assign({}, createdPlan, {
+					setPlan(
+						Object.assign({}, plan, {
 							plan_code: "",
 							plan_name: "",
 							start_date: "",
@@ -182,9 +181,8 @@ const CreatePlan = () => {
 						})
 					);
 					setHasCreatePlanClick(false);
-					setAddedPlan(createdPlan.plan_name);
-					setCreatedPlan(
-						Object.assign({}, createdPlan, {
+					setPlan(
+						Object.assign({}, plan, {
 							plan_code: "",
 							plan_name: "",
 							start_date: "",
@@ -200,8 +198,8 @@ const CreatePlan = () => {
 					);
 				} else {
 					setHasCreatePlanClick(false);
-					setCreatedPlan(
-						Object.assign({}, createdPlan, {
+					setPlan(
+						Object.assign({}, plan, {
 							plan_code: "",
 							plan_name: "",
 							start_date: "",
@@ -227,32 +225,24 @@ const CreatePlan = () => {
 				);
 			}
 		},
-		[createdPlan, handleValidation, isPlanCodeExist, snackbarAPICallProps]
+		[plan, handleValidation, isPlanCodeExist, snackbarAPICallProps]
 	);
 
-	const handleKeyCheck = useCallback((event: React.KeyboardEvent<HTMLInputElement | HTMLDivElement>) => {
-		const abc = event;
-	}, []);
-
-	const handlePaste = useCallback((event: React.ClipboardEvent<HTMLInputElement | HTMLDivElement>) => {
-		const abc = event;
-	}, []);
-
-	const handleUserDateChange = useCallback(
+	const handlePlanDateChange = useCallback(
 		(_date: MaterialUiPickersDate, name: string) => {
 			const date = new Date(_date as any);
 			const parsedDate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 
-			setCreatedPlan(Object.assign({}, createdPlan, { [name]: parsedDate }));
+			setPlan(Object.assign({}, plan, { [name]: parsedDate }));
 		},
-		[createdPlan]
+		[plan]
 	);
 
 	useEffect(() => {
 		async function fetchData() {
 			const response = await api.plan.getAllPlan("ACTIVE");
 			if (response.message === "Success") {
-				setUserForm(
+				setPlanForm(
 					Object.assign(
 						{},
 						{
@@ -262,7 +252,7 @@ const CreatePlan = () => {
 									name: "plan_code",
 									onChange: (event: React.ChangeEvent<HTMLInputElement>) => handlePlanChange(event),
 									placeholder: "Enter Plan Code",
-									value: createdPlan.plan_code,
+									value: plan.plan_code,
 									type: "textfield"
 								},
 								{
@@ -270,7 +260,7 @@ const CreatePlan = () => {
 									name: "plan_name",
 									onChange: (event: React.ChangeEvent<HTMLInputElement>) => handlePlanChange(event),
 									placeholder: "Select Plan Name",
-									value: createdPlan.plan_name,
+									value: plan.plan_name,
 									type: "select",
 									options: [
 										"",
@@ -290,9 +280,9 @@ const CreatePlan = () => {
 									label: "Plan Start Date",
 									name: "start_date",
 									onChange: (date: MaterialUiPickersDate, name: string) =>
-										handleUserDateChange(date, name),
+										handlePlanDateChange(date, name),
 									placeholder: "Enter Plan Start Date",
-									value: createdPlan.start_date,
+									value: plan.start_date,
 									type: "date"
 								},
 								{
@@ -300,16 +290,16 @@ const CreatePlan = () => {
 									name: "has_end_date",
 									onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
 										handleEnableCheckbox(event),
-									value: createdPlan.has_end_date,
+									value: plan.has_end_date,
 									type: "checkbox"
 								},
 								{
 									label: "Plan End Date",
 									name: "end_date",
 									onChange: (date: MaterialUiPickersDate, name: string) =>
-										handleUserDateChange(date, name),
+										handlePlanDateChange(date, name),
 									placeholder: "Enter Plan End Date",
-									value: createdPlan.end_date,
+									value: plan.end_date,
 									type: "date"
 								}
 							]
@@ -320,23 +310,24 @@ const CreatePlan = () => {
 		}
 		fetchData();
 	}, [
-		createdPlan.plan_code,
-		createdPlan.end_date,
-		createdPlan.plan_name,
-		createdPlan.start_date,
+		plan.plan_code,
+		plan.end_date,
+		plan.plan_name,
+		plan.start_date,
 		handlePlanChange,
-		handleUserDateChange,
-		createdPlan.has_end_date,
-		handleEnableCheckbox
+		plan.has_end_date,
+		handleEnableCheckbox,
+		handlePlanDateChange
 	]);
+
 	return (
 		<div className="create-createdUser" id="create-createdUser">
 			<Suspense fallback={<div />}>
 				<LazySnackbarAPI snackbarProps={snackbarAPICallProps} />
 			</Suspense>
 			<Grid container spacing={1} className="pf-grid-container">
-				{userForm &&
-					Object.entries(userForm).map(([key, value], index) => {
+				{planForm &&
+					Object.entries(planForm).map(([key, value], index) => {
 						return (
 							<div key={index}>
 								<div className="pf-title">Create Plan</div>
@@ -344,7 +335,7 @@ const CreatePlan = () => {
 									<div className="pf-action-button-container" id="pf-action-button-container">
 										<Button
 											className="button-green"
-											onClick={handleCreatePlan}
+											onClick={handleCreatePlanClick}
 											variant="contained"
 											disabled={hasCreatePlanClick}
 											disableElevation={hasCreatePlanClick}
@@ -372,7 +363,7 @@ const CreatePlan = () => {
 																}
 																id="pf-label-text"
 															>
-																{(createdPlan.has_end_date === false &&
+																{(plan.has_end_date === false &&
 																	field.name === "end_date") ||
 																field.name === "has_end_date"
 																	? null
@@ -398,12 +389,10 @@ const CreatePlan = () => {
 																			  _validation?.current?.status ===
 																					"invalid" &&
 																			  Object.keys(
-																					_validation?.current?.createdPlan
+																					_validation?.current?.plan
 																			  ).indexOf(field.name) > -1 &&
 																			  field.type === "textfield"
-																			? _validation?.current?.createdPlan[
-																					field.name
-																			  ]
+																			? _validation?.current?.plan[field.name]
 																			: ""
 																	}
 																/>
@@ -424,20 +413,17 @@ const CreatePlan = () => {
 																			Select Value
 																		</MenuItem>
 																		{field?.options
-																			?.filter(
-																				(option: any) => option !== addedPlan
-																			)
-																			.map((option: any) => (
+																			?.filter((option: string) => option !== "")
+																			.map((option: string) => (
 																				<MenuItem key={option} value={option}>
 																					{option}
 																				</MenuItem>
 																			))}
 																	</Select>
-																	{validation &&
-																	validation.createdPlan[field.name] ? (
+																	{validation && validation.plan[field.name] ? (
 																		<div className="details">
 																			<span className="select-validation-text2">
-																				{validation.createdPlan[field.name]}
+																				{validation.plan[field.name]}
 																			</span>
 																		</div>
 																	) : null}
@@ -446,7 +432,7 @@ const CreatePlan = () => {
 																	field.name === "start_date") ||
 															  (field.type === "date" &&
 																	field.name === "end_date" &&
-																	createdPlan.has_end_date === true) ? (
+																	plan.has_end_date === true) ? (
 																<MuiPickersUtilsProvider utils={DateFnsUtils}>
 																	<KeyboardDatePicker
 																		className="date-input pointer-event-unset create-admin-input-width create-user-input-date"
@@ -478,12 +464,10 @@ const CreatePlan = () => {
 																			_validation?.current?.status ===
 																				"invalid" &&
 																			Object.keys(
-																				_validation?.current?.createdPlan
+																				_validation?.current?.plan
 																			).indexOf(field.name) > -1 &&
 																			field.type === "date"
-																				? _validation?.current?.createdPlan[
-																						field.name
-																				  ]
+																				? _validation?.current?.plan[field.name]
 																				: ""
 																		}
 																	/>
@@ -521,7 +505,7 @@ const CreatePlan = () => {
 			<div className="pf-action-button-container margin-top-action-button" id="pf-action-button-container">
 				<Button
 					className="button-green"
-					onClick={handleCreatePlan}
+					onClick={handleCreatePlanClick}
 					variant="contained"
 					disabled={hasCreatePlanClick}
 					disableElevation={hasCreatePlanClick}

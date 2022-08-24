@@ -5,3 +5,6 @@ export { default as SignUp } from "./auth/signUp/SignUp";
 
 // Admin
 export { default as MyProfile } from "./myProfile/MyProfile";
+
+//plan
+export { default as PlanManagement } from "./plan/planManagement/PlanManagement";
