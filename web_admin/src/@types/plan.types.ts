@@ -6,6 +6,7 @@ export type CreatePlan = {
 };
 
 export type Plan = {
+	_id?: string;
 	plan_code: string;
 	plan_name: string;
 	start_date: string;

@@ -8,6 +8,14 @@
 	"editor.insertSpaces": false,
 	// When opening a file, `editor.tabSize` and `editor.insertSpaces` will be detected based on the file contents.
 	"editor.detectIndentation": true,
+	"editor.codeActionsOnSave": {
+        // For ESLint
+        "source.fixAll.eslint": true,
+        // For TSLint
+        "source.fixAll.tslint": true,
+        // For Stylelint
+        "source.fixAll.stylelint": true
+    },
 	"prettier.arrowParens": "avoid",
 	"[typescript]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"

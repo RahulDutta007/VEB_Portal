@@ -94,8 +94,8 @@ export const GetAllPlan = async (req: Request, res: Response) => {
         const plans = await service.plan.GetPlans(PlanModel, status.toString());
         if (plans) {
             return res.status(StatusCodes.OK).json({
-                message: "Success",
-                data: plans
+                message: MESSAGE.get.succ,
+                result: plans
             });
         } else {
             return res.status(StatusCodes.OK).json({
