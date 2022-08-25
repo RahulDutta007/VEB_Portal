@@ -33,7 +33,8 @@ const adminDashboardHeader = {
 	all_members: "All Members",
 	plan_management: "Plan Management",
 	edit_location: "Edit Location",
-	group_home: "Group Home"
+	group_home: "Group Home",
+	create_plan: "Create Plan"
 };
 
 export const ADMIN_DASHBOARD_HEADER = adminDashboardHeader;

@@ -3,8 +3,9 @@ import { request } from "../../../api/api";
 import { headers } from "../../../config/config";
 import { MESSAGE } from "../../../constants/api/message";
 import { AUTHORIZATION } from "../../../constants/api/auth";
-import { CreatePlan } from "../../../@types/plan.types";
+import { CreatePlan, Plan } from "../../../@types/plan.types";
 import { Endpoint } from "../../../@types/api/api.types";
+import { StatusCodes } from "http-status-codes";
 const { post, get } = request;
 const { Authorization, Bearer } = AUTHORIZATION;
 
@@ -78,7 +79,7 @@ export const findPlanCode = async (planCode: string): Promise<any> => {
 	}
 };
 
-export const getAllPlan = async (status: string): Promise<any> => {
+export const getAllPlan = async (status: string): Promise<Plan[]> => {
 	try {
 		const endpoint: Endpoint = `${initialRoute}/get-all-plan?status=${status}`;
 		/*
@@ -89,19 +90,19 @@ export const getAllPlan = async (status: string): Promise<any> => {
 			authorization: `${Bearer} ${token}`
 		});
 		const response = await get(endpoint, _headers);
-		if (response?.data?.message === "Success") {
+		if (response?.status === StatusCodes.OK) {
 			const {
-				data: { message, data }
+				data: { result }
 			} = response;
-			return { message, data };
-		} else {
-			return { message: "Error Occurred" };
+			return result;
 		}
+		throw "Unknown Error";
 	} catch (error: any) {
-		if (error.response.status === 400) {
+		if (error.response.status === StatusCodes.BAD_REQUEST) {
 			const { message } = error.response.data;
 			return message;
 		}
+		throw error;
 	}
 };
 
