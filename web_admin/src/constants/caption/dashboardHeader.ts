@@ -5,6 +5,7 @@ const adminDashboardHeader = {
 	upload_administration: "Upload Administration",
 	my_profile: "My Profile",
 	user_management: "User Management",
+	admin_management: "Admin Management",
 	limit_groups: "Limit Groups",
 	limit_locations: "Limit Locations",
 	user_information: "User Information",

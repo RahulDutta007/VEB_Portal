@@ -8,7 +8,7 @@ const AdminManagement = (): JSX.Element => {
 	const { setDashboardHeader } = useContext(UIContext);
 
 	useEffect(() => {
-		setDashboardHeader(ADMIN_DASHBOARD_HEADER.user_management);
+		setDashboardHeader(ADMIN_DASHBOARD_HEADER.admin_management);
 	}, [setDashboardHeader]);
 
 	return (

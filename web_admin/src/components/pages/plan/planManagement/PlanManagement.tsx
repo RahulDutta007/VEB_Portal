@@ -35,7 +35,7 @@ const PlanManagement = (): JSX.Element => {
 	return (
 		<div className="plan-management-container">
 			<Box sx={{ width: "100%" }}>
-				<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+				<Box>
 					<Tabs
 						value={value}
 						onChange={handleLabelChange}
@@ -61,10 +61,10 @@ const PlanManagement = (): JSX.Element => {
 							{...a11yProps(1)}
 						/>
 					</Tabs>
-					<TabPanel value={0} index={0}>
+					<TabPanel value={value} index={0}>
 						<PlanManagementGrid gridData={plans} />
 					</TabPanel>
-					<TabPanel value={1} index={1}>
+					<TabPanel value={value} index={1}>
 						<PlanManagementGrid gridData={plans} />
 					</TabPanel>
 				</Box>
