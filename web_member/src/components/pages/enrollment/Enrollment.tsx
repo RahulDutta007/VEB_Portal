@@ -9,6 +9,7 @@ import { ThemeContext } from "../../../contexts";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import "./enrollment.css";
 import KemperCancerForm from "./plans/kemper/cancer/form/CancerForm";
+import KemperCriticalIllnessForm from "./plans/kemper/criticalIllness/form/CriticalIllness";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { styled } from "@mui/material/styles";
@@ -76,6 +77,9 @@ const Enrollment = (): JSX.Element => {
 			}
 			case "Short Term Disability": {
 				return <div>Short Term Disability</div>;
+			}
+			case "Critical Illness Group": {
+				return <KemperCriticalIllnessForm />;
 			}
 		}
 	}, [urlSearchParams]);
