@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Suspense, useCallback } from "react";
+import React, { useState, useEffect, useRef, Suspense, useCallback, useContext } from "react";
 import { DynamicForm, DynamicFormField } from "../../../@types/dynamicForm.types";
 import { LazySnackbarAPI } from "../../shared";
 import { SnackbarProps } from "../../../@types/snackbarAPI.types";
@@ -24,6 +24,8 @@ import { green } from "@material-ui/core/colors";
 import { Plan } from "../../../@types/plan.types";
 
 import "./createPlan.css";
+import { UIContext } from "../../../contexts";
+import { ADMIN_DASHBOARD_HEADER } from "../../../constants/caption/dashboardHeader";
 
 const GreenCheckbox = withStyles({
 	root: {
@@ -37,7 +39,7 @@ const GreenCheckbox = withStyles({
 
 const CreatePlan = () => {
 	const [planForm, setPlanForm] = useState<DynamicForm>();
-	const [hasCreatePlanClick, setHasCreatePlanClick] = useState(false);
+	const { setDashboardHeader } = useContext(UIContext);
 	const [isPlanCodeExist, setIsPlanCodeExist] = useState(false);
 	const [plan, setPlan] = useState<Plan>({
 		plan_code: "",
@@ -46,6 +48,7 @@ const CreatePlan = () => {
 		end_date: "",
 		has_end_date: false
 	});
+	const [activePlans, setActivePlans] = useState<Plan[]>([]);
 	const [validation, setValidation] = useState<Validation>({
 		plan: {},
 		status: "invalid"
@@ -158,7 +161,6 @@ const CreatePlan = () => {
 	const handleCreatePlanClick = useCallback(
 		async (event: React.MouseEvent<HTMLButtonElement>) => {
 			event.preventDefault();
-			setHasCreatePlanClick(true);
 			const validation = handleValidation();
 			if (validation === "valid" && !isPlanCodeExist) {
 				const { end_date } = plan;
@@ -180,7 +182,6 @@ const CreatePlan = () => {
 							end_date: ""
 						})
 					);
-					setHasCreatePlanClick(false);
 					setPlan(
 						Object.assign({}, plan, {
 							plan_code: "",
@@ -197,7 +198,6 @@ const CreatePlan = () => {
 						})
 					);
 				} else {
-					setHasCreatePlanClick(false);
 					setPlan(
 						Object.assign({}, plan, {
 							plan_code: "",
@@ -215,7 +215,6 @@ const CreatePlan = () => {
 					);
 				}
 			} else {
-				setHasCreatePlanClick(false);
 				setSnackbarAPICallProps(
 					Object.assign({}, snackbarAPICallProps, {
 						open: true,
@@ -238,77 +237,77 @@ const CreatePlan = () => {
 		[plan]
 	);
 
-	useEffect(() => {
-		async function fetchData() {
-			const response = await api.plan.getAllPlan("ACTIVE");
-			if (response.message === "Success") {
-				setPlanForm(
-					Object.assign(
-						{},
-						{
-							Create_Plan: [
-								{
-									label: "Plan Code",
-									name: "plan_code",
-									onChange: (event: React.ChangeEvent<HTMLInputElement>) => handlePlanChange(event),
-									placeholder: "Enter Plan Code",
-									value: plan.plan_code,
-									type: "textfield"
-								},
-								{
-									label: "Plan Name",
-									name: "plan_name",
-									onChange: (event: React.ChangeEvent<HTMLInputElement>) => handlePlanChange(event),
-									placeholder: "Select Plan Name",
-									value: plan.plan_name,
-									type: "select",
-									options: [
-										"",
-										"Accident",
-										"Cancer",
-										"Short Term Disability",
-										"Hospital Indemnity",
-										"Critical Illness Group",
-										"Whole Life"
-									].filter((plan: string) => {
-										return !response.data.some((dbPlan: any) => {
-											return dbPlan.plan_name === plan;
-										});
-									})
-								},
-								{
-									label: "Plan Start Date",
-									name: "start_date",
-									onChange: (date: MaterialUiPickersDate, name: string) =>
-										handlePlanDateChange(date, name),
-									placeholder: "Enter Plan Start Date",
-									value: plan.start_date,
-									type: "date"
-								},
-								{
-									label: "Plan has End Date?",
-									name: "has_end_date",
-									onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
-										handleEnableCheckbox(event),
-									value: plan.has_end_date,
-									type: "checkbox"
-								},
-								{
-									label: "Plan End Date",
-									name: "end_date",
-									onChange: (date: MaterialUiPickersDate, name: string) =>
-										handlePlanDateChange(date, name),
-									placeholder: "Enter Plan End Date",
-									value: plan.end_date,
-									type: "date"
-								}
-							]
-						}
-					)
-				);
-			}
+	const getActivePlans = useCallback(async () => {
+		if (activePlans.length === 0) {
+			const _activePlans: Plan[] = await api.plan.getAllPlan("ACTIVE");
+			setActivePlans(Object.assign([], _activePlans));
 		}
-		fetchData();
+	}, [activePlans.length]);
+
+	useEffect(() => {
+		getActivePlans();
+		setDashboardHeader(ADMIN_DASHBOARD_HEADER.create_plan);
+		setPlanForm(
+			Object.assign(
+				{},
+				{
+					"Create Plan": [
+						{
+							label: "Plan Code",
+							name: "plan_code",
+							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handlePlanChange(event),
+							placeholder: "Enter Plan Code",
+							value: plan.plan_code,
+							type: "textfield"
+						},
+						{
+							label: "Plan Name",
+							name: "plan_name",
+							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handlePlanChange(event),
+							placeholder: "Select Plan Name",
+							value: plan.plan_name,
+							type: "select",
+							options: [
+								"",
+								"Accident",
+								"Cancer",
+								"Short Term Disability",
+								"Hospital Indemnity",
+								"Critical Illness Group",
+								"Whole Life"
+							].filter((plan: string) => {
+								return !activePlans.some((activePlan: Plan) => {
+									return activePlan.plan_name === plan;
+								});
+							})
+						},
+						{
+							label: "Start Date",
+							name: "start_date",
+							onChange: (date: MaterialUiPickersDate, name: string) => handlePlanDateChange(date, name),
+							placeholder: "Enter Plan Start Date",
+							value: plan.start_date,
+							type: "date"
+						},
+						{
+							label: "Plan has End Date?",
+							name: "has_end_date",
+							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleEnableCheckbox(event),
+							value: plan.has_end_date,
+							type: "checkbox"
+						},
+						{
+							label: "End Date",
+							name: "end_date",
+							onChange: (date: MaterialUiPickersDate, name: string) => handlePlanDateChange(date, name),
+							placeholder: "Enter Plan End Date",
+							value: plan.end_date,
+							type: "date"
+						}
+					]
+				}
+			)
+		);
 	}, [
 		plan.plan_code,
 		plan.end_date,
@@ -317,7 +316,9 @@ const CreatePlan = () => {
 		handlePlanChange,
 		plan.has_end_date,
 		handleEnableCheckbox,
-		handlePlanDateChange
+		handlePlanDateChange,
+		getActivePlans,
+		activePlans
 	]);
 
 	return (
@@ -325,31 +326,21 @@ const CreatePlan = () => {
 			<Suspense fallback={<div />}>
 				<LazySnackbarAPI snackbarProps={snackbarAPICallProps} />
 			</Suspense>
+			<div className="pf-action-button-container" id="pf-action-button-container">
+				<Button className="button-green" onClick={handleCreatePlanClick} variant="contained">
+					<span className="button-label-with-icon">Create Plan</span>
+				</Button>
+			</div>
 			<Grid container spacing={1} className="pf-grid-container">
 				{planForm &&
-					Object.entries(planForm).map(([key, value], index) => {
+					Object.entries(planForm).map(([key, value], index: number) => {
 						return (
 							<div key={index}>
 								<div className="pf-title">Create Plan</div>
 								<Suspense fallback={<div />}>
-									<div className="pf-action-button-container" id="pf-action-button-container">
-										<Button
-											className="button-green"
-											onClick={handleCreatePlanClick}
-											variant="contained"
-											disabled={hasCreatePlanClick}
-											disableElevation={hasCreatePlanClick}
-											style={{
-												cursor: hasCreatePlanClick ? "not-allowed" : "pointer",
-												pointerEvents: "unset"
-											}}
-										>
-											<span className="button-label-with-icon">Create Plan</span>
-										</Button>
-									</div>
 									<Paper className="pf-paper-container" elevation={3} variant="outlined">
 										{value.map((field: DynamicFormField, index: number) => {
-											return (
+											return field.name === "end_date" && plan.has_end_date === false ? null : (
 												<Grid key={index} item xl={12} lg={12} md={12} sm={12} xs={12}>
 													<Grid container spacing={1} className="pf-label">
 														<Grid item xs={2} sm={2} md={2} lg={2} xl={2}>
@@ -357,17 +348,14 @@ const CreatePlan = () => {
 																className={
 																	field.name === "plan_code" ||
 																	field.name === "plan_name" ||
-																	field.name === "start_date"
+																	field.name === "start_date" ||
+																	field.name === "end_date"
 																		? "pf-label-text required"
 																		: "pf-label-text"
 																}
 																id="pf-label-text"
 															>
-																{(plan.has_end_date === false &&
-																	field.name === "end_date") ||
-																field.name === "has_end_date"
-																	? null
-																	: field.label}
+																{field.label}
 															</div>
 														</Grid>
 														<Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
@@ -474,21 +462,11 @@ const CreatePlan = () => {
 																</MuiPickersUtilsProvider>
 															) : field.type === "checkbox" ? (
 																<>
-																	<div className="check-support" id="check-support">
-																		<span>
-																			<GreenCheckbox
-																				onChange={field.onChange}
-																				name={field.name}
-																				checked={field.value}
-																			/>
-																		</span>
-																		<span
-																			className="pf-label-text"
-																			id="pf-label-text"
-																		>
-																			{field.label}
-																		</span>
-																	</div>
+																	<GreenCheckbox
+																		onChange={field.onChange}
+																		name={field.name}
+																		checked={field.value}
+																	/>
 																</>
 															) : null}
 														</Grid>
@@ -503,17 +481,7 @@ const CreatePlan = () => {
 					})}
 			</Grid>
 			<div className="pf-action-button-container margin-top-action-button" id="pf-action-button-container">
-				<Button
-					className="button-green"
-					onClick={handleCreatePlanClick}
-					variant="contained"
-					disabled={hasCreatePlanClick}
-					disableElevation={hasCreatePlanClick}
-					style={{
-						cursor: hasCreatePlanClick ? "not-allowed" : "pointer",
-						pointerEvents: "unset"
-					}}
-				>
+				<Button className="button-green" onClick={handleCreatePlanClick} variant="contained">
 					<span className="button-label-with-icon">Create Plan</span>
 				</Button>
 			</div>
