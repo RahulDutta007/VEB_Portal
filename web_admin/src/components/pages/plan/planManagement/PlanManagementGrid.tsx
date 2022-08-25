@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import { CellValueChangedEvent, ColumnApi, GridApi, GridReadyEvent } from "ag-grid-community";
 
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import { PlanManagementProps } from "../../../../@types/components/planProps.types";
+import { Plan } from "../../../../@types/plan.types";
+import { api } from "../../../../utils/api";
 
-const PlanManagementGrid = ({ gridData }: any): JSX.Element => {
+const PlanManagementGrid = ({ type }: PlanManagementProps): JSX.Element => {
+	const [plans, setPlans] = useState<Plan[]>();
 	const [agGridAPI, setAgGridAPI] = useState<GridApi | null>(null);
 	const [agGridColumnAPI, setAgGridColumnAPI] = useState<ColumnApi | null>(null);
 	const agGridRef = useRef<any>(null);
@@ -21,12 +25,21 @@ const PlanManagementGrid = ({ gridData }: any): JSX.Element => {
 
 	const handleFirstDataRendered = (params: any) => null;
 
+	const getPlans = useCallback(async () => {
+		const _plans: Plan[] = await api.plan.getAllPlan(type);
+		setPlans(Object.assign([], _plans));
+	}, [type]);
+
+	useEffect(() => {
+		getPlans();
+	}, [getPlans]);
+
 	return (
 		<div className="plan-management-grid-container">
 			<div className="ag-theme-alpine" style={{ height: "400px", width: "100%" }}>
 				<AgGridReact
 					ref={agGridRef}
-					rowData={gridData}
+					rowData={plans}
 					onGridReady={handleAgGridReady}
 					onFirstDataRendered={handleFirstDataRendered}
 					animateRows

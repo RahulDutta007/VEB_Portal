@@ -7,9 +7,9 @@ import { api } from "../../../../utils/api";
 import PlanManagementGrid from "./PlanManagementGrid";
 
 import { Box, Tabs, Tab } from "@mui/material";
+import { Plan } from "../../../../@types/plan.types";
 
 const PlanManagement = (): JSX.Element => {
-	const [plans, setPlans] = useState([]);
 	const [value, setValue] = useState(0);
 	const { setDashboardHeader } = useContext(UIContext);
 
@@ -17,16 +17,6 @@ const PlanManagement = (): JSX.Element => {
 		console.log("Value", newValue);
 		setValue(newValue);
 	};
-
-	const getPlans = useCallback(async () => {
-		const _plans = await api.plan.getAllPlan("ACTIVE");
-		console.log("Plans ", _plans.data);
-		setPlans(Object.assign([], _plans.data));
-	}, []);
-
-	useEffect(() => {
-		getPlans();
-	}, [getPlans]);
 
 	useEffect(() => {
 		setDashboardHeader(ADMIN_DASHBOARD_HEADER.plan_management);
@@ -62,10 +52,10 @@ const PlanManagement = (): JSX.Element => {
 						/>
 					</Tabs>
 					<TabPanel value={0} index={0}>
-						<PlanManagementGrid gridData={plans} />
+						<PlanManagementGrid type="ACTIVE" />
 					</TabPanel>
 					<TabPanel value={1} index={1}>
-						<PlanManagementGrid gridData={plans} />
+						<PlanManagementGrid type="EXPIRED" />
 					</TabPanel>
 				</Box>
 			</Box>
