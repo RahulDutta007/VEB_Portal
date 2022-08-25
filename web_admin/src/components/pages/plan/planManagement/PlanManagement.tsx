@@ -1,26 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { AgGridColumn, AgGridReact } from "ag-grid-react";
-import { CellValueChangedEvent, ColumnApi, GridApi, GridReadyEvent } from "ag-grid-community";
-
-import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-alpine.css";
-import "./planManagement.css";
+import { useCallback, useEffect, useRef, useState, useContext } from "react";
+import { ADMIN_DASHBOARD_HEADER } from "../../../../constants/caption/dashboardHeader";
+import { UIContext } from "../../../../contexts";
+import TabPanel from "../../../shared/tabPanelComponent/TabPanel";
+import a11yProps from "../../../../constants/tabPanelProps/ayProps";
 import { api } from "../../../../utils/api";
+import PlanManagementGrid from "./PlanManagementGrid";
+
+import { Box, Tabs, Tab } from "@mui/material";
 
 const PlanManagement = (): JSX.Element => {
 	const [plans, setPlans] = useState([]);
-	const [agGridAPI, setAgGridAPI] = useState<GridApi | null>(null);
-	const [agGridColumnAPI, setAgGridColumnAPI] = useState<ColumnApi | null>(null);
-	const agGridRef = useRef<any>(null);
+	const [value, setValue] = useState(0);
+	const { setDashboardHeader } = useContext(UIContext);
 
-	const handleAgGridReady = (params: GridReadyEvent) => {
-		const { api, columnApi } = params;
-		setAgGridAPI(api);
-		setAgGridColumnAPI(columnApi);
-		api.sizeColumnsToFit();
+	const handleLabelChange = (event: any, newValue: number) => {
+		console.log("Value", newValue);
+		setValue(newValue);
 	};
-
-	const handleFirstDataRendered = (params: any) => null;
 
 	const getPlans = useCallback(async () => {
 		const _plans = await api.plan.getAllPlan("ACTIVE");
@@ -32,58 +28,47 @@ const PlanManagement = (): JSX.Element => {
 		getPlans();
 	}, [getPlans]);
 
+	useEffect(() => {
+		setDashboardHeader(ADMIN_DASHBOARD_HEADER.plan_management);
+	}, [setDashboardHeader]);
+
 	return (
-		<div className="plan-management">
-			<div className="ag-theme-alpine" style={{ height: "400px", width: "100%" }}>
-				<AgGridReact
-					ref={agGridRef}
-					rowData={plans}
-					onGridReady={handleAgGridReady}
-					onFirstDataRendered={handleFirstDataRendered}
-					animateRows
-					rowDragManaged
-					defaultColDef={{
-						filter: "agTextColumnFilter",
-						floatingFilter: true,
-						resizable: true,
-						floatingFilterComponentParams: { suppressFilterButton: true }
-					}}
-					defaultColGroupDef={{ marryChildren: true }}
-					rowSelection="single"
-					onCellValueChanged={(params: CellValueChangedEvent) => {
-						params.api.refreshCells({
-							force: true,
-							columns: ["handleMemberSupportCellRender", "is_employee_support"]
-						});
-					}}
-					enableCellChangeFlash={true}
-				>
-					<AgGridColumn
-						field="plan_name"
-						headerName="Plan Name"
-						checkboxSelection={true}
-						suppressSizeToFit={true}
-					></AgGridColumn>
-					<AgGridColumn
-						field="plan_code"
-						headerName="Plan Code"
-						checkboxSelection={true}
-						suppressSizeToFit={true}
-					></AgGridColumn>
-					<AgGridColumn field="start_date" headerName="Start Date" checkboxSelection={true}></AgGridColumn>
-					<AgGridColumn
-						field="end_date"
-						headerName="End Date"
-						cellRenderer="handleRegisteredCellRender"
-					></AgGridColumn>
-					<AgGridColumn
-						headerName="Actions"
-						cellRenderer="handleActionCellRenderer"
-						filter={false}
-						suppressSizeToFit={true}
-					></AgGridColumn>
-				</AgGridReact>
-			</div>
+		<div className="plan-management-container">
+			<Box sx={{ width: "100%" }}>
+				<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+					<Tabs
+						value={value}
+						onChange={handleLabelChange}
+						aria-label="basic tabs example"
+						TabIndicatorProps={{
+							style: {
+								border: "none",
+								backgroundColor: "#558b2f"
+							}
+						}}
+						className="glb-tab-panel"
+					>
+						<Tab
+							label={"Active Plan"}
+							value={0}
+							className={value === 0 ? "glb-tab-label-selected" : "glb-tab-label"}
+							{...a11yProps(0)}
+						/>
+						<Tab
+							label={"Inactive Plan"}
+							value={1}
+							className={value === 1 ? "glb-tab-label-selected" : "glb-tab-label"}
+							{...a11yProps(1)}
+						/>
+					</Tabs>
+					<TabPanel value={0} index={0}>
+						<PlanManagementGrid gridData={plans} />
+					</TabPanel>
+					<TabPanel value={1} index={1}>
+						<PlanManagementGrid gridData={plans} />
+					</TabPanel>
+				</Box>
+			</Box>
 		</div>
 	);
 };

@@ -19,7 +19,8 @@
 	min-height: 3rem !important;
 	padding: 0.5rem 1rem !important;
 	font-weight: 600 !important;
-	align-items: center;
+	align-items: center !important;
+	min-width: 200px !important;
 }
 
 .glb-tab-icon {
@@ -27,8 +28,11 @@
 	padding-right: 0.5rem !important;
 }
 
-.glb-tab-panel .MuiTab-textColorInherit.Mui-selected {
+.glb-tab-label-selected {
 	background-color: #e8e9ec !important;
+	color: inherit !important;
+	min-width: 200px !important;
+	font-weight: 600 !important;
 }
 
 .glb-tab-grid-container {

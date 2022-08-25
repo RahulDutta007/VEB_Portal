@@ -2,12 +2,13 @@ import React from "react";
 import { AuthContextProvider, UIContextProvider } from "./contexts";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { GroupOwnerSidebar } from "./components/shared";
-import "./globalStyles/paperFormStyles.css";
-
-import "./App.css";
-import { CreateAdmin, SignUp, Login, MyProfile, PlanManagement } from "./components/pages";
+import { CreateAdmin, SignUp, Login, MyProfile, PlanManagement, AdminManagement } from "./components/pages";
 import { Sidebar } from "./components/shared";
 import CreatePlan from "./components/pages/createPlan/CreatePlan";
+
+import "./globalStyles/paperFormStyles.css";
+import "./globalStyles/theme.css";
+import "./App.css";
 
 const App = (): JSX.Element => {
 	return (
@@ -29,6 +30,7 @@ const App = (): JSX.Element => {
 							<Route path="/my-profile" element={<Sidebar WrappedComponent={MyProfile} />} />
 							<Route path="/create-plan" element={<Sidebar WrappedComponent={CreatePlan} />} />
 							<Route path="/plans" element={<Sidebar WrappedComponent={PlanManagement} />} />
+							<Route path="/admin-management" element={<Sidebar WrappedComponent={AdminManagement} />} />
 						</Routes>
 					</BrowserRouter>
 				</UIContextProvider>
