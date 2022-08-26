@@ -132,6 +132,8 @@ const KemperAccidentForm = (): JSX.Element => {
 					const riderAmount = (riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount;
 					setRiderPremiumAmount(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0);
 					setTotalPremiumAmount(riderAmount);
+				} else {
+					setRiderPremiumAmount(0);
 				}
 			}
 			else if (rider_type === "accident_sickness") {
@@ -140,9 +142,11 @@ const KemperAccidentForm = (): JSX.Element => {
 					const riderAmount = (riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount;
 					setRiderPremiumAmount(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0);
 					setTotalPremiumAmount(riderAmount);
+				} else {
+					setRiderPremiumAmount(0);
 				}
 			} else {
-				// do nothing
+				setRiderPremiumAmount(0);
 			}
 		}
 
@@ -228,6 +232,7 @@ const KemperAccidentForm = (): JSX.Element => {
 										name="contact_label"
 										onChange={(event: any) => handleRiderChange(event)}
 									>
+										<MenuItem value={"no_rider"}>No Rider Plan</MenuItem>
 										<MenuItem value={"accident"}>Accident Only</MenuItem>
 										<MenuItem value={"accident_sickness"}>Accident and Sickness</MenuItem>
 									</Select>
@@ -242,6 +247,7 @@ const KemperAccidentForm = (): JSX.Element => {
 										name="contact_label"
 										onChange={(event: any) => handleRiderBenefitAmountChange(event)}
 									>
+										<MenuItem value={0}>No Benefit</MenuItem>
 										<MenuItem value={600}>600</MenuItem>
 										<MenuItem value={900}>900</MenuItem>
 										<MenuItem value={1200}>1200</MenuItem>
