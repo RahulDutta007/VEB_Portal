@@ -11,7 +11,10 @@ const AccidentPlanContextProvider = ({ children }: ContextProviderProps) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const value: AccidentPlanContextProps = {
 		accidentPlan: state.accidentPlan,
-		setAccidentPlan: useCallback((accidentPlan: AccidentPlan) => dispatch({ type: actions.SET_PREMIUM_AMOUNT, payload: accidentPlan }), [])
+		setAccidentPlan: useCallback(
+			(accidentPlan: AccidentPlan) => dispatch({ type: actions.SET_PREMIUM_AMOUNT, payload: accidentPlan }),
+			[]
+		)
 	};
 
 	return <AccidentPlanContext.Provider value={value}>{children}</AccidentPlanContext.Provider>;

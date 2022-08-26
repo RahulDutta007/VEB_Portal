@@ -29,7 +29,7 @@ const KemperAccidentForm = (): JSX.Element => {
 		},
 		edge_premier: {
 			employee: 6.07,
-			employee_and_family: 12.80
+			employee_and_family: 12.8
 		},
 		rider_accidentOnly: [
 			{
@@ -38,7 +38,7 @@ const KemperAccidentForm = (): JSX.Element => {
 			},
 			{
 				coverage_amount: 900,
-				premium_amount: 2.00
+				premium_amount: 2.0
 			},
 			{
 				coverage_amount: 1200,
@@ -46,7 +46,7 @@ const KemperAccidentForm = (): JSX.Element => {
 			},
 			{
 				coverage_amount: 1800,
-				premium_amount: 4.00
+				premium_amount: 4.0
 			}
 		],
 		rider_accident_and_sickness: [
@@ -121,23 +121,30 @@ const KemperAccidentForm = (): JSX.Element => {
 	const calculatePremium = () => {
 		const { plan_type, coverage_for } = accidentPlan;
 		if (plan_type && coverage_for) {
-			const planType = (plan_type === "Edge Enhanced" ? "edge_enhanced" : "edge_premier");
-			const coverageFor = (coverage_for === "Employee Only" ? "employee" : "employee_and_family");
+			const planType = plan_type === "Edge Enhanced" ? "edge_enhanced" : "edge_premier";
+			const coverageFor = coverage_for === "Employee Only" ? "employee" : "employee_and_family";
 			const calculatePremiumAmount = premium_plan[planType][coverageFor];
 			setPremiumAmount(calculatePremiumAmount);
 			setTotalPremiumAmount(calculatePremiumAmount);
 			if (rider_type === "accident") {
 				if (rider_benefit_amount !== 0) {
-					const riderBenefit = premium_plan.rider_accidentOnly.find(benefit => benefit.coverage_amount === rider_benefit_amount);
-					const riderAmount = (riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount;
+					const riderBenefit = premium_plan.rider_accidentOnly.find(
+						// eslint-disable-next-line arrow-parens
+						(benefit) => benefit.coverage_amount === rider_benefit_amount
+					);
+					const riderAmount =
+						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount;
 					setRiderPremiumAmount(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0);
 					setTotalPremiumAmount(riderAmount);
 				}
-			}
-			else if (rider_type === "accident_sickness") {
+			} else if (rider_type === "accident_sickness") {
 				if (rider_benefit_amount !== 0) {
-					const riderBenefit = premium_plan.rider_accident_and_sickness.find(benefit => benefit.coverage_amount === rider_benefit_amount);
-					const riderAmount = (riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount;
+					const riderBenefit = premium_plan.rider_accident_and_sickness.find(
+						// eslint-disable-next-line arrow-parens
+						(benefit) => benefit.coverage_amount === rider_benefit_amount
+					);
+					const riderAmount =
+						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount;
 					setRiderPremiumAmount(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0);
 					setTotalPremiumAmount(riderAmount);
 				}
@@ -145,12 +152,11 @@ const KemperAccidentForm = (): JSX.Element => {
 				// do nothing
 			}
 		}
-
 	};
 
 	useEffect(() => {
 		calculatePremium();
-	}, [accidentPlan]);
+	}, [accidentPlan, calculatePremium]);
 
 	const { plan_name, plan_code, start_date, end_date } = plan;
 	console.log(111, accidentPlan);
@@ -251,10 +257,11 @@ const KemperAccidentForm = (): JSX.Element => {
 							</Grid>
 							<Grid item xl={10} lg={10} md={10} sm={10} xs={10}>
 								<div className="details-form-row">
-									<div className="details-form-label required">
-										Disability income - Rider Premium
-									</div>
-									<CustomInput disabled value={rider_premium_amount == 0 ? "" : `$${rider_premium_amount}`} />
+									<div className="details-form-label required">Disability income - Rider Premium</div>
+									<CustomInput
+										disabled
+										value={rider_premium_amount == 0 ? "" : `$${rider_premium_amount}`}
+									/>
 								</div>
 							</Grid>
 						</Grid>
@@ -268,7 +275,10 @@ const KemperAccidentForm = (): JSX.Element => {
 									>
 										Total Premium
 									</div>
-									<CustomInput disabled value={total_premium_amount == 0 ? "" : `$${total_premium_amount}`} />
+									<CustomInput
+										disabled
+										value={total_premium_amount == 0 ? "" : `$${total_premium_amount}`}
+									/>
 								</div>
 							</Grid>
 						</Grid>

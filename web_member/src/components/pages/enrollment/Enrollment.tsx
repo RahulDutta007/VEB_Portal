@@ -61,7 +61,6 @@ const Enrollment = (): JSX.Element => {
 	const navigate = useNavigate();
 
 	const handleChange = (event: React.SyntheticEvent<Element, Event>, newValue: string) => {
-		console.log(111, newValue)
 		setActiveTab(newValue);
 		setValue(newValue);
 	};
