@@ -10,6 +10,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import "./enrollment.css";
 import KemperCancerForm from "./plans/kemper/cancer/form/CancerForm";
 import KemperCriticalIllnessForm from "./plans/kemper/criticalIllness/form/CriticalIllness";
+import KemperAccidentForm from "./plans/kemper/accident/form/AccidentForm";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { styled } from "@mui/material/styles";
@@ -60,6 +61,7 @@ const Enrollment = (): JSX.Element => {
 	const navigate = useNavigate();
 
 	const handleChange = (event: React.SyntheticEvent<Element, Event>, newValue: string) => {
+		console.log(111, newValue)
 		setActiveTab(newValue);
 		setValue(newValue);
 	};
@@ -80,6 +82,9 @@ const Enrollment = (): JSX.Element => {
 			}
 			case "Critical Illness Group": {
 				return <KemperCriticalIllnessForm />;
+			}
+			case "Accident": {
+				return <KemperAccidentForm />;
 			}
 		}
 	}, [urlSearchParams]);
