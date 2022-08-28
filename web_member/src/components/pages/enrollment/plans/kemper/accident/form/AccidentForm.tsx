@@ -284,7 +284,7 @@ const KemperAccidentForm = (): JSX.Element => {
 								<div className="details-form-row">
 									<CustomInput
 										disabled
-										value={premium_plan.rider_doc_Rx}
+										value={coverage_for && plan_type ? premium_plan.rider_doc_Rx : ""}
 									/>
 								</div>
 							</Grid>
@@ -301,7 +301,7 @@ const KemperAccidentForm = (): JSX.Element => {
 									</div>
 									<CustomInput
 										disabled
-										value={total_premium_amount == 0 ? "" : `$${total_premium_amount}`}
+										value={total_premium_amount == 0 ? "" : `$${total_premium_amount.toFixed(2)}`}
 									/>
 								</div>
 							</Grid>
