@@ -31,6 +31,7 @@ const KemperAccidentForm = (): JSX.Element => {
 			employee: 6.07,
 			employee_and_family: 12.8
 		},
+		rider_doc_Rx: 1.33,
 		rider_accidentOnly: [
 			{
 				coverage_amount: 600,
@@ -120,12 +121,13 @@ const KemperAccidentForm = (): JSX.Element => {
 
 	const calculatePremium = () => {
 		const { plan_type, coverage_for } = accidentPlan;
+		const rider_doc_amount = premium_plan.rider_doc_Rx;
 		if (plan_type && coverage_for) {
 			const planType = plan_type === "Edge Enhanced" ? "edge_enhanced" : "edge_premier";
 			const coverageFor = coverage_for === "Employee Only" ? "employee" : "employee_and_family";
 			const calculatePremiumAmount = premium_plan[planType][coverageFor];
 			setPremiumAmount(calculatePremiumAmount);
-			setTotalPremiumAmount(calculatePremiumAmount);
+			setTotalPremiumAmount(calculatePremiumAmount + rider_doc_amount);
 			if (rider_type === "accident") {
 				if (rider_benefit_amount !== 0) {
 					const riderBenefit = premium_plan.rider_accidentOnly.find(
@@ -133,7 +135,7 @@ const KemperAccidentForm = (): JSX.Element => {
 						(benefit) => benefit.coverage_amount === rider_benefit_amount
 					);
 					const riderAmount =
-						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount;
+						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount + rider_doc_amount;
 					setRiderPremiumAmount(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0);
 					setTotalPremiumAmount(riderAmount);
 				} else {
@@ -146,7 +148,7 @@ const KemperAccidentForm = (): JSX.Element => {
 						(benefit) => benefit.coverage_amount === rider_benefit_amount
 					);
 					const riderAmount =
-						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount;
+						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount + rider_doc_amount;
 					setRiderPremiumAmount(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0);
 					setTotalPremiumAmount(riderAmount);
 				} else {
@@ -238,7 +240,7 @@ const KemperAccidentForm = (): JSX.Element => {
 										name="contact_label"
 										onChange={(event: any) => handleRiderChange(event)}
 									>
-										<MenuItem value={"no_rider"}>No Rider Plan</MenuItem>
+										<MenuItem value={"no_rider"} className="empty-option"></MenuItem>
 										<MenuItem value={"accident"}>Accident Only</MenuItem>
 										<MenuItem value={"accident_sickness"}>Accident and Sickness</MenuItem>
 									</Select>
@@ -253,7 +255,7 @@ const KemperAccidentForm = (): JSX.Element => {
 										name="contact_label"
 										onChange={(event: any) => handleRiderBenefitAmountChange(event)}
 									>
-										<MenuItem value={0}>No Benefit</MenuItem>
+										<MenuItem value={0} className="empty-option"></MenuItem>
 										<MenuItem value={600}>600</MenuItem>
 										<MenuItem value={900}>900</MenuItem>
 										<MenuItem value={1200}>1200</MenuItem>
@@ -267,6 +269,22 @@ const KemperAccidentForm = (): JSX.Element => {
 									<CustomInput
 										disabled
 										value={rider_premium_amount == 0 ? "" : `$${rider_premium_amount}`}
+									/>
+								</div>
+							</Grid>
+						</Grid>
+						<Grid container className="theme-plan-inner-section-margin">
+							<Grid item xl={2} lg={2} md={2} sm={12} xs={12}>
+								<div className="theme-plan-sub-header" style={{ borderLeftColor: theme.primary_color }}>
+									<label className="details-form-label required">Doc & RX</label>
+									<input type="checkbox" disabled checked></input>
+								</div>
+							</Grid>
+							<Grid item xl={10} lg={10} md={10} sm={12} xs={12}>
+								<div className="details-form-row">
+									<CustomInput
+										disabled
+										value={premium_plan.rider_doc_Rx}
 									/>
 								</div>
 							</Grid>
