@@ -209,7 +209,7 @@ const KemperAccidentForm = (): JSX.Element => {
 							<Grid item xl={10} lg={10} md={10} sm={10} xs={10}>
 								<div className="details-form-row">
 									<div className="details-form-label required">Standard Premium</div>
-									<CustomInput disabled value={premium_amount == 0 ? "" : `$${premium_amount}`} />
+									<CustomInput disabled value={premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`} />
 								</div>
 							</Grid>
 						</Grid>
@@ -247,10 +247,10 @@ const KemperAccidentForm = (): JSX.Element => {
 										onChange={(event: any) => handleRiderBenefitAmountChange(event)}
 									>
 										<MenuItem value={0} className="empty-option"></MenuItem>
-										<MenuItem value={600}>600</MenuItem>
-										<MenuItem value={900}>900</MenuItem>
-										<MenuItem value={1200}>1200</MenuItem>
-										<MenuItem value={1800}>1800</MenuItem>
+										<MenuItem value={600}>$600</MenuItem>
+										<MenuItem value={900}>$900</MenuItem>
+										<MenuItem value={1200}>$1200</MenuItem>
+										<MenuItem value={1800}>$1800</MenuItem>
 									</Select>
 								</div>
 							</Grid>
@@ -259,7 +259,7 @@ const KemperAccidentForm = (): JSX.Element => {
 									<div className="details-form-label required">Disability income - Rider Premium</div>
 									<CustomInput
 										disabled
-										value={rider_premium_amount == 0 ? "" : `$${rider_premium_amount}`}
+										value={rider_premium_amount == 0 ? "" : `$${rider_premium_amount.toFixed(2)}`}
 									/>
 								</div>
 							</Grid>
@@ -267,15 +267,15 @@ const KemperAccidentForm = (): JSX.Element => {
 						<Grid container className="theme-plan-inner-section-margin">
 							<Grid item xl={2} lg={2} md={2} sm={12} xs={12}>
 								<div className="theme-plan-sub-header" style={{ borderLeftColor: theme.primary_color }}>
-									<label className="details-form-label required">Doc & RX</label>
 									<input type="checkbox" disabled checked></input>
+									<label className="details-form-label required">Doc & RX</label>
 								</div>
 							</Grid>
 							<Grid item xl={10} lg={10} md={10} sm={12} xs={12}>
 								<div className="details-form-row">
 									<CustomInput
 										disabled
-										value={coverage_for && plan_type ? premium_plan.rider_doc_Rx : ""}
+										value={coverage_for && plan_type ? `$${premium_plan.rider_doc_Rx}` : ""}
 									/>
 								</div>
 							</Grid>
