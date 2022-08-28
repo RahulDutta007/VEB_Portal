@@ -31,7 +31,7 @@ const KemperAccidentForm = (): JSX.Element => {
 			employee: 6.07,
 			employee_and_family: 12.8
 		},
-		rider_doc_Rx: 1.33,
+		rider_doc_Rx: 1.16,
 		rider_accidentOnly: [
 			{
 				coverage_amount: 600,
