@@ -4,7 +4,6 @@ import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { COVERAGE } from "../../../../../../../constants/coverage";
 import { ThemeContext } from "../../../../../../../contexts";
-import { AccidentPlanContext } from "../../../../../../../contexts";
 import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
 import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
@@ -66,17 +65,14 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 	const [coverage_for, setCoverageFor] = useState("");
 	const [coverage_level, setCoverageLevel] = useState("");
 	const [premium_amount, setPremiumAmount] = useState(0);
-	const { accidentPlan, setAccidentPlan } = useContext(AccidentPlanContext);
 
 	const handleCoverageForChange = (event: React.FormEvent<HTMLSelectElement>) => {
 		const { value } = event.target as HTMLSelectElement;
-		//setAccidentPlan(Object.assign({}, accidentPlan, { coverage_for: value }));
 		setCoverageFor(value);
 	};
 
 	const handleCoverageLevelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const { value } = event.target as HTMLSelectElement;
-		//setAccidentPlan(Object.assign({}, accidentPlan, { plan_type: value }));
 		setCoverageLevel(value);
 	};
 
@@ -94,7 +90,6 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 	);
 
 	const calculatePremium = () => {
-		//const { plan_type, coverage_for } = accidentPlan;
 		console.log(111, coverage_for, coverage_level)
 		if (coverage_for && coverage_level) {
 			const coverageFor = coverage_for === "Employee Only" ? "employee" : "employee_and_family";
@@ -102,10 +97,6 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 			setPremiumAmount(calculatePremiumAmount?.premium_amount ? calculatePremiumAmount?.premium_amount : 0);
 		}
 	};
-
-	// useEffect(() => {
-	// 	calculatePremium();
-	// }, [accidentPlan, calculatePremium]);
 
 	useEffect(() => {
 		calculatePremium();

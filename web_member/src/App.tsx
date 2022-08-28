@@ -5,7 +5,7 @@ import "./App.css";
 import { Navbar } from "./components/navbar";
 import { VEBEnrollment, VEBPlans } from "./components/pages";
 import { THEME } from "./constants/theme/theme";
-import { ThemeContext, AccidentPlanContextProvider } from "./contexts";
+import { ThemeContext } from "./contexts";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import "./globalStyles/theme.css";
@@ -23,13 +23,11 @@ const App = (): JSX.Element => {
 	return (
 		<div className="App">
 			<BrowserRouter>
-				<AccidentPlanContextProvider>
-					<Navbar />
-					<Routes>
-						<Route path="/VEB/enrollment" element={<VEBEnrollment />} />
-						<Route path="/VEB/plans" element={<VEBPlans />} />
-					</Routes>
-				</AccidentPlanContextProvider>
+				<Navbar />
+				<Routes>
+					<Route path="/VEB/enrollment" element={<VEBEnrollment />} />
+					<Route path="/VEB/plans" element={<VEBPlans />} />
+				</Routes>
 			</BrowserRouter>
 			<div className="draggable-premium-box"></div>
 		</div>

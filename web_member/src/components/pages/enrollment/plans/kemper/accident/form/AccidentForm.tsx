@@ -4,7 +4,6 @@ import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { COVERAGE } from "../../../../../../../constants/coverage";
 import { ThemeContext } from "../../../../../../../contexts";
-import { AccidentPlanContext } from "../../../../../../../contexts";
 import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
 import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
@@ -79,30 +78,24 @@ const KemperAccidentForm = (): JSX.Element => {
 	const [total_premium_amount, setTotalPremiumAmount] = useState(0);
 	const [rider_type, setRiderType] = useState("none");
 	const [rider_benefit_amount, setRiderBenefitAmount] = useState(0);
-	const { accidentPlan, setAccidentPlan } = useContext(AccidentPlanContext);
 
 	const handleCoverageChange = (event: React.FormEvent<HTMLSelectElement>) => {
 		const { value } = event.target as HTMLSelectElement;
-		setAccidentPlan(Object.assign({}, accidentPlan, { coverage_for: value }));
 		setCoverageFor(value);
 	};
 
 	const handlePlanChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const { value } = event.target as HTMLSelectElement;
-		setAccidentPlan(Object.assign({}, accidentPlan, { plan_type: value }));
 		setPlanType(value);
 	};
 
 	const handleRiderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const { value } = event.target as HTMLSelectElement;
-		setAccidentPlan(Object.assign({}, accidentPlan, { rider_type: value }));
 		setRiderType(value);
 	};
 
 	const handleRiderBenefitAmountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const { value } = event.target as HTMLSelectElement;
-		setAccidentPlan(Object.assign({}, accidentPlan, { rider_benefit_amount: value }));
-		setRiderBenefitAmount(parseInt(value));
 		setRiderBenefitAmount(parseInt(value));
 	};
 
@@ -120,7 +113,6 @@ const KemperAccidentForm = (): JSX.Element => {
 	);
 
 	const calculatePremium = () => {
-		const { plan_type, coverage_for } = accidentPlan;
 		const rider_doc_amount = premium_plan.rider_doc_Rx;
 		if (plan_type && coverage_for) {
 			const planType = plan_type === "Edge Enhanced" ? "edge_enhanced" : "edge_premier";
@@ -162,10 +154,9 @@ const KemperAccidentForm = (): JSX.Element => {
 
 	useEffect(() => {
 		calculatePremium();
-	}, [accidentPlan, calculatePremium]);
+	}, [coverage_for, plan_type, rider_benefit_amount, rider_type]);
 
 	const { plan_name, plan_code, start_date, end_date } = plan;
-	console.log(111, accidentPlan);
 
 	return (
 		<div className="kemper-cancer-form plan-form">

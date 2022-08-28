@@ -6,10 +6,6 @@ export { default as AuthContextProvider } from "./authContext/provider";
 export { default as ThemeContext } from "./themeContext/themeContext";
 export { default as ThemeContextProvider } from "./themeContext/provider";
 
-//accident plan Context
-export { default as AccidentPlanContext } from "./planContext/accidentPlanContext";
-export { default as AccidentPlanContextProvider } from "./planContext/provider";
-
 //Paycheck Context
 export { default as PaycheckContext } from "./paycheckContext/paycheckContext";
 export { default as PaycheckContextProvider } from "./paycheckContext/provider";
