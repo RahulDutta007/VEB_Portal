@@ -11,6 +11,7 @@ import "./enrollment.css";
 import KemperCancerForm from "./plans/kemper/cancer/form/CancerForm";
 import KemperCriticalIllnessForm from "./plans/kemper/criticalIllness/form/CriticalIllness";
 import KemperAccidentForm from "./plans/kemper/accident/form/AccidentForm";
+import KemperHospitalIndemnityForm from "./plans/kemper/hospitalIndemnity/form/HospitalIndemnityForm";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { styled } from "@mui/material/styles";
@@ -84,6 +85,9 @@ const Enrollment = (): JSX.Element => {
 			}
 			case "Accident": {
 				return <KemperAccidentForm />;
+			}
+			case "Hospital Indemnity": {
+				return <KemperHospitalIndemnityForm />;
 			}
 		}
 	}, [urlSearchParams]);
