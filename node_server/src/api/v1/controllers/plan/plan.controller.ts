@@ -25,6 +25,15 @@ export const PlanCreation = async (req: Request, res: Response) => {
             });
         }
 
+        // Validate start date and end date
+        if (end_date) {
+            if (!moment(start_date).isBefore(end_date, 'day')) {
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    message: MESSAGE.custom(`End date should be less than a day of start date`)
+                });
+            }
+        }
+
         // converting into MongoDB format of start and end date, if given
         if (start_date) {
             plan_start_date = new Date(service.date.formateMongoDateService(start_date));
