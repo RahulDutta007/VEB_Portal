@@ -1,3 +1,4 @@
+import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
 
 const connectDb = async () => {
@@ -17,3 +18,11 @@ const connectDb = async () => {
 };
 
 export default connectDb;
+
+const dbUri = "mongodb://localhost:27017";
+
+const nexcalClient = new MongoClient(dbUri);
+
+const nexcalDb = nexcalClient.db("NexcalPortal");
+
+export const nexcalCollection = (modelName: string) => nexcalDb.collection(modelName);
