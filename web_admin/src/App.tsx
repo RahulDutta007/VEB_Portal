@@ -9,7 +9,8 @@ import {
 	MyProfile,
 	PlanManagement,
 	AdminManagement,
-	AgentManagement
+	AgentManagement,
+	Members
 } from "./components/pages";
 import { Sidebar } from "./components/shared";
 import CreatePlan from "./components/pages/createPlan/CreatePlan";
@@ -39,6 +40,7 @@ const App = (): JSX.Element => {
 							<Route path="/create-plan" element={<Sidebar WrappedComponent={CreatePlan} />} />
 							<Route path="/plans" element={<Sidebar WrappedComponent={PlanManagement} />} />
 							<Route path="/admin-management" element={<Sidebar WrappedComponent={AdminManagement} />} />
+							<Route path="/members" element={<Sidebar WrappedComponent={Members} />} />
 							<Route path="/agent-management" element={<Sidebar WrappedComponent={AgentManagement} />} />
 						</Routes>
 					</BrowserRouter>

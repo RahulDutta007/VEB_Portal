@@ -17,6 +17,7 @@ import {
 import { insert, fetchAll, fetchOne, findOneAndUpdate } from "./query/query.service";
 
 import { isDuplicateActivePlanNameService, isDuplicateActivePlanCodeService, GetPlans, GetPlan, isDuplicatePlanCodeService } from "./plan/plan.service";
+import { getPaginatedDocuments } from "./pagination/pagination.service";
 
 const service = {
 	auth: {
@@ -50,6 +51,9 @@ const service = {
 		GetPlans,
 		GetPlan,
 		isDuplicatePlanCodeService
+	},
+	pagination: {
+		getPaginatedDocuments
 	}
 };
 
