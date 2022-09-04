@@ -127,7 +127,9 @@ const KemperAccidentForm = (): JSX.Element => {
 						(benefit) => benefit.coverage_amount === rider_benefit_amount
 					);
 					const riderAmount =
-						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount + rider_doc_amount;
+						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) +
+						calculatePremiumAmount +
+						rider_doc_amount;
 					setRiderPremiumAmount(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0);
 					setTotalPremiumAmount(riderAmount);
 				} else {
@@ -140,7 +142,9 @@ const KemperAccidentForm = (): JSX.Element => {
 						(benefit) => benefit.coverage_amount === rider_benefit_amount
 					);
 					const riderAmount =
-						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) + calculatePremiumAmount + rider_doc_amount;
+						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) +
+						calculatePremiumAmount +
+						rider_doc_amount;
 					setRiderPremiumAmount(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0);
 					setTotalPremiumAmount(riderAmount);
 				} else {
@@ -209,7 +213,10 @@ const KemperAccidentForm = (): JSX.Element => {
 							<Grid item xl={10} lg={10} md={10} sm={10} xs={10}>
 								<div className="details-form-row">
 									<div className="details-form-label required">Standard Premium</div>
-									<CustomInput disabled value={premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`} />
+									<CustomInput
+										disabled
+										value={premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}
+									/>
 								</div>
 							</Grid>
 						</Grid>

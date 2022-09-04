@@ -20,8 +20,8 @@ const PlanManagement = (): JSX.Element => {
 
 	const getPlans = useCallback(async () => {
 		const _plans = await api.plan.getAllPlan("ACTIVE");
-		console.log("Plans ", _plans.data);
-		setPlans(Object.assign([], _plans.data));
+		console.log("Plans ", _plans);
+		setPlans(Object.assign([], _plans));
 	}, []);
 
 	useEffect(() => {

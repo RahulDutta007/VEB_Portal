@@ -12,3 +12,4 @@ export { default as PlanManagement } from "./plan/planManagement/PlanManagement"
 //user-management
 export { default as UserManagement } from "./userManagement/UserManagement";
 export { default as AdminManagement } from "./userManagement/admin/AdminManagement";
+export { default as AgentManagement } from "./userManagement/agents/AgentManagement";

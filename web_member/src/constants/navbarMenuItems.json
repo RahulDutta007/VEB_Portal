@@ -1,8 +1,13 @@
 [
 	{
 		"caption": "Home",
-		"icon_class": "fas fa-hand-holding-usd",
-		"link": "/claims"
+		"icon_class": "fas fa-home",
+		"link": "/home"
+	},
+	{
+		"caption": "Enrollments",
+		"icon_class": "far fa-edit",
+		"link": "/"
 	},
 	{
 		"caption": "Benefits",
@@ -10,24 +15,14 @@
 		"link": "/"
 	},
 	{
-		"caption": "Enrollments",
-		"icon_class": "fas fa-exchange-alt",
+		"caption": "Plans",
+		"icon_class": "fas fa-clipboard-list",
 		"link": "/"
 	},
-	{
-		"caption": "Brochures",
-		"icon_class": "far fa-edit",
-		"link": "/"
-	},
-	{
-		"caption": "Tickets",
-		"icon_class": "far fa-edit",
-		"link": "/"
-	},
-	{
-		"caption": "Agents",
-		"icon_class": "far fa-edit",
-		"link": "/"
-	}
 
+	{
+		"caption": "Claims",
+		"icon_class": "fas fa-hand-holding-usd",
+		"link": "/claims"
+	}
 ]

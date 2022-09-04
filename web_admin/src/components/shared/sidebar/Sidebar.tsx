@@ -379,11 +379,11 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 						</div>
 						<div className="toolbar-grow" />
 						<Box sx={{ display: { xs: "none", md: "flex" } }}>
-							<IconButton size="large" aria-label="show 4 new mails" color="inherit">
+							{/* <IconButton size="large" aria-label="show 4 new mails" color="inherit">
 								<Badge badgeContent={4} className="toolbar-icon-badge" color="primary">
 									<MailIcon className="toolbar-icon" />
 								</Badge>
-							</IconButton>
+							</IconButton> */}
 							<IconButton size="large" aria-label="show 17 new notifications" color="inherit">
 								<Badge badgeContent={17} className="toolbar-icon-badge" color="primary">
 									<NotificationsIcon className="toolbar-icon" />

@@ -74,11 +74,11 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 			employee_and_family: [
 				{
 					name: "plan 2",
-					premium_amount: 27.00
+					premium_amount: 27.0
 				},
 				{
 					name: "plan 3",
-					premium_amount: 37.20
+					premium_amount: 37.2
 				},
 				{
 					name: "plan 4 with Rx",
@@ -132,7 +132,9 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 			else if (coverage_for === "Employee and Spouse") coverageFor = "employee_and_spouse";
 			else if (coverage_for === "Employee and Dependent") coverageFor = "employee_and_children";
 			else coverageFor = "employee_and_family";
-			const calculatePremiumAmount = premium_plan.coverage_for[coverageFor]?.find((plan: { name: string; }) => plan.name.toLowerCase() === coverage_level.toLowerCase())?.premium_amount;
+			const calculatePremiumAmount = premium_plan.coverage_for[coverageFor]?.find(
+				(plan: { name: string }) => plan.name.toLowerCase() === coverage_level.toLowerCase()
+			)?.premium_amount;
 			setPremiumAmount(calculatePremiumAmount);
 			setTotalPremiumAmount(calculatePremiumAmount);
 			if (clinic_card) {
@@ -153,7 +155,10 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 		<div className="kemper-cancer-form plan-form">
 			<div className="paper-form-container">
 				<Paper className="theme-border-radius paper-container" elevation={1}>
-					<PlanHeader planName="Beazley Group Limited Indemnity Insurance Policy" effectiveDate={start_date} />
+					<PlanHeader
+						planName="Beazley Group Limited Indemnity Insurance Policy"
+						effectiveDate={start_date}
+					/>
 					<div className="plan-content">
 						<div className="theme-plan-section-margin" />
 						<div className="header-container">
@@ -212,7 +217,10 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 						<Grid container className="theme-plan-inner-section-margin">
 							<Grid item xl={3} lg={3} md={3} sm={12} xs={12}>
 								<div className="theme-plan-sub-header" style={{ borderLeftColor: theme.primary_color }}>
-									<input type="checkbox" onChange={(event: any) => handleClinicCardChange(event)}></input>
+									<input
+										type="checkbox"
+										onChange={(event: any) => handleClinicCardChange(event)}
+									></input>
 									<label className="details-form-label required">Clinic Card</label>
 								</div>
 							</Grid>
@@ -220,7 +228,11 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 								<div className="details-form-row">
 									<CustomInput
 										disabled
-										value={coverage_for && coverage_level && clinic_card ? `$${clinic_card_amount}` : ""}
+										value={
+											coverage_for && coverage_level && clinic_card
+												? `$${clinic_card_amount}`
+												: ""
+										}
 									/>
 								</div>
 							</Grid>
@@ -238,7 +250,7 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 									<CustomInput
 										disabled
 										value={total_premium_amount == 0 ? "" : `$${total_premium_amount.toFixed(2)}`}
-									//value={10}
+										//value={10}
 									/>
 								</div>
 							</Grid>

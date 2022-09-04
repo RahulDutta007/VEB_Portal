@@ -6,6 +6,7 @@ const adminDashboardHeader = {
 	my_profile: "My Profile",
 	user_management: "User Management",
 	admin_management: "Admin Management",
+	agent_management: "Agent Management",
 	limit_groups: "Limit Groups",
 	limit_locations: "Limit Locations",
 	user_information: "User Information",

@@ -4,6 +4,7 @@ import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import BusinessIcon from "@mui/icons-material/Business";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import WorkIcon from "@mui/icons-material/Work";
+import AssessmentIcon from "@material-ui/icons/Assessment";
 import CardMembershipIcon from "@mui/icons-material/CardMembership";
 import { SidebarOptions } from "../@types/sidebarOptions.types";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
@@ -19,6 +20,18 @@ const sidebarOptions: SidebarOptions = {
 			subTabs: []
 		},
 		{
+			caption: "Members",
+			route: "/",
+			icon: () => <SupervisedUserCircleIcon />,
+			subTabs: []
+		},
+		{
+			caption: "Plan Management",
+			route: "/plans",
+			icon: () => <AssessmentIcon />,
+			subTabs: []
+		},
+		{
 			caption: "Enroller",
 			route: "/enroller",
 			icon: () => <AdminPanelSettingsIcon />,
@@ -26,45 +39,15 @@ const sidebarOptions: SidebarOptions = {
 		},
 		{
 			caption: "Agents",
-			route: "/admin-agent",
+			route: "/agent-management",
 			icon: () => <SupportAgentIcon />,
 			subTabs: []
 		},
-		{
-			caption: "Members",
-			route: "/",
-			icon: () => <SupervisedUserCircleIcon />,
-			subTabs: []
-		},
+
 		{
 			caption: "Reports",
 			route: "/",
 			icon: () => <CardMembershipIcon />,
-			subTabs: [
-				{
-					caption: "Enrollment",
-					route: "/",
-					icon: () => <WorkIcon />,
-					subTabs: []
-				},
-				{
-					caption: "Enroller",
-					route: "/",
-					icon: () => <WorkIcon />,
-					subTabs: []
-				}
-			]
-		},
-		{
-			caption: "Settings",
-			route: "/",
-			icon: () => <WorkIcon />,
-			subTabs: []
-		},
-		{
-			caption: "Create Plan",
-			route: "/create-plan",
-			icon: () => <WorkIcon />,
 			subTabs: []
 		}
 	],

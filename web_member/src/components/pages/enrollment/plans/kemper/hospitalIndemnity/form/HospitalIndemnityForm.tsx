@@ -1,3 +1,4 @@
+/* eslint-disable arrow-parens */
 import { Button, MenuItem } from "@mui/material";
 import { Select } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
@@ -92,7 +93,9 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 	const calculatePremium = () => {
 		if (coverage_for && coverage_level) {
 			const coverageFor = coverage_for === "Employee Only" ? "employee" : "employee_and_family";
-			const calculatePremiumAmount = premium_plan[coverageFor]?.find(plan => plan.name.toLowerCase() === coverage_level.toLowerCase());
+			const calculatePremiumAmount = premium_plan[coverageFor]?.find(
+				(plan) => plan.name.toLowerCase() === coverage_level.toLowerCase()
+			);
 			setPremiumAmount(calculatePremiumAmount?.premium_amount ? calculatePremiumAmount?.premium_amount : 0);
 		}
 	};
@@ -107,7 +110,10 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 		<div className="kemper-cancer-form plan-form">
 			<div className="paper-form-container">
 				<Paper className="theme-border-radius paper-container" elevation={1}>
-					<PlanHeader planName="Kemper Group Hospital Indemnity Insurance Policy" effectiveDate={start_date} />
+					<PlanHeader
+						planName="Kemper Group Hospital Indemnity Insurance Policy"
+						effectiveDate={start_date}
+					/>
 					<div className="plan-content">
 						<div className="theme-plan-section-margin" />
 						<div className="header-container">
@@ -156,7 +162,10 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 							<Grid item xl={10} lg={10} md={10} sm={10} xs={10}>
 								<div className="details-form-row">
 									<div className="details-form-label required">Premium</div>
-									<CustomInput disabled value={premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`} />
+									<CustomInput
+										disabled
+										value={premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}
+									/>
 								</div>
 							</Grid>
 						</Grid>
