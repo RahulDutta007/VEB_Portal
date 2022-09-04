@@ -166,145 +166,142 @@ const KemperAccidentForm = (): JSX.Element => {
 		<div className="kemper-cancer-form plan-form">
 			<div className="paper-form-container">
 				<Paper className="theme-border-radius paper-container" elevation={1}>
-					<PlanHeader planName="Kemper Group Accident Insurance Policy" effectiveDate={start_date} />
+					<PlanHeader planName="Kemper Whole Life Insurance Policy" effectiveDate={start_date} />
 					<div className="plan-content">
 						<div className="theme-plan-section-margin" />
-						<div className="header-container">
+						<div className="header-container header-container-new">
 							<div className="theme-plan-header">Standard Benefits</div>
-							<div className="theme-plan-sub-header" style={{ borderLeftColor: theme.primary_color }}>
+						</div>
+						<div>
+							<div className="theme-plan-sub-header plan-text" style={{ borderLeftColor: theme.primary_color }}>
 								In addition to yourself, who would you like to cover under this plan?
 							</div>
+							<Grid className="grid-container" container columnSpacing={2} >
+								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+									<div className="details-form-row">
+										<div className="details-form-label  required">Coverage For</div>
+										<Select
+											input={<CustomSelectInput />}
+											style={{ width: "100%" }}
+											name="contact_label"
+											onChange={(event: any) => handleCoverageChange(event)}
+										>
+											{COVERAGE.map((option: string, index: number) => {
+												return (
+													<MenuItem value={option} key={index}>
+														{option}
+													</MenuItem>
+												);
+											})}
+										</Select>
+									</div>
+								</Grid>
+								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+									<div className="details-form-row">
+										<div className="details-form-label  required">Coverage Level</div>
+										<Select
+											input={<CustomSelectInput />}
+											style={{ width: "100%" }}
+											name="contact_label"
+											onChange={(event: any) => handlePlanChange(event)}
+										>
+											<MenuItem value={"Edge Enhanced"}>Edge Enhanced</MenuItem>
+											<MenuItem value={"Edge Premier"}>Edge Premier</MenuItem>
+										</Select>
+									</div>
+								</Grid>
+								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+									<div className="details-form-row">
+										<div className="details-form-label required align-center">Premium</div>
+										<div className="show-premium">{premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}</div>
+									</div>
+								</Grid>
+							</Grid>
 						</div>
-						<div className="theme-plan-inner-section-margin-2" />
-						<Grid container columnSpacing={2}>
-							<Grid item xl={6} lg={10} md={10} sm={10} xs={10}>
-								<div className="details-form-row">
-									<div className="details-form-label  required">Coverage</div>
-									<Select
-										input={<CustomSelectInput />}
-										style={{ width: "100%" }}
-										name="contact_label"
-										onChange={(event: any) => handleCoverageChange(event)}
-									>
-										{COVERAGE.map((option: string, index: number) => {
-											return (
-												<MenuItem value={option} key={index}>
-													{option}
-												</MenuItem>
-											);
-										})}
-									</Select>
-								</div>
-							</Grid>
-							<Grid item xl={6} lg={10} md={10} sm={10} xs={10}>
-								<div className="details-form-row">
-									<div className="details-form-label  required">Coverage Level</div>
-									<Select
-										input={<CustomSelectInput />}
-										style={{ width: "100%" }}
-										name="contact_label"
-										onChange={(event: any) => handlePlanChange(event)}
-									>
-										<MenuItem value={"Edge Enhanced"}>Edge Enhanced</MenuItem>
-										<MenuItem value={"Edge Premier"}>Edge Premier</MenuItem>
-									</Select>
-								</div>
-							</Grid>
-							<Grid item xl={10} lg={10} md={10} sm={10} xs={10}>
-								<div className="details-form-row">
-									<div className="details-form-label required">Standard Premium</div>
-									<CustomInput
-										disabled
-										value={premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}
-									/>
-								</div>
-							</Grid>
-						</Grid>
-						<div className="theme-plan-inner-section-margin" />
-						<div className="header-container">
+					</div>
+					<div className="plan-content">
+						<div className="theme-plan-section-margin" />
+						<div className="header-container header-container-new">
 							<div className="theme-plan-header">Rider Benefits</div>
-							<div className="theme-plan-sub-header" style={{ borderLeftColor: theme.primary_color }}>
+						</div>
+						<div>
+							<div className="theme-plan-sub-header plan-text" style={{ borderLeftColor: theme.primary_color }}>
 								Disability income rider rates
 							</div>
-						</div>
-						<div className="theme-plan-inner-section-margin" />
-						<Grid container className="theme-plan-section-margin">
-							<Grid item xl={6} lg={10} md={10} sm={10} xs={10}>
-								<div className="details-form-row">
-									<div className="details-form-label  required">Disability income rider type</div>
-									<Select
-										input={<CustomSelectInput />}
-										style={{ width: "100%" }}
-										name="contact_label"
-										onChange={(event: any) => handleRiderChange(event)}
-									>
-										<MenuItem value={"no_rider"} className="empty-option"></MenuItem>
-										<MenuItem value={"accident"}>Accident Only</MenuItem>
-										<MenuItem value={"accident_sickness"}>Accident and Sickness</MenuItem>
-									</Select>
-								</div>
-							</Grid>
-							<Grid item xl={6} lg={10} md={10} sm={10} xs={10}>
-								<div className="details-form-row">
-									<div className="details-form-label  required">Monthly disability benefit</div>
-									<Select
-										input={<CustomSelectInput />}
-										style={{ width: "100%" }}
-										name="contact_label"
-										onChange={(event: any) => handleRiderBenefitAmountChange(event)}
-									>
-										<MenuItem value={0} className="empty-option"></MenuItem>
-										<MenuItem value={600}>$600</MenuItem>
-										<MenuItem value={900}>$900</MenuItem>
-										<MenuItem value={1200}>$1200</MenuItem>
-										<MenuItem value={1800}>$1800</MenuItem>
-									</Select>
-								</div>
-							</Grid>
-							<Grid item xl={10} lg={10} md={10} sm={10} xs={10}>
-								<div className="details-form-row">
-									<div className="details-form-label required">Disability income - Rider Premium</div>
-									<CustomInput
-										disabled
-										value={rider_premium_amount == 0 ? "" : `$${rider_premium_amount.toFixed(2)}`}
-									/>
-								</div>
-							</Grid>
-						</Grid>
-						<Grid container className="theme-plan-inner-section-margin">
-							<Grid item xl={2} lg={2} md={2} sm={12} xs={12}>
-								<div className="theme-plan-sub-header" style={{ borderLeftColor: theme.primary_color }}>
-									<input type="checkbox" disabled checked></input>
-									<label className="details-form-label required">Doc & RX</label>
-								</div>
-							</Grid>
-							<Grid item xl={10} lg={10} md={10} sm={12} xs={12}>
-								<div className="details-form-row">
-									<CustomInput
-										disabled
-										value={coverage_for && plan_type ? `$${premium_plan.rider_doc_Rx}` : ""}
-									/>
-								</div>
-							</Grid>
-						</Grid>
-						<div className="theme-plan-inner-section-margin" />
-						<Grid container className="theme-plan-inner-section-margin">
-							<Grid item xl={10} lg={10} md={10} sm={10} xs={10}>
-								<div className="details-form-row">
-									<div
-										className="details-form-label theme-plan-total-premium"
-										style={{ color: theme.primary_color }}
-									>
-										Total Premium
+							<Grid className="grid-container" container columnSpacing={2} >
+								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+									<div className="details-form-row">
+										<div className="details-form-label  required">Disability income rider type</div>
+										<Select
+											input={<CustomSelectInput />}
+											style={{ width: "100%" }}
+											name="contact_label"
+											onChange={(event: any) => handleRiderChange(event)}
+										>
+											<MenuItem value={"no_rider"} className="empty-option"></MenuItem>
+											<MenuItem value={"accident"}>Accident Only</MenuItem>
+											<MenuItem value={"accident_sickness"}>Accident and Sickness</MenuItem>
+										</Select>
 									</div>
-									<CustomInput
-										disabled
-										value={total_premium_amount == 0 ? "" : `$${total_premium_amount.toFixed(2)}`}
-									/>
-								</div>
+								</Grid>
+								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+									<div className="details-form-row">
+										<div className="details-form-label  required">Monthly disability benefit</div>
+										<Select
+											input={<CustomSelectInput />}
+											style={{ width: "100%" }}
+											name="contact_label"
+											onChange={(event: any) => handleRiderBenefitAmountChange(event)}
+										>
+											<MenuItem value={0} className="empty-option"></MenuItem>
+											<MenuItem value={600}>$600</MenuItem>
+											<MenuItem value={900}>$900</MenuItem>
+											<MenuItem value={1200}>$1200</MenuItem>
+											<MenuItem value={1800}>$1800</MenuItem>
+										</Select>
+									</div>
+								</Grid>
+								<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="">
+									<div className="details-form-row">
+										<div className="details-form-label required align-center">Premium</div>
+										<div className="show-premium">{rider_premium_amount == 0 ? "" : `$${rider_premium_amount.toFixed(2)}`}</div>
+									</div>
+								</Grid>
 							</Grid>
-						</Grid>
+						</div>
+						<div>
+							<div className="theme-plan-sub-header plan-text" style={{ borderLeftColor: theme.primary_color }}>
+								Doctor & Rx
+							</div>
+							<Grid className="grid-container" container columnSpacing={2} >
+								<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className={coverage_for && plan_type ? "margin-adjust-33" : ""}>
+									<input type="checkbox" disabled checked></input>
+									<label className="details-form-label required">Doctor & RX</label>
+								</Grid>
+								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+									<div className="details-form-row">
+										<div className="details-form-label required align-center">Premium</div>
+										<div className="show-premium">{coverage_for && plan_type ? `$${premium_plan.rider_doc_Rx}` : ""}</div>
+									</div>
+								</Grid>
+							</Grid>
+						</div>
 					</div>
+
+					<div className="theme-plan-inner-section-margin" />
+					{total_premium_amount > 0 ? <Grid container className="theme-plan-inner-section-margin">
+						<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+							<div className="details-form-row">
+								<div
+									className="details-form-label theme-plan-total-premium align-right"
+									style={{ color: theme.primary_color }}
+								>
+									Total Premium: <span className="show-premium margin-adjust">{total_premium_amount == 0 ? "" : `$${total_premium_amount.toFixed(2)}`}</span>
+								</div>
+							</div>
+						</Grid>
+					</Grid> : null
+					}
 					<div className="theme-plan-option-content">
 						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
 						<p className="theme-plan-checkbox-label">

@@ -147,16 +147,14 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 						<div className="theme-plan-section-margin" />
 						<div className="header-container">
 							<div className="theme-plan-header">Standard Benefits</div>
-							<div className="theme-plan-sub-header" style={{ borderLeftColor: theme.primary_color }}>
+							<div className="theme-plan-sub-header plan-text" style={{ borderLeftColor: theme.primary_color }}>
 								In addition to yourself, who would you like to cover under this plan?
 							</div>
 						</div>
-						<div className="theme-plan-inner-section-margin-2" />
-						<Grid container columnSpacing={2}>
-							{/* New Row */}
-							<Grid item xl={6} lg={10} md={10} sm={10} xs={10}>
+						<Grid className="grid-container" container columnSpacing={2}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
-									<div className="details-form-label  required">Insuarance Premier</div>
+									<div className="details-form-label  required">Coverage For</div>
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
@@ -175,9 +173,9 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 									</Select>
 								</div>
 							</Grid>
-							<Grid item xl={6} lg={10} md={10} sm={10} xs={10}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
-									<div className="details-form-label  required">Age Range</div>
+									<div className="details-form-label  required">Coverage Level</div>
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
@@ -196,10 +194,9 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 									</Select>
 								</div>
 							</Grid>
-							{/* End New Row */}
-							<Grid item xl={6} lg={10} md={10} sm={10} xs={10}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
-									<div className="details-form-label  required">Coverage</div>
+									<div className="details-form-label  required">Coverage Level</div>
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
@@ -218,9 +215,9 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 									</Select>
 								</div>
 							</Grid>
-							<Grid item xl={6} lg={10} md={10} sm={10} xs={10}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
-									<div className="details-form-label  required">Benefit Amount</div>
+									<div className="details-form-label  required">Coverage Level</div>
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
@@ -239,27 +236,27 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 									</Select>
 								</div>
 							</Grid>
-							<Grid item xl={10} lg={10} md={10} sm={10} xs={10}>
+							<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
 								<div className="details-form-row">
-									<div className="details-form-label required">Standard Premium</div>
-									<CustomInput disabled value={standerdPremium} />
+									<div className="details-form-label required align-center">Premium</div>
+									<div className="show-premium">{standerdPremium} </div>
 								</div>
 							</Grid>
 						</Grid>
 						<div className="theme-plan-inner-section-margin" />
-						<Grid container className="theme-plan-inner-section-margin">
-							<Grid item xl={10} lg={10} md={10} sm={10} xs={10}>
+						{standerdPremium !== "" ? <Grid container className="theme-plan-inner-section-margin">
+							<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
 								<div className="details-form-row">
 									<div
-										className="details-form-label theme-plan-total-premium"
+										className="details-form-label theme-plan-total-premium align-right"
 										style={{ color: theme.primary_color }}
 									>
-										Total Premium
+										Total Premium: <span className="show-premium margin-adjust">{standerdPremium}</span>
 									</div>
-									<CustomInput disabled value={standerdPremium} />
 								</div>
 							</Grid>
-						</Grid>
+						</Grid> : null
+						}
 					</div>
 					<div className="theme-plan-option-content">
 						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />

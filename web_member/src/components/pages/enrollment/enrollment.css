@@ -93,3 +93,59 @@
 .premium-table-header {
 	font-weight: bold;
 }
+
+
+
+/* CSS for New form Design */
+
+.plan-header {
+	padding: 15px;
+	box-shadow: 0 0 5px 5px #e5e5e5;
+	border-radius: 5px;
+}
+
+.grid-container {
+	margin-left: 0px !important;
+	width: 100% !important;
+	margin-top: 13px !important;
+	padding: 10px !important;
+	border: 1px solid #e5e5e5;
+	border-radius: 5px;
+	position: relative;
+}
+
+.align-center {
+	text-align: center;
+}
+
+.show-premium {
+	text-align: center;
+	color: #E02826;
+	font-size: 27px;
+	font-weight: 700;
+	font-family: cursive;
+}
+
+.plan-text {
+	margin-top: 20px;
+}
+
+.margin-adjust-33 {
+	margin-top: 33px !important;
+}
+
+.align-right {
+	text-align: right !important;
+}
+
+.margin-adjust {
+	margin-right: 47px !important;
+	margin-left: 10px !important;
+}
+
+.amount-middle {
+	position: absolute;
+	top: 50%;
+	right: 10px;
+	transform: translate(-50%, -50%);
+}

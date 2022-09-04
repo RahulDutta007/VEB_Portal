@@ -117,16 +117,18 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 					<div className="plan-content">
 						<div className="theme-plan-section-margin" />
 						<div className="header-container">
-							<div className="theme-plan-header">Standard Benefits</div>
-							<div className="theme-plan-sub-header" style={{ borderLeftColor: theme.primary_color }}>
+							<div className="header-container header-container-new">
+								<div className="theme-plan-header">Standard Benefits</div>
+							</div>
+							<div className="theme-plan-sub-header plan-text" style={{ borderLeftColor: theme.primary_color }}>
 								In addition to yourself, who would you like to cover under this plan?
 							</div>
 						</div>
 						<div className="theme-plan-inner-section-margin-2" />
-						<Grid container columnSpacing={2}>
-							<Grid item xl={6} lg={10} md={10} sm={10} xs={10}>
+						<Grid className="grid-container" container columnSpacing={2}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
-									<div className="details-form-label  required">Coverage</div>
+									<div className="details-form-label  required">Coverage For</div>
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
@@ -143,7 +145,7 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 									</Select>
 								</div>
 							</Grid>
-							<Grid item xl={6} lg={10} md={10} sm={10} xs={10}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label  required">Coverage Level</div>
 									<Select
@@ -159,17 +161,28 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 									</Select>
 								</div>
 							</Grid>
-							<Grid item xl={10} lg={10} md={10} sm={10} xs={10}>
+							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 								<div className="details-form-row">
-									<div className="details-form-label required">Premium</div>
-									<CustomInput
-										disabled
-										value={premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}
-									/>
+									<div className="details-form-label required align-center">Premium</div>
+									<div className="show-premium">{premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}</div>
 								</div>
 							</Grid>
 						</Grid>
 					</div>
+					<div className="theme-plan-inner-section-margin" />
+					{premium_amount > 0 ? <Grid container className="theme-plan-inner-section-margin">
+						<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+							<div className="details-form-row">
+								<div
+									className="details-form-label theme-plan-total-premium align-right"
+									style={{ color: theme.primary_color }}
+								>
+									Total Premium: <span className="show-premium margin-adjust">{premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}</span>
+								</div>
+							</div>
+						</Grid>
+					</Grid> : null
+					}
 					<div className="theme-plan-option-content">
 						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
 						<p className="theme-plan-checkbox-label">

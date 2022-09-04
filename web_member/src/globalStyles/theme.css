@@ -189,14 +189,17 @@ button {
 	display: inline-flex;
 	align-items: flex-start;
 }
+
 .theme-plan-description-text {
 	font-size: 16px;
 	font-weight: 500;
 }
+
 .theme-plan-description-underline-text {
 	font-size: 15px;
 	text-decoration: underline;
 }
+
 .theme-divider-grad-mask {
 	margin-top: 1rem;
 	width: 100%;
@@ -256,5 +259,5 @@ button {
 }
 
 .theme-plan-total-premium {
-	font-size: 1.2rem !important;
+	font-size: 1.5rem !important;
 }
