@@ -211,7 +211,11 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
     const [total_premium_amount, setTotalPremiumAmount] = useState(0);
     const [expanded, setExpanded] = useState<string | false>('panel1');
     const [family_member, setFamilyMembers] = useState(["Rahul"]);
-    const [family_member_amount, setFamilyMemberAmount] = useState([]);
+    const [family_member_details, setFamilyMemberDetails] = useState<any>([{
+        member_name: "",
+        benefit_amount: 0,
+        premium_amount: 0
+    }]);
     const [showMember, setShowMember] = useState(false);
 
     const handleChange =
@@ -239,6 +243,34 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
         setBenefitAmount(parseInt(value));
     };
 
+    const handleMemberBenefitAmountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = event.target as HTMLSelectElement;
+        if (!family_member_details.find((member: { member_name: string; }) => member.member_name === name)) {
+            family_member_details.push({
+                member_name: name,
+                benefit_amount: value,
+                premium_amount: premium_plan.member.find(plan => plan.benefit_amount == parseInt(value))?.premium_amount
+            });
+            const familyDetails = JSON.parse(JSON.stringify(family_member_details));
+            setFamilyMemberDetails(familyDetails);
+            console.log(333, family_member_details);
+        } else {
+            const familyDetails = family_member_details.map((member: { member_name: string; }) => {
+                if (member.member_name === name) {
+                    return {
+                        member_name: name,
+                        benefit_amount: value,
+                        premium_amount: premium_plan.member.find(plan => plan.benefit_amount == parseInt(value))?.premium_amount
+                    }
+                }
+            });
+            setFamilyMemberDetails(familyDetails);
+            console.log(222, familyDetails);
+        }
+        console.log(111, family_member_details);
+    };
+
+
     const handleWritingNumberChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
             const { value } = event.target as HTMLInputElement;
@@ -259,12 +291,19 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
             const calculatePremiumAmount = premium_plan[planType][coverageFor].find(plan => plan.benefit_amount === benefit_amount)?.premium_amount;
             setPremiumAmount(calculatePremiumAmount ? calculatePremiumAmount : 0);
             setTotalPremiumAmount(calculatePremiumAmount ? calculatePremiumAmount : 0);
+            if (family_member_details && family_member_details.length > 0) {
+
+            }
         }
     };
 
     useEffect(() => {
         calculatePremium();
-    }, [coverage_for, plan_type, benefit_amount]);
+        if (family_member_details) {
+            console.log(333, typeof family_member_details, family_member_details);
+            console.log(222, family_member_details.find((plan: { member_name: string; }) => plan.member_name === "Rahul")?.premium_amount.toFixed(2));
+        }
+    }, [coverage_for, plan_type, benefit_amount, family_member_details]);
 
     const { plan_name, plan_code, start_date, end_date } = plan;
 
@@ -339,15 +378,15 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                                 <Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
                                     <div className="details-form-row">
                                         <div className="details-form-label required align-center">Premium</div>
-                                        <div className="show-premium">{premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}</div>
+                                        <div className="show-premium">{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}</div>
                                     </div>
                                 </Grid>
                             </Grid>
                         </div>
                         {
-                            showMember && family_member.map(member => {
+                            showMember && family_member.map((member, index) => {
                                 return (
-                                    <div>
+                                    <div key={index}>
                                         <div className="member-name">
                                             {member}
                                         </div>
@@ -358,8 +397,8 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                                                     <Select
                                                         input={<CustomSelectInput />}
                                                         style={{ width: "100%" }}
-                                                        name="contact_label"
-                                                        onChange={(event: any) => handleBenefitAmountChange(event)}
+                                                        name={member}
+                                                        onChange={(event: any) => handleMemberBenefitAmountChange(event)}
                                                     >
                                                         <MenuItem value={350}>350.00</MenuItem>
                                                         <MenuItem value={300}>300.00</MenuItem>
@@ -375,7 +414,7 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                                             <Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
                                                 <div className="details-form-row">
                                                     <div className="details-form-label required align-center">Premium</div>
-                                                    <div className="show-premium">{premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}</div>
+                                                    <div className="show-premium">{family_member_details.length === 1 ? "$0.00" : `$${family_member_details.find((plan: { member_name: string; }) => plan.member_name === member)?.premium_amount.toFixed(2) || "0.00"}`}</div>
                                                 </div>
                                             </Grid>
                                         </Grid>
