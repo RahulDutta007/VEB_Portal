@@ -14,6 +14,7 @@ import KemperAccidentForm from "./plans/kemper/accident/form/AccidentForm";
 import KemperHospitalIndemnityForm from "./plans/kemper/hospitalIndemnity/form/HospitalIndemnityForm";
 import BeazleyIndemnityForm from "./plans/beazley/indemnity/form/IndemnityForm";
 import KemperWholeLifeInsuranceForm from "./plans/kemper/wholeLife/form/WholeLifeInsuranceForm";
+import KemperShortTermDisabilityForm from "./plans/kemper/shortTermDisability/form/ShortTermDisabilityForm";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { styled } from "@mui/material/styles";
@@ -80,7 +81,7 @@ const Enrollment = (): JSX.Element => {
 				return <KemperWholeLifeInsuranceForm />;
 			}
 			case "Short Term Disability": {
-				return <div>Short Term Disability</div>;
+				return <KemperShortTermDisabilityForm />;
 			}
 			case "Critical Illness Group": {
 				return <KemperCriticalIllnessForm />;

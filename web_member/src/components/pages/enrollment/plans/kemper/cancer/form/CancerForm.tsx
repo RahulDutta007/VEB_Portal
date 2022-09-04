@@ -74,14 +74,14 @@ const KemperCancerForm = (): JSX.Element => {
 										name="contact_label"
 									>
 										<MenuItem value={"High Plan"}>High Plan</MenuItem>
-										<MenuItem value={"High Plan"}>Low Plan</MenuItem>
+										<MenuItem value={"Low Plan"}>Low Plan</MenuItem>
 									</Select>
 								</div>
 							</Grid>
 							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
-									<div className="show-premium">$200.0</div>
+									<div className="show-premium">$0.00</div>
 								</div>
 							</Grid>
 						</Grid>

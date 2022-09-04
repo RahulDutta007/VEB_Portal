@@ -213,7 +213,7 @@ const KemperAccidentForm = (): JSX.Element => {
 								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
-										<div className="show-premium">{premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}</div>
+										<div className="show-premium">{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}</div>
 									</div>
 								</Grid>
 							</Grid>
@@ -264,7 +264,7 @@ const KemperAccidentForm = (): JSX.Element => {
 								<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="">
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
-										<div className="show-premium">{rider_premium_amount == 0 ? "" : `$${rider_premium_amount.toFixed(2)}`}</div>
+										<div className="show-premium">{rider_premium_amount == 0 ? "$0.00" : `$${rider_premium_amount.toFixed(2)}`}</div>
 									</div>
 								</Grid>
 							</Grid>

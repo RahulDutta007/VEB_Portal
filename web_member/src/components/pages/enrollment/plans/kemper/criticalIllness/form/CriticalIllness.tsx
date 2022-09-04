@@ -239,7 +239,7 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 							<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
-									<div className="show-premium">{standerdPremium} </div>
+									<div className="show-premium">{standerdPremium == "" ? "$0.00" : standerdPremium} </div>
 								</div>
 							</Grid>
 						</Grid>

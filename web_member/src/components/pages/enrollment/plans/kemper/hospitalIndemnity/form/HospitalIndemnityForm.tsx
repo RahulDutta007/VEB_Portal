@@ -164,7 +164,7 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
-									<div className="show-premium">{premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}</div>
+									<div className="show-premium">{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}</div>
 								</div>
 							</Grid>
 						</Grid>
