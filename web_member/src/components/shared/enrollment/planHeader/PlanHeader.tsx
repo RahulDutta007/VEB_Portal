@@ -19,12 +19,12 @@ const PlanHeader = ({ planName, effectiveDate }: PlanHeaderProps): JSX.Element =
 				</div>
 				<div className="code-text">Effective Date: {effectiveDate}</div>
 			</div>
-			<div
+			{/* <div
 				className="divider-grad-mask"
 				style={{
 					background: `linear-gradient(90deg, ${theme.primary_color} 0 55%, transparent 0 100%) 0 0 / 2rem 1rem`
 				}}
-			/>
+			/> */}
 		</div>
 	);
 };
