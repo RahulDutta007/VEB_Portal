@@ -29,7 +29,27 @@ const sidebarOptions: SidebarOptions = {
 			caption: "Plan Management",
 			route: "/plans",
 			icon: () => <AssessmentIcon />,
-			subTabs: []
+			subTabs: [
+				{
+					caption: "Plan Controll",
+					route: "/create-plan",
+					icon: () => <WorkIcon />,
+					subTabs: []
+				},
+				{
+					caption: "Create Plan",
+					route: "/create-plan",
+					icon: () => <WorkIcon />,
+					subTabs: []
+				}
+				// },
+				// {
+				// 	caption: "Plan Management",
+				// 	route: "/plans",
+				// 	icon: () => <WorkIcon />,
+				// 	subTabs: []
+				// }
+			]
 		},
 		{
 			caption: "Enroller",
