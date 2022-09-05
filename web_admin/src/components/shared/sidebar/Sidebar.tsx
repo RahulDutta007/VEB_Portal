@@ -47,6 +47,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 
 import "./sidebar.css";
+import { LazyCustomDialog } from "..";
 
 const rippleKeyFrame = keyframes`
 	0% {
@@ -166,12 +167,13 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 			Object.assign({}, logoutDialogProps, {
 				openDialog: true,
 				title: "Thank you",
-				content: "You have successfully logged out of Nexcalibre Portal",
+				content: "You have successfully logged out of VEB Portal",
 				actions: [
 					{
 						label: "Okay",
 						callback: () => {
-							window.location.reload();
+							// window.location.reload();
+							navigate("/login");
 							setLogoutDialogProps(Object.assign({}, logoutDialogProps, { openDialog: false }));
 						}
 					}
@@ -355,6 +357,9 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 					display: "none"
 				}}
 			></div>
+			<Suspense fallback={<div />}>
+				<LazyCustomDialog dialogProps={logoutDialogProps} />
+			</Suspense>
 			<Box sx={{ display: "flex" }}>
 				<CssBaseline />
 				<AppBar
