@@ -481,7 +481,7 @@ const Login = (props: any): JSX.Element => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<AccountCircle className="auth-input-icon" />
+																	<LockIcon className="auth-input-icon" />
 																</InputAdornment>
 															)
 														}}
