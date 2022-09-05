@@ -205,7 +205,7 @@ const Login = (props: any): JSX.Element => {
 		async (event: any) => {
 			event.preventDefault();
 			const payload = {
-				email: credential.user_id,
+				user_id: credential.user_id,
 				role: credential.role.toUpperCase()
 			};
 			const validationResult = await handleValidation(event.target.innerText);
