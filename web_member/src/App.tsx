@@ -12,6 +12,7 @@ import "./globalStyles/theme.css";
 import "./globalStyles/currentTheme.css";
 import "./globalStyles/paperForm.css";
 import Draggable from "react-draggable";
+import Redirection from "./components/pages/auth/redirection/Redirection";
 
 const App = (): JSX.Element => {
 	const { setTheme } = useContext(ThemeContext);
@@ -26,6 +27,7 @@ const App = (): JSX.Element => {
 				<Navbar />
 				<Routes>
 					<Route path="/VEB/enrollment" element={<VEBEnrollment />} />
+					<Route path="/verify" element={<Redirection />} />
 					<Route path="/VEB/plans" element={<VEBPlans />} />
 				</Routes>
 			</BrowserRouter>

@@ -1,3 +1,4 @@
+import { Member } from "./member.types";
 import { Role } from "./role.types";
 
 export type User = {
@@ -124,4 +125,12 @@ export type ChangePassword = {
 	new_password: string;
 	confirm_password: string;
 	user_name: string;
+};
+
+export type AssignedPaginatedMembers = {
+	totalDocuments: number;
+	totalPages: number;
+	totalDocumentsPerPage: number;
+	pagination: any;
+	members: Member[];
 };

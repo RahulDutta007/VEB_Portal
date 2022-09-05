@@ -11,7 +11,9 @@ import { EMAIL_TYPE } from "../../../../constants/emailType";
 
 export const ForgetUserId = async (req: Request, res: Response) => {
   try {
+
     const { role, email } = req.body;
+
     const filter = {
       $and: [
         { email },

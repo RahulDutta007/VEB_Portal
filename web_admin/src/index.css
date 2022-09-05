@@ -88,3 +88,18 @@ code {
 	display: flex !important;
 	color: #ffff;
 }
+
+.mt-30px {
+	margin-top: 30px;
+}
+
+.display-flex-end {
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-end;
+}
+
+.ag-grid-cell-button {
+	height: 2em !important;
+	border-color: #a5d6a7 !important;
+}

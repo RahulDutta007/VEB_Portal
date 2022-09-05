@@ -21,7 +21,7 @@ const sidebarOptions: SidebarOptions = {
 		},
 		{
 			caption: "Members",
-			route: "/",
+			route: "/members",
 			icon: () => <SupervisedUserCircleIcon />,
 			subTabs: []
 		},

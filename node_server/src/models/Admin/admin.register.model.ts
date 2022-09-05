@@ -152,5 +152,5 @@ const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 	GENERAL_SCHEMA_OPTIONS
 );
 
-const AdminModel = model("useradmin", AdminRegisterSchema);
+const AdminModel = model("VEB_group_owners", AdminRegisterSchema);
 export default AdminModel;

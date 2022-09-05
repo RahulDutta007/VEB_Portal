@@ -448,7 +448,7 @@ const Login = (props: any): JSX.Element => {
 											className="form-field-input auth-input-fields"
 											id="forget-user-name"
 											name="user_id"
-											label="Username/Email"
+											label="Email"
 											variant="outlined"
 											placeholder="Enter Email"
 											value={credential.user_id}
@@ -481,7 +481,7 @@ const Login = (props: any): JSX.Element => {
 														InputProps={{
 															startAdornment: (
 																<InputAdornment position="start">
-																	<AccountCircle className="auth-input-icon" />
+																	<LockIcon className="auth-input-icon" />
 																</InputAdornment>
 															)
 														}}
