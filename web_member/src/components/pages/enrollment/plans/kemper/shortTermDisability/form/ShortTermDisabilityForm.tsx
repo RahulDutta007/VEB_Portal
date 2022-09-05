@@ -209,19 +209,19 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
     const [premium_amount, setPremiumAmount] = useState(0);
     const [benefit_amount, setBenefitAmount] = useState(0);
     const [total_premium_amount, setTotalPremiumAmount] = useState(0);
-    const [expanded, setExpanded] = useState<string | false>('panel1');
-    const [family_member, setFamilyMembers] = useState(["Rahul"]);
-    const [family_member_details, setFamilyMemberDetails] = useState<any>([{
-        member_name: "",
-        benefit_amount: 0,
-        premium_amount: 0
-    }]);
+    const [expanded, setExpanded] = useState<string | false>('panel_question');
+    const [expanded_panel, setExpandedPanel] = useState<string | false>('panel_beneficiary');
+    const [family_member, setFamilyMembers] = useState([{ name: "Debasish Manna", relation: "Son" }, { name: "Gourab Das", relation: "Spouse" }]);
+    const [family_member_details, setFamilyMemberDetails] = useState<any>([]);
     const [showMember, setShowMember] = useState(false);
 
-    const handleChange =
-        (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-            setExpanded(newExpanded ? panel : false);
-        };
+    const handleChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+        setExpanded(newExpanded ? panel : false);
+    };
+
+    const handleBeneficiaryChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+        setExpandedPanel(newExpanded ? panel : false);
+    };
 
     const handleCoverageChange = (event: React.FormEvent<HTMLSelectElement>) => {
         const { value } = event.target as HTMLSelectElement;
@@ -262,12 +262,12 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                         benefit_amount: value,
                         premium_amount: premium_plan.member.find(plan => plan.benefit_amount == parseInt(value))?.premium_amount
                     }
+                } else {
+                    return member;
                 }
             });
             setFamilyMemberDetails(familyDetails);
-            console.log(222, familyDetails);
         }
-        console.log(111, family_member_details);
     };
 
 
@@ -292,17 +292,15 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
             setPremiumAmount(calculatePremiumAmount ? calculatePremiumAmount : 0);
             setTotalPremiumAmount(calculatePremiumAmount ? calculatePremiumAmount : 0);
             if (family_member_details && family_member_details.length > 0) {
-
+                const totalMemberPremiumAmount = family_member_details.reduce((previousValue: any, currentValue: any) => previousValue + currentValue.premium_amount,
+                    0);
+                setTotalPremiumAmount(calculatePremiumAmount && totalMemberPremiumAmount ? (calculatePremiumAmount + totalMemberPremiumAmount) : 0);
             }
         }
     };
 
     useEffect(() => {
         calculatePremium();
-        if (family_member_details) {
-            console.log(333, typeof family_member_details, family_member_details);
-            console.log(222, family_member_details.find((plan: { member_name: string; }) => plan.member_name === "Rahul")?.premium_amount.toFixed(2));
-        }
     }, [coverage_for, plan_type, benefit_amount, family_member_details]);
 
     const { plan_name, plan_code, start_date, end_date } = plan;
@@ -388,7 +386,7 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                                 return (
                                     <div key={index}>
                                         <div className="member-name">
-                                            {member}
+                                            {`${member.name}(${member.relation})`}
                                         </div>
                                         <Grid className="grid-container" container columnSpacing={2} >
                                             <Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
@@ -397,7 +395,7 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                                                     <Select
                                                         input={<CustomSelectInput />}
                                                         style={{ width: "100%" }}
-                                                        name={member}
+                                                        name={member.name}
                                                         onChange={(event: any) => handleMemberBenefitAmountChange(event)}
                                                     >
                                                         <MenuItem value={350}>350.00</MenuItem>
@@ -414,7 +412,7 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                                             <Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
                                                 <div className="details-form-row">
                                                     <div className="details-form-label required align-center">Premium</div>
-                                                    <div className="show-premium">{family_member_details.length === 1 ? "$0.00" : `$${family_member_details.find((plan: { member_name: string; }) => plan.member_name === member)?.premium_amount.toFixed(2) || "0.00"}`}</div>
+                                                    {family_member_details && <div className="show-premium">{family_member_details.length === 0 ? "$0.00" : `$${family_member_details.find((plan: { member_name: string; }) => plan.member_name === member.name)?.premium_amount.toFixed(2) || "0.00"}`}</div>}
                                                 </div>
                                             </Grid>
                                         </Grid>
@@ -424,7 +422,7 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                         }
                     </div>
                     <div className="accordion-container">
-                        <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                        <Accordion expanded={expanded === 'panel_question'} onChange={handleChange('panel_question')}>
                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
                                 <Typography>Questions</Typography>
                             </AccordionSummary>
@@ -449,6 +447,19 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                         </Grid>
                     </Grid> : null
                     }
+
+                    <div className="accordion-container">
+                        <Accordion expanded={expanded_panel === 'panel_beneficiary'} onChange={handleBeneficiaryChange('panel_beneficiary')}>
+                            <AccordionSummary aria-controls="panel1d-content" id="panel-header-beneficiary">
+                                <Typography>Add Beneficiary</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Typography>
+                                    No eligibility questions are required for the selected coverage, please press next.
+                                </Typography>
+                            </AccordionDetails>
+                        </Accordion>
+                    </div>
                     <div className="theme-plan-option-content">
                         <Checkbox defaultChecked style={{ paddingLeft: 0 }} />
                         <p className="theme-plan-checkbox-label">
