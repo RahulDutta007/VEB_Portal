@@ -20,33 +20,33 @@ import { styled } from "@mui/material/styles";
 import "./shortTermDisabilityForm.css";
 
 const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
-    ({ theme }) => ({
-        border: `1px solid ${theme.palette.divider}`,
-        "&:not(:last-child)": {
-            borderBottom: 0
-        },
-        "&:before": {
-            display: "none"
-        }
-    })
+	({ theme }) => ({
+		border: `1px solid ${theme.palette.divider}`,
+		"&:not(:last-child)": {
+			borderBottom: 0
+		},
+		"&:before": {
+			display: "none"
+		}
+	})
 );
 
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
-    <MuiAccordionSummary expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />} {...props} />
+	<MuiAccordionSummary expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />} {...props} />
 ))(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, .05)" : "rgba(0, 0, 0, .03)",
-    flexDirection: "row-reverse",
-    "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-        transform: "rotate(90deg)"
-    },
-    "& .MuiAccordionSummary-content": {
-        marginLeft: theme.spacing(1)
-    }
+	backgroundColor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, .05)" : "rgba(0, 0, 0, .03)",
+	flexDirection: "row-reverse",
+	"& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
+		transform: "rotate(90deg)"
+	},
+	"& .MuiAccordionSummary-content": {
+		marginLeft: theme.spacing(1)
+	}
 }));
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-    padding: theme.spacing(2),
-    borderTop: "1px solid rgba(0, 0, 0, .125)"
+	padding: theme.spacing(2),
+	borderTop: "1px solid rgba(0, 0, 0, .125)"
 }));
 
 const KemperShortTermDisabilityForm = (): JSX.Element => {
@@ -232,28 +232,28 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
         }
     ]);
 
-    const handleChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-        setExpanded(newExpanded ? panel : false);
-    };
+	const handleChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+		setExpanded(newExpanded ? panel : false);
+	};
 
-    const handleBeneficiaryChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-        setExpandedPanel(newExpanded ? panel : false);
-    };
+	const handleBeneficiaryChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+		setExpandedPanel(newExpanded ? panel : false);
+	};
 
-    const handleCoverageChange = (event: React.FormEvent<HTMLSelectElement>) => {
-        const { value } = event.target as HTMLSelectElement;
-        setCoverageFor(value);
-        if (value !== "Employee Only") {
-            setShowMember(true);
-        } else {
-            setShowMember(false);
-        }
-    };
+	const handleCoverageChange = (event: React.FormEvent<HTMLSelectElement>) => {
+		const { value } = event.target as HTMLSelectElement;
+		setCoverageFor(value);
+		if (value !== "Employee Only") {
+			setShowMember(true);
+		} else {
+			setShowMember(false);
+		}
+	};
 
-    const handlePlanChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const { value } = event.target as HTMLSelectElement;
-        setPlanType(value);
-    };
+	const handlePlanChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const { value } = event.target as HTMLSelectElement;
+		setPlanType(value);
+	};
 
     const handleBenefitAmountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const { value } = event.target as HTMLSelectElement;

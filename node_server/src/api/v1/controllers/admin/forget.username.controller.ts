@@ -12,12 +12,11 @@ import { EMAIL_TYPE } from "../../../../constants/emailType";
 export const ForgetUserId = async (req: Request, res: Response) => {
   try {
 
-    const { role, user_id } = req.body;
+    const { role, email } = req.body;
 
-    const query = user_id.includes("@") ? { email: user_id } : { user_name: user_id };
     const filter = {
       $and: [
-        query,
+        { email },
         { role }
       ]
     };

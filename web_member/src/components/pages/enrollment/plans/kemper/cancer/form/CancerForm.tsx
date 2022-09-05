@@ -41,12 +41,15 @@ const KemperCancerForm = (): JSX.Element => {
 						<div className="theme-plan-section-margin" />
 						<div className="header-container">
 							<div className="theme-plan-header">Standard Benefits</div>
-							<div className="theme-plan-sub-header plan-text" style={{ borderLeftColor: theme.primary_color }}>
+							<div
+								className="theme-plan-sub-header plan-text"
+								style={{ borderLeftColor: theme.primary_color }}
+							>
 								In addition to yourself, who would you like to cover under this plan?
 							</div>
 						</div>
 						<div className="theme-plan-inner-section-margin-2" />
-						<Grid className="grid-container" container columnSpacing={2} >
+						<Grid className="grid-container" container columnSpacing={2}>
 							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label  required">Coverage For</div>
@@ -92,13 +95,18 @@ const KemperCancerForm = (): JSX.Element => {
 							<div className="theme-plan-header">Rider Benefits</div>
 						</div>
 						<div>
-							<div className="theme-plan-sub-header plan-text" style={{ borderLeftColor: theme.primary_color }}>
+							<div
+								className="theme-plan-sub-header plan-text"
+								style={{ borderLeftColor: theme.primary_color }}
+							>
 								In addition to yourself, who would you like to cover under this plan?
 							</div>
-							<Grid className="grid-container" container columnSpacing={2} >
+							<Grid className="grid-container" container columnSpacing={2}>
 								<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className="margin-adjust-33">
 									<input type="checkbox" disabled checked></input>
-									<label className="details-form-label required">Intensive Care Unit - Rider Premium</label>
+									<label className="details-form-label required">
+										Intensive Care Unit - Rider Premium
+									</label>
 								</Grid>
 								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 									<div className="details-form-row">
