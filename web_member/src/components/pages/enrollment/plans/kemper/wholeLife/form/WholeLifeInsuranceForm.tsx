@@ -17,7 +17,7 @@ import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
-// import "./shortTermDisabilityForm.css";
+import "./wholeLifeInsurance.css";
 
 const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
 	({ theme }) => ({
@@ -60,6 +60,12 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 	const [premium_plan, setPremiumPlan] = useState({
 		member: [
 			{
+				face_amount: null,
+				weekly_premium: 0,
+				accidental_death: 0,
+				waiver_of_premium: 0
+			},
+			{
 				face_amount: 100000.0,
 				weekly_premium: 17.96,
 				accidental_death: 0.48,
@@ -85,6 +91,12 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 			}
 		],
 		spouse: [
+			{
+				face_amount: null,
+				weekly_premium: 0,
+				accidental_death: 0,
+				waiver_of_premium: 0
+			},
 			{
 				face_amount: 100000.0,
 				weekly_premium: 17.96,
@@ -113,6 +125,10 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 	});
 	const [children_plan, setChildrenPlan] = useState([
 		{
+			benefit_amount: null,
+			premium: 0
+		},
+		{
 			benefit_amount: 60000.0,
 			premium: 17.96
 		},
@@ -129,7 +145,20 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
 	const { theme } = useContext(ThemeContext);
 	const [coverage_for, setCoverageFor] = useState("");
-	const [plan_type, setPlanType] = useState("");
+	const [memberFaceAmount, setMemberFaceAmount] = useState<null | number>(null);
+	const [spouseFaceAmount, setSpouseFaceAmount] = useState<null | number>(null);
+	const [childBenefitPlan, setChildBenefitPlan] = useState<null | number>(null);
+
+	const [memberWeeklyPremium, setmemberWeeklyPremium] = useState<null | number>(null);
+	const [memberAccidentalDeath, setmemberAccidentalDeath] = useState<null | number>(null);
+	const [memberWaiverPremium, setmemberWaiverPremium] = useState<null | number>(null);
+	const [spouseWeeklyPremium, setspouseWeeklyPremium] = useState<null | number>(null);
+	const [spouseAccidentalDeath, setspouseAccidentalDeath] = useState<null | number>(null);
+	const [spouseWaiverPremium, setspouseWaiverPremium] = useState<null | number>(null);
+	const [childrenBenefitPremium, setchildrenBenefitPremium] = useState<number | null>(0);
+	const [totalPremium, setTotalPremium] = useState<number>(0);
+
+	const [isChildTermInsuarance, setIsChildTermInsuarance] = useState(false);
 	const [premium_amount, setPremiumAmount] = useState(0);
 	const [benefit_amount, setBenefitAmount] = useState(0);
 	const [total_premium_amount, setTotalPremiumAmount] = useState(0);
@@ -142,24 +171,53 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 		setExpanded(newExpanded ? panel : false);
 	};
 
-	const handleCoverageChange = (event: React.FormEvent<HTMLSelectElement>) => {
-		const { value } = event.target as HTMLSelectElement;
+	const handleCoverageChange = (event: SelectChangeEvent) => {
+		const { value } = event.target;
 		setCoverageFor(value);
-		if (value !== "Employee Only") {
+		if (value === "Employee Only") {
 			setShowMember(true);
+			setspouseAccidentalDeath(0);
+			setspouseWaiverPremium(0);
+			setspouseWeeklyPremium(0);
+			setSpouseFaceAmount(null);
 		} else {
 			setShowMember(false);
 		}
 	};
 
-	const handlePlanChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const { value } = event.target as HTMLSelectElement;
-		setPlanType(value);
+	const handleChildrenBenefitAmount = (event: SelectChangeEvent) => {
+		const { value } = event.target;
+		if (value === "") {
+			setChildBenefitPlan(null);
+		} else {
+			setChildBenefitPlan(parseInt(value));
+		}
 	};
 
-	const handleBenefitAmountChange = (event: SelectChangeEvent) => {
-		const { value } = event.target as HTMLSelectElement;
-		setBenefitAmount(parseInt(value));
+	const handleCheckEvent = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { checked } = event.target;
+		setIsChildTermInsuarance(checked);
+		if (!checked) {
+			setChildBenefitPlan(null);
+			setchildrenBenefitPremium(null);
+		}
+	};
+
+	const handlePlanChange = (event: SelectChangeEvent) => {
+		const { name, value } = event.target;
+		if (name === "member_face_amount") {
+			if (value === "") {
+				setMemberFaceAmount(null);
+			} else {
+				setMemberFaceAmount(parseInt(value));
+			}
+		} else {
+			if (value === "") {
+				setSpouseFaceAmount(null);
+			} else {
+				setSpouseFaceAmount(parseInt(value));
+			}
+		}
 	};
 
 	const handleWritingNumberChange = useCallback(
@@ -179,9 +237,71 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 		const asd = "";
 	};
 
+	const findAmount = (premiumArray: any, value: any) => {
+		return premiumArray.find((val: any, index: any) => {
+			if (value !== null && value === val.face_amount) {
+				return true;
+			} else {
+				return false;
+			}
+		});
+	};
+
 	useEffect(() => {
-		calculatePremium();
-	}, [coverage_for, plan_type, benefit_amount]);
+		const member_weekly_premium = findAmount(premium_plan.member, memberFaceAmount)?.weekly_premium
+			? findAmount(premium_plan.member, memberFaceAmount).weekly_premium
+			: 0;
+		const member_accidental_death = findAmount(premium_plan.member, memberFaceAmount)?.accidental_death
+			? findAmount(premium_plan.member, memberFaceAmount).accidental_death
+			: 0;
+		const member_waiver_premium = findAmount(premium_plan.member, memberFaceAmount)?.waiver_of_premium
+			? findAmount(premium_plan.member, memberFaceAmount).waiver_of_premium
+			: 0;
+		const spouse_weekly_premium = findAmount(premium_plan.spouse, spouseFaceAmount)?.weekly_premium
+			? findAmount(premium_plan.spouse, spouseFaceAmount).weekly_premium
+			: 0;
+		const spouse_accidental_death = findAmount(premium_plan.spouse, spouseFaceAmount)?.accidental_death
+			? findAmount(premium_plan.spouse, spouseFaceAmount).accidental_death
+			: 0;
+		const spouse_waiver_premium = findAmount(premium_plan.spouse, spouseFaceAmount)?.waiver_of_premium
+			? findAmount(premium_plan.spouse, spouseFaceAmount).waiver_of_premium
+			: 0;
+		const children_benefit_amount = children_plan.find((val: any, index: any) => {
+			if (childBenefitPlan === val.benefit_amount) {
+				return true;
+			} else {
+				return false;
+			}
+		})?.premium;
+		const finalChildBenefitAmount = children_benefit_amount ? children_benefit_amount : 0;
+
+		const total_premium =
+			member_weekly_premium +
+			member_waiver_premium +
+			member_accidental_death +
+			spouse_accidental_death +
+			spouse_waiver_premium +
+			spouse_weekly_premium +
+			finalChildBenefitAmount;
+
+		setmemberWeeklyPremium(member_weekly_premium);
+		setmemberAccidentalDeath(member_accidental_death);
+		setmemberWaiverPremium(member_waiver_premium);
+		setspouseWeeklyPremium(spouse_weekly_premium);
+		setspouseAccidentalDeath(spouse_accidental_death);
+		setspouseWaiverPremium(spouse_waiver_premium);
+		setchildrenBenefitPremium(finalChildBenefitAmount);
+		setTotalPremium(total_premium);
+	}, [
+		coverage_for,
+		benefit_amount,
+		premium_plan.member,
+		premium_plan.spouse,
+		memberFaceAmount,
+		spouseFaceAmount,
+		children_plan,
+		childBenefitPlan
+	]);
 
 	const { plan_name, plan_code, start_date, end_date } = plan;
 
@@ -226,21 +346,23 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 								<div className="header-container header-container-new">
 									<div className="theme-plan-header">Member</div>
 								</div>
-								<Grid className="grid-container" container columnSpacing={2}>
+								<Grid className="grid-container member-grid" container columnSpacing={2}>
 									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
 										<div className="details-form-row">
 											<div className="details-form-label  required">Face Amount</div>
 											<Select
 												input={<CustomSelectInput />}
 												style={{ width: "100%" }}
-												name="contact_label"
-												onChange={(event: any) => handlePlanChange(event)}
+												name="member_face_amount"
+												onChange={(event: SelectChangeEvent) => handlePlanChange(event)}
 											>
 												{premium_plan.member.map((mPlan, index) => {
 													return (
 														// eslint-disable-next-line react/jsx-key
-														<MenuItem value={mPlan.face_amount}>
-															{mPlan.face_amount}
+														<MenuItem
+															value={mPlan.face_amount === null ? "" : mPlan.face_amount}
+														>
+															{mPlan.face_amount === null ? "Select" : mPlan.face_amount}
 														</MenuItem>
 													);
 												})}
@@ -250,42 +372,54 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
 										<div className="details-form-row">
 											<div className="details-form-label">Weekly Premium</div>
-											<CustomInput value={writingNumber} />
+											<CustomInput value={memberWeeklyPremium} disabled />
 										</div>
 									</Grid>
 									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
 										<div className="details-form-row">
 											<div className="details-form-label">Accidental Death Chronic illness</div>
-											<CustomInput value={writingNumber} onChange={handleWritingNumberChange} />
+											<CustomInput value={memberAccidentalDeath} disabled />
 										</div>
 									</Grid>
 									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
 										<div className="details-form-row">
 											<div className="details-form-label">Wavier Of Premium</div>
-											<CustomInput value={writingNumber} onChange={handleWritingNumberChange} />
+											<CustomInput value={memberWaiverPremium} disabled />
 										</div>
 									</Grid>
 								</Grid>
 								{/* End Member */}
 								{/* Spouse */}
-								<div className="header-container header-container-new">
+								<div
+									className={
+										coverage_for === "Employee Only"
+											? "hidden"
+											: "header-container header-container-new"
+									}
+								>
 									<div className="theme-plan-header">Spouse</div>
 								</div>
-								<Grid className="grid-container" container columnSpacing={2}>
+								<Grid
+									className={
+										coverage_for === "Employee Only" ? "hidden" : "grid-container member-grid"
+									}
+									container
+									columnSpacing={2}
+								>
 									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
 										<div className="details-form-row">
 											<div className="details-form-label  required">Face Amount</div>
 											<Select
 												input={<CustomSelectInput />}
 												style={{ width: "100%" }}
-												name="contact_label"
+												name="spouse_face_amount"
 												onChange={(event: any) => handlePlanChange(event)}
 											>
-												{premium_plan.member.map((mPlan, index) => {
+												{premium_plan.spouse.map((mPlan, index) => {
 													return (
 														// eslint-disable-next-line react/jsx-key
-														<MenuItem value={mPlan.face_amount}>
-															{mPlan.face_amount}
+														<MenuItem value={mPlan.face_amount ? mPlan.face_amount : ""}>
+															{mPlan.face_amount ? mPlan.face_amount : "Select"}
 														</MenuItem>
 													);
 												})}
@@ -295,43 +429,57 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
 										<div className="details-form-row">
 											<div className="details-form-label">Weekly Premium</div>
-											<CustomInput value={writingNumber} />
+											<CustomInput value={spouseWeeklyPremium} disabled />
 										</div>
 									</Grid>
 									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
 										<div className="details-form-row">
 											<div className="details-form-label">Accidental Death Chronic illness</div>
-											<CustomInput value={writingNumber} onChange={handleWritingNumberChange} />
+											<CustomInput value={spouseAccidentalDeath} disabled />
 										</div>
 									</Grid>
 									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
 										<div className="details-form-row">
 											<div className="details-form-label">Wavier Of Premium</div>
-											<CustomInput value={writingNumber} onChange={handleWritingNumberChange} />
+											<CustomInput value={spouseWaiverPremium} disabled />
 										</div>
 									</Grid>
 								</Grid>
 								{/* End Spouse */}
 								<div className="theme-plan-option-content">
-									<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
+									<Checkbox
+										style={{ paddingLeft: 0 }}
+										onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+											handleCheckEvent(event)
+										}
+									/>
 									<p className="theme-plan-checkbox-label">
 										<strong>Child Term Life Insuarance</strong>
 									</p>
 								</div>
-								<Grid className="grid-container" container columnSpacing={2}>
+								<Grid
+									className={isChildTermInsuarance ? "grid-container" : "hidden"}
+									container
+									columnSpacing={2}
+								>
 									<Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
 										<div className="details-form-row">
 											<div className="details-form-label">Benefit Amount</div>
 											<Select
 												input={<CustomSelectInput />}
 												style={{ width: "100%" }}
-												name="contact_label"
-												onChange={(event: any) => handleCoverageChange(event)}
+												name="children_benefit_plan"
+												onChange={(event: SelectChangeEvent) =>
+													handleChildrenBenefitAmount(event)
+												}
 											>
-												{COVERAGE.map((option: string, index: number) => {
+												{children_plan.map((option: any, index: number) => {
 													return (
-														<MenuItem value={option} key={index}>
-															{option}
+														<MenuItem
+															value={option.benefit_amount ? option.benefit_amount : ""}
+															key={index}
+														>
+															{option.benefit_amount ? option.benefit_amount : "Select"}
 														</MenuItem>
 													);
 												})}
@@ -341,14 +489,14 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 									<Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
 										<div className="details-form-row">
 											<div className="details-form-label">Premium</div>
-											<CustomInput value={writingNumber} onChange={handleWritingNumberChange} />
+											<CustomInput value={childrenBenefitPremium} disabled />
 										</div>
 									</Grid>
 								</Grid>
 
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
-									<div className="show-premium">{11.88}</div>
+									<div className="show-premium">{totalPremium}</div>
 								</div>
 
 								{/* <Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
@@ -361,48 +509,6 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 								</Grid> */}
 							</Grid>
 						</div>
-						{showMember &&
-							family_member.map((member, index) => {
-								return (
-									// eslint-disable-next-line react/jsx-key
-									<div>
-										<div className="member-name">{member}</div>
-										<Grid className="grid-container" container columnSpacing={2}>
-											<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
-												<div className="details-form-row">
-													<div className="details-form-label  required">Benefit Amount</div>
-													<Select
-														input={<CustomSelectInput />}
-														style={{ width: "100%" }}
-														name="contact_label"
-														onChange={(event: SelectChangeEvent) =>
-															handleBenefitAmountChange(event)
-														}
-													>
-														<MenuItem value={350}>350.00</MenuItem>
-														<MenuItem value={300}>300.00</MenuItem>
-														<MenuItem value={250}>250.00</MenuItem>
-														<MenuItem value={200}>200.00</MenuItem>
-														<MenuItem value={150}>150.00</MenuItem>
-														<MenuItem value={100}>100.00</MenuItem>
-													</Select>
-												</div>
-											</Grid>
-											<Grid item xl={5} lg={5} md={5} sm={6} xs={6}></Grid>
-											<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
-												<div className="details-form-row">
-													<div className="details-form-label required align-center">
-														Premium
-													</div>
-													<div className="show-premium">
-														{premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}
-													</div>
-												</div>
-											</Grid>
-										</Grid>
-									</div>
-								);
-							})}
 					</div>
 					<div className="accordion-container">
 						<Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
