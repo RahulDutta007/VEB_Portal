@@ -163,3 +163,17 @@
 	font-weight: 600;
 	color: #757575;
 }
+
+.radio-container {
+	display: flex;
+	margin-top: 10px;
+}
+
+.radio-item {
+	margin-right: 30px;
+}
+
+.MuiCollapse-wrapperInner.MuiCollapse-vertical.css-9l5vo-MuiCollapse-wrapperInner {
+	max-height: 400px;
+	overflow-y: scroll;
+}

@@ -145,23 +145,23 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                     premium_amount: 15.31
                 },
                 {
-                    benefit_amount: 350,
+                    benefit_amount: 300,
                     premium_amount: 13.12
                 },
                 {
-                    benefit_amount: 350,
+                    benefit_amount: 250,
                     premium_amount: 10.93
                 },
                 {
-                    benefit_amount: 350,
+                    benefit_amount: 200,
                     premium_amount: 8.75
                 },
                 {
-                    benefit_amount: 350,
+                    benefit_amount: 150,
                     premium_amount: 6.56
                 },
                 {
-                    benefit_amount: 350,
+                    benefit_amount: 100,
                     premium_amount: 4.37
                 }
             ],
@@ -171,23 +171,23 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                     premium_amount: 15.31
                 },
                 {
-                    benefit_amount: 350,
+                    benefit_amount: 300,
                     premium_amount: 13.12
                 },
                 {
-                    benefit_amount: 350,
+                    benefit_amount: 250,
                     premium_amount: 10.93
                 },
                 {
-                    benefit_amount: 350,
+                    benefit_amount: 200,
                     premium_amount: 8.75
                 },
                 {
-                    benefit_amount: 350,
+                    benefit_amount: 150,
                     premium_amount: 6.56
                 },
                 {
-                    benefit_amount: 350,
+                    benefit_amount: 100,
                     premium_amount: 4.37
                 }
             ]
@@ -206,6 +206,31 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
     const [family_member, setFamilyMembers] = useState([{ name: "Debasish Manna", relation: "Son" }, { name: "Gourab Das", relation: "Spouse" }]);
     const [family_member_details, setFamilyMemberDetails] = useState<any>([]);
     const [showMember, setShowMember] = useState(false);
+    const [showQuestions, setShowQuestions] = useState(false);
+    const [max_benefit_member, setMaxBenefitMember] = useState<any>([]);
+
+    const [questions, setQuestions] = useState([
+        {
+            id: 1,
+            question: "In the past 5 years, has been diagnosed, treated or prescribed medication by a medical professional for AIDS, AIDS related complex, or an immune system disorder?"
+        },
+        {
+            id: 2,
+            question: "In the past 6 months, has any Applicant been unable to work or needed personal or mechanical assistance in walking, bathing, or dressing or been confined at home, hospitalized* due to injury or sickness, excluding well-baby delivery and treatment for back pain?"
+        },
+        {
+            id: 3,
+            question: "In the past 12 months has any Applicant had diagnostic testing, surgery or hospitalization* recommended by a medical professional which has not been completed or for which the results have not been received?"
+        },
+        {
+            id: 4,
+            question: "In the past 5 years, has any Applicant been diaganosed, treated, or prescribed medication by a medical professional for any of the following conditions: any disease or disorder of the heart, stroke, cancer, lung disease, chronic respiratory disorder (including any treatment with oxygen but excluding asthma), diabetes requiring insulin, liver or kidney disease?"
+        },
+        {
+            id: 5,
+            question: "In the past 5 years, has any Applicant been convicted two or more times of driving under the influence of alcohol or drugs or while intoxicated?"
+        }
+    ]);
 
     const handleChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
         setExpanded(newExpanded ? panel : false);
@@ -232,6 +257,7 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 
     const handleBenefitAmountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const { value } = event.target as HTMLSelectElement;
+        setBenefitedMemberList(value, "Rahul");
         setBenefitAmount(parseInt(value));
     };
 
@@ -245,7 +271,6 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
             });
             const familyDetails = JSON.parse(JSON.stringify(family_member_details));
             setFamilyMemberDetails(familyDetails);
-            console.log(333, family_member_details);
         } else {
             const familyDetails = family_member_details.map((member: { member_name: string; }) => {
                 if (member.member_name === name) {
@@ -260,8 +285,30 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
             });
             setFamilyMemberDetails(familyDetails);
         }
+        setBenefitedMemberList(value, name);
     };
 
+    const setBenefitedMemberList = (value: string, member_name: string) => {
+        if (parseInt(value) === 350) {
+            if (!max_benefit_member.find((name: string) => name === member_name)) {
+                max_benefit_member.push(member_name);
+                setMaxBenefitMember(JSON.parse(JSON.stringify(max_benefit_member)));
+            }
+        } else {
+            if (max_benefit_member.find((name: string) => name === member_name)) {
+                const maxBenefitedMember = max_benefit_member.filter((name: string) => name !== member_name);
+                console.log(333, maxBenefitedMember, max_benefit_member);
+                setMaxBenefitMember(maxBenefitedMember);
+            }
+        }
+    }
+
+    const handleAnswerChange = (event: React.FormEvent<HTMLSelectElement>) => {
+        const { value } = event.target as HTMLSelectElement;
+        if (value === "yes") {
+            //resetState();
+        }
+    };
 
     const handleWritingNumberChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -275,6 +322,20 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
         },
         [prevWritingNumber]
     );
+
+    // const resetState = () =>{
+    //     setCoverageFor("");
+    //     setPlanType("");
+    //     setPremiumAmount(0);
+    //     setBenefitAmount(0);
+    //     setTotalPremiumAmount(0);
+    //     setExpanded(false);
+    //     setExpandedPanel(false);
+    //     setFamilyMemberDetails([]);
+    //     setShowMember(false);
+    //     setShowQuestions(false);
+    //     setMaxBenefitMember([]);
+    // }
 
     const calculatePremium = () => {
         if (plan_type && coverage_for && benefit_amount) {
@@ -293,7 +354,8 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 
     useEffect(() => {
         calculatePremium();
-    }, [coverage_for, plan_type, benefit_amount, family_member_details]);
+        max_benefit_member.length > 0 ? setShowQuestions(true) : setShowQuestions(false);
+    }, [coverage_for, plan_type, benefit_amount, family_member_details, max_benefit_member]);
 
     const { plan_name, plan_code, start_date, end_date } = plan;
 
@@ -418,11 +480,38 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
                                 <Typography>Questions</Typography>
                             </AccordionSummary>
-                            <AccordionDetails>
-                                <Typography>
-                                    No eligibility questions are required for the selected coverage, please press next.
-                                </Typography>
-                            </AccordionDetails>
+                            {
+                                showQuestions === true ?
+                                    questions.map((question, firstIndex) => {
+                                        return (
+                                            <AccordionDetails key={firstIndex}   >
+                                                <Typography>
+                                                    <b>Q{(firstIndex + 1)}</b> {question.question}
+                                                    <div className="radio-container">
+                                                        {max_benefit_member.length > 0 && max_benefit_member.map((member: any, index: React.Key | null | undefined) => {
+                                                            return (
+                                                                <div className="radio-item" key={index}>
+                                                                    <b>{member}</b>
+                                                                    <input type="radio" id={`yes-${member}-${firstIndex}`} name={`Q-${firstIndex}-${member}`} value="yes" onChange={(event: any) => handleAnswerChange(event)} />
+                                                                    <label htmlFor={`yes-${member}-${firstIndex}`}>Yes</label>
+                                                                    <input type="radio" id={`no-${member}-${firstIndex}`} name={`Q-${firstIndex}-${member}`} value="no" />
+                                                                    <label htmlFor={`no-${member}-${firstIndex}`}>No</label>
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </Typography>
+                                            </AccordionDetails>
+                                        );
+                                    })
+                                    :
+                                    <AccordionDetails>
+                                        <Typography>
+                                            No eligibility questions are required for the selected coverage, please press next.
+                                        </Typography>
+                                    </AccordionDetails>
+                            }
+
                         </Accordion>
                     </div>
                     <div className="theme-plan-inner-section-margin" />
