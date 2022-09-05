@@ -205,7 +205,7 @@ const Login = (props: any): JSX.Element => {
 		async (event: any) => {
 			event.preventDefault();
 			const payload = {
-				user_id: credential.user_id,
+				email: credential.user_id,
 				role: credential.role.toUpperCase()
 			};
 			const validationResult = await handleValidation(event.target.innerText);
@@ -448,7 +448,7 @@ const Login = (props: any): JSX.Element => {
 											className="form-field-input auth-input-fields"
 											id="forget-user-name"
 											name="user_id"
-											label="Username/Email"
+											label="Email"
 											variant="outlined"
 											placeholder="Enter Email"
 											value={credential.user_id}
