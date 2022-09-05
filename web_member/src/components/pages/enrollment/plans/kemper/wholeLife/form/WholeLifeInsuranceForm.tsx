@@ -323,31 +323,27 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 								In addition to yourself, who would you like to cover under this plan?
 							</div>
 							<Grid className="grid-container" container columnSpacing={2}>
-								<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-									<div className="details-form-row">
-										<div className="details-form-label  required">Coverage For</div>
-										<Select
-											input={<CustomSelectInput />}
-											style={{ width: "50%" }}
-											name="contact_label"
-											onChange={(event: any) => handleCoverageChange(event)}
-										>
-											{COVERAGE.map((option: string, index: number) => {
-												return (
-													<MenuItem value={option} key={index}>
-														{option}
-													</MenuItem>
-												);
-											})}
-										</Select>
-									</div>
-								</Grid>
-								{/* Member */}
-								<div className="header-container header-container-new">
-									<div className="theme-plan-header">Member</div>
-								</div>
-								<Grid className="grid-container member-grid" container columnSpacing={2}>
-									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
+								<Grid container columnSpacing={2}>
+									<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+										<div className="details-form-row">
+											<div className="details-form-label  required">Coverage For</div>
+											<Select
+												input={<CustomSelectInput />}
+												style={{ width: "100%" }}
+												name="contact_label"
+												onChange={(event: any) => handleCoverageChange(event)}
+											>
+												{COVERAGE.map((option: string, index: number) => {
+													return (
+														<MenuItem value={option} key={index}>
+															{option}
+														</MenuItem>
+													);
+												})}
+											</Select>
+										</div>
+									</Grid>
+									<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 										<div className="details-form-row">
 											<div className="details-form-label  required">Face Amount</div>
 											<Select
@@ -369,137 +365,222 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 											</Select>
 										</div>
 									</Grid>
-									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
+									<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 										<div className="details-form-row">
-											<div className="details-form-label">Weekly Premium</div>
-											<CustomInput value={memberWeeklyPremium} disabled />
+											<div className="details-form-label required align-center">Premium</div>
+											<div className="show-premium">
+												<div className="show-premium">
+													{memberWeeklyPremium == 0
+														? "$0.00"
+														: `$${memberWeeklyPremium && memberWeeklyPremium.toFixed(2)}`}
+												</div>
+											</div>
 										</div>
 									</Grid>
-									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
-										<div className="details-form-row">
+								</Grid>
+								<Grid container columnSpacing={2}>
+									<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+										<div className="details-form-row margin-top-20">
 											<div className="details-form-label">Accidental Death Chronic illness</div>
-											<CustomInput value={memberAccidentalDeath} disabled />
 										</div>
 									</Grid>
-									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
+									<Grid item xl={5} lg={5} md={5} sm={6} xs={6}></Grid>
+									<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 										<div className="details-form-row">
+											<div className="show-premium">
+												<div className="show-premium">
+													{memberAccidentalDeath == 0
+														? "$0.00"
+														: `$${
+																memberAccidentalDeath &&
+																memberAccidentalDeath.toFixed(2)
+														  }`}
+												</div>
+											</div>
+										</div>
+									</Grid>
+								</Grid>
+								<Grid container columnSpacing={2}>
+									<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+										<div className="details-form-row margin-top-20">
 											<div className="details-form-label">Wavier Of Premium</div>
-											<CustomInput value={memberWaiverPremium} disabled />
+										</div>
+									</Grid>
+									<Grid item xl={5} lg={5} md={5} sm={6} xs={6}></Grid>
+									<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+										<div className="details-form-row">
+											<div className="show-premium">
+												<div className="show-premium">
+													{memberWaiverPremium == 0
+														? "$0.00"
+														: `$${memberWaiverPremium && memberWaiverPremium.toFixed(2)}`}
+												</div>
+											</div>
 										</div>
 									</Grid>
 								</Grid>
-								{/* End Member */}
-								{/* Spouse */}
-								<div
-									className={
-										coverage_for === "Employee Only"
-											? "hidden"
-											: "header-container header-container-new"
-									}
-								>
-									<div className="theme-plan-header">Spouse</div>
+							</Grid>
+						</div>
+					</div>
+					{/* Spouse */}
+					<div
+						className={
+							coverage_for === "Employee Only" || coverage_for === ""
+								? "hidden"
+								: "header-container header-container-new margin-top-20"
+						}
+					>
+						<div className="theme-plan-header">Spouse</div>
+					</div>
+					<Grid
+						className={
+							coverage_for === "Employee Only" || coverage_for === ""
+								? "hidden"
+								: "grid-container member-grid"
+						}
+						container
+						columnSpacing={2}
+					>
+						<Grid container columnSpacing={2}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+								<div className="details-form-row">
+									<div className="details-form-label  required">Face Amount</div>
+									<Select
+										input={<CustomSelectInput />}
+										style={{ width: "100%" }}
+										name="spouse_face_amount"
+										onChange={(event: any) => handlePlanChange(event)}
+									>
+										{premium_plan.spouse.map((mPlan, index) => {
+											return (
+												// eslint-disable-next-line react/jsx-key
+												<MenuItem value={mPlan.face_amount ? mPlan.face_amount : ""}>
+													{mPlan.face_amount ? mPlan.face_amount : "Select"}
+												</MenuItem>
+											);
+										})}
+									</Select>
 								</div>
-								<Grid
-									className={
-										coverage_for === "Employee Only" ? "hidden" : "grid-container member-grid"
-									}
-									container
-									columnSpacing={2}
-								>
-									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
-										<div className="details-form-row">
-											<div className="details-form-label  required">Face Amount</div>
-											<Select
-												input={<CustomSelectInput />}
-												style={{ width: "100%" }}
-												name="spouse_face_amount"
-												onChange={(event: any) => handlePlanChange(event)}
-											>
-												{premium_plan.spouse.map((mPlan, index) => {
-													return (
-														// eslint-disable-next-line react/jsx-key
-														<MenuItem value={mPlan.face_amount ? mPlan.face_amount : ""}>
-															{mPlan.face_amount ? mPlan.face_amount : "Select"}
-														</MenuItem>
-													);
-												})}
-											</Select>
-										</div>
-									</Grid>
-									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
-										<div className="details-form-row">
-											<div className="details-form-label">Weekly Premium</div>
-											<CustomInput value={spouseWeeklyPremium} disabled />
-										</div>
-									</Grid>
-									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
-										<div className="details-form-row">
-											<div className="details-form-label">Accidental Death Chronic illness</div>
-											<CustomInput value={spouseAccidentalDeath} disabled />
-										</div>
-									</Grid>
-									<Grid item xl={3} lg={3} md={3} sm={6} xs={6}>
-										<div className="details-form-row">
-											<div className="details-form-label">Wavier Of Premium</div>
-											<CustomInput value={spouseWaiverPremium} disabled />
-										</div>
-									</Grid>
-								</Grid>
-								{/* End Spouse */}
-								<div className="theme-plan-option-content">
-									<Checkbox
-										style={{ paddingLeft: 0 }}
-										onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-											handleCheckEvent(event)
-										}
-									/>
-									<p className="theme-plan-checkbox-label">
-										<strong>Child Term Life Insuarance</strong>
-									</p>
-								</div>
-								<Grid
-									className={isChildTermInsuarance ? "grid-container" : "hidden"}
-									container
-									columnSpacing={2}
-								>
-									<Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-										<div className="details-form-row">
-											<div className="details-form-label">Benefit Amount</div>
-											<Select
-												input={<CustomSelectInput />}
-												style={{ width: "100%" }}
-												name="children_benefit_plan"
-												onChange={(event: SelectChangeEvent) =>
-													handleChildrenBenefitAmount(event)
-												}
-											>
-												{children_plan.map((option: any, index: number) => {
-													return (
-														<MenuItem
-															value={option.benefit_amount ? option.benefit_amount : ""}
-															key={index}
-														>
-															{option.benefit_amount ? option.benefit_amount : "Select"}
-														</MenuItem>
-													);
-												})}
-											</Select>
-										</div>
-									</Grid>
-									<Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-										<div className="details-form-row">
-											<div className="details-form-label">Premium</div>
-											<CustomInput value={childrenBenefitPremium} disabled />
-										</div>
-									</Grid>
-								</Grid>
-
+							</Grid>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}></Grid>
+							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
-									<div className="show-premium">{totalPremium}</div>
+									<div className="show-premium">
+										<div className="show-premium">
+											{spouseWeeklyPremium == 0
+												? "$0.00"
+												: `$${spouseWeeklyPremium && spouseWeeklyPremium.toFixed(2)}`}
+										</div>
+									</div>
 								</div>
+							</Grid>
+						</Grid>
+						<Grid container columnSpacing={2}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+								<div className="details-form-row margin-top-20">
+									<div className="details-form-label">Accidental Death Chronic illness</div>
+								</div>
+							</Grid>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}></Grid>
+							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+								<div className="details-form-row">
+									<div className="show-premium">
+										<div className="show-premium">
+											{spouseAccidentalDeath == 0
+												? "$0.00"
+												: `$${spouseAccidentalDeath && spouseAccidentalDeath.toFixed(2)}`}
+										</div>
+									</div>
+								</div>
+							</Grid>
+						</Grid>
+						<Grid container columnSpacing={2}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+								<div className="details-form-row margin-top-20">
+									<div className="details-form-label">Wavier Of Premium</div>
+								</div>
+							</Grid>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}></Grid>
+							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+								<div className="details-form-row">
+									<div className="show-premium">
+										<div className="show-premium">
+											{spouseWaiverPremium == 0
+												? "$0.00"
+												: `$${spouseWaiverPremium && spouseWaiverPremium.toFixed(2)}`}
+										</div>
+									</div>
+								</div>
+							</Grid>
+						</Grid>
+					</Grid>
+					{/* End Spouse */}
 
-								{/* <Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
+					{/* Child */}
+					<div className="header-container-new margin-top-20">
+						<div className="theme-plan-header">Child Term Life Insurance</div>
+					</div>
+					<Grid className="grid-container" container columnSpacing={2}>
+						<Grid container columnSpacing={2}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+								<div className="details-form-row">
+									<div className="details-form-label">Benefit Amount</div>
+									<Select
+										input={<CustomSelectInput />}
+										style={{ width: "100%" }}
+										name="children_benefit_plan"
+										onChange={(event: SelectChangeEvent) => handleChildrenBenefitAmount(event)}
+									>
+										{children_plan.map((option: any, index: number) => {
+											return (
+												<MenuItem
+													value={option.benefit_amount ? option.benefit_amount : ""}
+													key={index}
+												>
+													{option.benefit_amount ? option.benefit_amount : "Select"}
+												</MenuItem>
+											);
+										})}
+									</Select>
+								</div>
+							</Grid>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}></Grid>
+							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+								<div className="details-form-row">
+									<div className="details-form-label required align-center">Premium</div>
+									<div className="show-premium">
+										<div className="show-premium">
+											{childrenBenefitPremium == 0
+												? "$0.00"
+												: `$${childrenBenefitPremium && childrenBenefitPremium.toFixed(2)}`}
+										</div>
+									</div>
+								</div>
+							</Grid>
+						</Grid>
+					</Grid>
+					{/* End Child */}
+
+					{totalPremium > 0 ? (
+						<Grid container className="theme-plan-inner-section-margin">
+							<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+								<div className="details-form-row">
+									<div
+										className="details-form-label theme-plan-total-premium align-right"
+										style={{ color: theme.primary_color }}
+									>
+										Total Premium:{" "}
+										<span className="show-premium margin-adjust">
+											{totalPremium == 0 ? "" : `$${totalPremium && totalPremium.toFixed(2)}`}
+										</span>
+									</div>
+								</div>
+							</Grid>
+						</Grid>
+					) : null}
+
+					{/* <Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
 										<div className="show-premium">
@@ -507,9 +588,6 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 										</div>
 									</div>
 								</Grid> */}
-							</Grid>
-						</div>
-					</div>
 					<div className="accordion-container">
 						<Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
 							<AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
