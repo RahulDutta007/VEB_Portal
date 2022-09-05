@@ -69,7 +69,7 @@ const SignUp = () => {
 	const [activeStep, setActiveStep] = useState(0);
 	const [OTP, setOTP] = useState("");
 	const [timer, setTimer] = useState<Timer>({
-		minutes: 9,
+		minutes: 1,
 		seconds: 59
 	});
 	const [confirm_password, setConfirmPassword] = useState("");
@@ -316,7 +316,8 @@ const SignUp = () => {
 			setOTPVerified(false);
 			alert("OTP Sent to Email");
 			setResendOTPButtonVisible(false);
-			setCountDownTime(Date.now() + 1 * 60000);
+			setOTP("");
+			setCountDownTime(Date.now() + 2 * 60000);
 			setStartTimer(true);
 			setVerificationToken(_verificationToken);
 		}
@@ -904,8 +905,8 @@ const SignUp = () => {
 															user.email.length === 0
 																? ""
 																: emailExists
-																	? "Email is already exist"
-																	: ""
+																? "Email is already exist"
+																: ""
 														}
 														InputProps={{
 															startAdornment: (
@@ -915,8 +916,8 @@ const SignUp = () => {
 															),
 															endAdornment:
 																resendOTPButtonVisible &&
-																	user.email.match(mailformat) &&
-																	!OTPVerified ? (
+																user.email.match(mailformat) &&
+																!OTPVerified ? (
 																	<div
 																		style={{
 																			cursor:
@@ -961,9 +962,9 @@ const SignUp = () => {
 															helperText={
 																startTimer
 																	? timer.minutes +
-																	":" +
-																	timer.seconds +
-																	" before expiration"
+																	  ":" +
+																	  timer.seconds +
+																	  " before expiration"
 																	: ""
 															}
 															variant="outlined"
@@ -971,7 +972,7 @@ const SignUp = () => {
 															InputProps={{
 																startAdornment: (
 																	<InputAdornment position="start">
-																		<VpnKeyIcon className="icon-white" />
+																		<VpnKeyIcon style={{ color: "#7cb342" }} />
 																	</InputAdornment>
 																),
 																endAdornment: (
@@ -1205,8 +1206,8 @@ const SignUp = () => {
 															userNameExists
 																? "Username exists!"
 																: checkInvalidUserName
-																	? "Username must be between 4 to 20 characters and alpha-numeric!"
-																	: validation.user.user_name
+																? "Username must be between 4 to 20 characters and alpha-numeric!"
+																: validation.user.user_name
 														}
 														InputProps={{
 															startAdornment: (
