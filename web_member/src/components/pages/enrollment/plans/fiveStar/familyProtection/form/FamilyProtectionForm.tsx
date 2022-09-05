@@ -17,7 +17,7 @@ import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
-import "./fiveStarFamilyProtectionForm.css";
+import "./familyProtectionForm.css";
 
 const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
 	({ theme }) => ({
@@ -505,6 +505,24 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 								);
 							})}
 					</div>
+					<div className="theme-plan-inner-section-margin" />
+					{total_premium_amount > 0 ? (
+						<Grid container className="theme-plan-inner-section-margin">
+							<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+								<div className="details-form-row">
+									<div
+										className="details-form-label theme-plan-total-premium align-right"
+										style={{ color: theme.primary_color }}
+									>
+										Total Premium:{" "}
+										<span className="show-premium margin-adjust">
+											{total_premium_amount == 0 ? "" : `$${total_premium_amount.toFixed(2)}`}
+										</span>
+									</div>
+								</div>
+							</Grid>
+						</Grid>
+					) : null}
 					<div className="accordion-container">
 						<Accordion expanded={expanded === "panel_question"} onChange={handleChange("panel_question")}>
 							<AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
@@ -563,24 +581,6 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 							)}
 						</Accordion>
 					</div>
-					<div className="theme-plan-inner-section-margin" />
-					{total_premium_amount > 0 ? (
-						<Grid container className="theme-plan-inner-section-margin">
-							<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-								<div className="details-form-row">
-									<div
-										className="details-form-label theme-plan-total-premium align-right"
-										style={{ color: theme.primary_color }}
-									>
-										Total Premium:{" "}
-										<span className="show-premium margin-adjust">
-											{total_premium_amount == 0 ? "" : `$${total_premium_amount.toFixed(2)}`}
-										</span>
-									</div>
-								</div>
-							</Grid>
-						</Grid>
-					) : null}
 
 					<div className="accordion-container">
 						<Accordion
