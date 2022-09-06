@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect, useCallback, Suspense, useRef } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { Grid, Card, CardContent, Checkbox, Button, TextField, InputAdornment } from "@material-ui/core";
+import { Grid, Card, CardContent, Checkbox, Button, TextField, InputAdornment, Tooltip } from "@material-ui/core";
+import { withStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
@@ -41,6 +42,16 @@ import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import "./myProfile.css";
 
 const mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/;
+
+const LightTooltip = withStyles((theme: Theme) => ({
+	tooltip: {
+		backgroundColor: "#f5f5f9",
+		color: "rgba(0, 0, 0, 0.87)",
+		boxShadow: theme.shadows[1],
+		maxWidth: 150,
+		fontSize: 11
+	}
+}))(Tooltip);
 
 const MyProfile = () => {
 	const [changePassword, setChangePassword] = useState<ChangePassword>({
@@ -663,15 +674,22 @@ const MyProfile = () => {
 														<>
 															{showSaveButton ? (
 																<InputAdornment position="end">
-																	<InfoIcon
-																		style={{
-																			color: "#4169E1",
-																			cursor: !showSaveButton
-																				? "default"
-																				: "pointer",
-																			pointerEvents: "unset"
-																		}}
-																	/>
+																	<LightTooltip
+																		title="Please contact your administrator for changing your email!"
+																		placement="right-start"
+																		arrow
+																	>
+																		<InfoIcon
+																			style={{
+																				color: "#808080",
+																				fontSize: "20px",
+																				cursor: !showSaveButton
+																					? "default"
+																					: "pointer",
+																				pointerEvents: "unset"
+																			}}
+																		/>
+																	</LightTooltip>
 																</InputAdornment>
 															) : null}
 														</>
