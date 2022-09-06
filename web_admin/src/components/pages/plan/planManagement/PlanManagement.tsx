@@ -29,8 +29,8 @@ const PlanManagement = (): JSX.Element => {
 			Object.assign(
 				[],
 				_plans
-					.filter((plan) => plan.status === "ACTIVE")
-					.map((plan) => {
+					.filter((plan: any) => plan.status === "ACTIVE")
+					.map((plan: any) => {
 						if (plan.start_date) {
 							plan.start_date = moment(plan.start_date).format("MM/DD/YYYY");
 						}
@@ -45,8 +45,8 @@ const PlanManagement = (): JSX.Element => {
 			Object.assign(
 				[],
 				_plans
-					.filter((plan) => plan.status === "EXPIRED")
-					.map((plan) => {
+					.filter((plan: any) => plan.status === "EXPIRED")
+					.map((plan: any) => {
 						if (plan.start_date) {
 							plan.start_date = moment(plan.start_date).format("MM/DD/YYYY");
 						}
