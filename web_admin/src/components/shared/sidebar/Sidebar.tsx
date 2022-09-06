@@ -48,6 +48,7 @@ import Toolbar from "@mui/material/Toolbar";
 
 import "./sidebar.css";
 import { LazyCustomDialog } from "..";
+import { api } from "../../../utils/api";
 
 const rippleKeyFrame = keyframes`
 	0% {
@@ -108,28 +109,33 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 		navigate(route);
 	};
 
+	// const getUser = useCallback(async () => {
+	// 	const response = await trackPromise(api.groupOwner.getGroupOwnerByAuth());
+	// 	// console.log("getUser", response);
+	// 	if (response) {
+	// 		setUser(Object.assign({}, response));
+	// 	}
+	// }, [setUser]);
+
 	const getUser = useCallback(async () => {
-		const { Authorization, Bearer } = AUTHORIZATION;
-		const token = localStorage.getItem("@jwt");
 		try {
-			const response = await trackPromise(
-				axios.get(`${url}:${port}/api/v1/auth/user`, {
-					headers: {
-						[Authorization]: `${Bearer} ${token}`
-					}
-				})
-			);
-			const { data } = response.data;
-			console.log("getUser", data);
-			const ssn = String(data.SSN);
-			const ssnValue = ssn.substr(0, 3) + "-" + ssn.substr(3, 2) + "-" + ssn.substr(5);
-			const _user = {
-				...data,
-				SSN: ssnValue
-			};
-			setUser(Object.assign({}, _user));
+			const response = await trackPromise(api.groupOwner.getGroupOwnerByAuth());
+			// console.log("Users", response);
+			let _SSN;
+
+			const { SSN } = response;
+			// Converting SSN to required type
+			const ssn = String(SSN);
+			if (ssn) _SSN = ssn.substring(0, 3) + "-" + ssn.substring(3, 5) + "-" + ssn.substring(5);
+			if (response) {
+				const _user = {
+					...response,
+					SSN: SSN !== "" || SSN !== undefined ? _SSN : ""
+				};
+				setUser(Object.assign({}, _user));
+			}
 		} catch (err) {
-			console.log("err", err);
+			alert("Failed to fetch User!");
 		}
 	}, [setUser]);
 
