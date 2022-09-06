@@ -4,7 +4,7 @@ import { Role } from "./role.types";
 export type User = {
 	_id?: string;
 	first_name: string;
-	middle_name?: string | null;
+	middle_name: string | null;
 	last_name: string;
 	user_name: string | null;
 	password: string | null;
@@ -12,7 +12,7 @@ export type User = {
 	group_number: number | null;
 	email: string;
 	SSN: string | null;
-	date_of_birth: number;
+	date_of_birth: string | null;
 	gender: Gender;
 	marital_status: MaritalStatus;
 	address_line_1: string | null;
