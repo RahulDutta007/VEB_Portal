@@ -30,7 +30,7 @@ const AdminRegisterSchema: Schema<IAdminSchema> = new Schema(
 		},
 		password: {
 			type: String,
-			minlength: [7, "Password should have at least 7 character"]
+			default: null
 		},
 		role: {
 			type: String,
