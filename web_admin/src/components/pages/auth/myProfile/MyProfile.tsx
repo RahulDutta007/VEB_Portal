@@ -1,21 +1,25 @@
-import React, { useState, useContext, useEffect, useCallback, Suspense } from "react";
+import { useState, useContext, useEffect, useCallback, Suspense, useRef } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { Grid, Card, CardContent, Checkbox, Button, TextField, InputAdornment } from "@material-ui/core";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import axios from "axios";
-import { url, port, headers } from "../../../config/config";
+import { url, port, headers } from "../../../../config/config";
 import { trackPromise } from "react-promise-tracker";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { ChangePassword, User } from "../../../@types/user.types";
-import { AuthContext, UIContext } from "../../../contexts";
-import { Validation } from "../../../@types/validation.types";
-import { SnackbarProps } from "../../../@types/snackbarAPI.types";
+import { User } from "../../../../@types/user.types";
+import { ChangePassword } from "../../../../@types/changePassword.types";
+import { AuthContext, UIContext } from "../../../../contexts";
+import { Validation } from "../../../../@types/validation.types";
+import { SnackbarProps } from "../../../../@types/snackbarAPI.types";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { ADMIN_DASHBOARD_HEADER } from "../../../constants/caption/dashboardHeader";
-import { api } from "../../../utils/api";
-import { AUTHORIZATION } from "../../../constants/api/auth";
+import { ADMIN_DASHBOARD_HEADER } from "../../../../constants/caption/dashboardHeader";
+import { api } from "../../../../utils/api";
+import { AUTHORIZATION } from "../../../../constants/api/auth";
+import SnackbarAPI from "../../../shared/snackbar/SnackbarAPI";
+import validatePassword from "../../../../utils/commonFunctions/validatePassword";
+import validateUserName from "../../../../utils/commonFunctions/validateUserName";
 
 import EditIcon from "@material-ui/icons/Edit";
 import AccountCircle from "@material-ui/icons/AccountCircle";
@@ -30,6 +34,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import SendIcon from "@material-ui/icons/Send";
 import LockIcon from "@material-ui/icons/Lock";
+import InfoIcon from "@material-ui/icons/Info";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 
@@ -40,10 +45,10 @@ const mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-
 const MyProfile = () => {
 	const [changePassword, setChangePassword] = useState<ChangePassword>({
 		old_password: "",
-		new_password: "",
-		confirm_password: "",
-		user_name: ""
+		new_password: ""
 	});
+	const [checkInvalidUserName, setCheckInvalidUserName] = useState(false);
+	const [confirmNewPassword, setConfirmNewPassword] = useState("");
 	const [showSaveButton, setShowSaveButton] = useState(false);
 	const [showOldPassword, setShowOldPassword] = useState(false);
 	const [showNewPassword, setShowNewPassword] = useState(false);
@@ -68,142 +73,138 @@ const MyProfile = () => {
 			);
 		}
 	});
-	const { user, setUser } = useContext(AuthContext);
-	const [validation, setValidation] = useState<Validation>();
-	let _validation: Validation;
-	const [passwordValidation, setPasswordValidation] = useState<Validation>();
-	let _passwordValidation: Validation;
 
-	const handleValidation = async () => {
+	const { user, setUser } = useContext(AuthContext);
+	const [validation, setValidation] = useState<Validation>({
+		first_name: "",
+		last_name: "",
+		SSN: "",
+		date_of_birth: "",
+		user_name: "",
+		status: "invalid"
+	});
+	const _validation = useRef<Validation>();
+	const [passwordValidation, setPasswordValidation] = useState<Validation>({
+		changePassword: {},
+		confirmNewPassword: "",
+		status: "invalid"
+	});
+	const _passwordValidation = useRef<Validation>();
+
+	const handleValidation = useCallback(async () => {
 		if (user === null) return;
-		const { first_name, last_name, email, date_of_birth, SSN, user_name } = user;
-		let flag = true;
-		_validation = {
+		const { first_name, last_name, SSN, user_name } = user;
+		_validation.current = {
+			...validation,
 			first_name: "",
 			last_name: "",
 			SSN: "",
 			date_of_birth: "",
 			user_name: "",
-			email: "",
-			old_password: "",
-			new_password: "",
-			confirm_password: "",
 			status: "invalid"
 		};
+		let flag = true;
 
 		if (first_name.length === 0) {
-			_validation["first_name"] = "First Name is required";
-			_validation["status"] = "invalid";
+			_validation.current["first_name"] = "First Name is required";
+			_validation.current["status"] = "invalid";
 			flag = false;
 		}
 		if (last_name.length === 0) {
-			_validation["last_name"] = "Last name is required";
-			_validation["status"] = "invalid";
-			flag = false;
-		}
-		if (email.length === 0) {
-			_validation["email"] = "Email is required";
-			_validation["status"] = "invalid";
-			flag = false;
-		}
-		if (email.length !== 0) {
-			if (!email.match(mailformat)) {
-				_validation["email"] = "Valid Email is required";
-				_validation["status"] = "invalid";
-				flag = false;
-			}
-		}
-		// if (DOB === 0) {
-		// 	_validation["date_of_birth"] = "DOB is required";
-		// 	_validation["status"] = "invalid";
-		// 	flag = false;
-		// }
-		if (date_of_birth !== null) {
-			if (date_of_birth.toString()?.length === 0) {
-				_validation["date_of_birth"] = "Date of Birth is required";
-				_validation["status"] = "invalid";
-				flag = false;
-			}
-		}
-		if (String(date_of_birth).length === 0) {
-			_validation["date_of_birth"] = "Date of birth is required";
-			_validation["status"] = "invalid";
-			flag = false;
-		}
-		if (date_of_birth === null) {
-			_validation["date_of_birth"] = "Date of Birth is required";
-			_validation["status"] = "invalid";
-			flag = false;
-		}
-		// SSN Validation
-		// if (SSN.length === 0) {
-		// 	_validation["SSN"] = "SSN is required";
-		// 	_validation["status"] = "invalid";
-		// 	flag = false;
-		// }
-		if (SSN === null || SSN === "") {
-			_validation["SSN"] = "SSN is required";
-			_validation["status"] = "invalid";
+			_validation.current["last_name"] = "Last Name is required";
+			_validation.current["status"] = "invalid";
 			flag = false;
 		}
 		if (SSN !== null) {
 			if (SSN !== "") {
 				const _SSN = SSN.replaceAll("-", "");
 				if (String(_SSN).length !== 9) {
-					_validation["SSN"] = "Enter correct 9 digit SSN";
-					_validation["status"] = "invalid";
+					_validation.current["SSN"] = "Enter correct 9 digit SSN";
+					_validation.current["status"] = "invalid";
 					flag = false;
 				}
 			}
 		}
+		if (SSN !== "") {
+			const _SSN = SSN?.replaceAll("-", "");
+			if (String(_SSN).length !== 9) {
+				_validation.current["SSN"] = "Enter correct 9 digit SSN";
+				_validation.current["status"] = "invalid";
+				flag = false;
+			}
+		}
 		if (user_name?.length === 0) {
-			_validation["user_name"] = "User Name is required";
-			_validation["status"] = "invalid";
+			_validation.current["user_name"] = "User Name is required";
+			_validation.current["status"] = "invalid";
 			flag = false;
 		}
-		if (flag === true) _validation["status"] = "valid";
+
+		if (flag === true) _validation.current["status"] = "valid";
 		else {
-			_validation["status"] = "invalid";
-			alert("Please, fill all required Profile Information fields!");
+			_validation.current["status"] = "invalid";
+			alert("Please, fill all required fields!");
 		}
+		setValidation(Object.assign({}, _validation.current));
+		return _validation.current["status"];
+	}, [user, validation]);
 
-		setValidation(Object.assign({}, _validation));
-		return _validation["status"];
-	};
-
-	const handlePasswordValidation = async () => {
-		const { old_password, new_password, confirm_password } = changePassword;
-		let flag = true;
-		_passwordValidation = {
-			old_password: "",
-			new_password: "",
-			confirm_password: "",
+	const handlePasswordValidation = useCallback(async () => {
+		const { old_password, new_password } = changePassword;
+		_passwordValidation.current = {
+			...passwordValidation,
+			changePassword: {},
+			confirmNewPassword: "",
 			status: "invalid"
 		};
+		let flag = true,
+			confirmPasswordFlag = true,
+			validPasswordFlag = true;
 
 		if (old_password.length === 0) {
-			_passwordValidation["old_password"] = "Old Password is required";
-			_passwordValidation["status"] = "invalid";
+			_passwordValidation.current.changePassword["old_password"] = "Old Password is required";
+			_passwordValidation.current["status"] = "invalid";
 			flag = false;
 		}
 		if (new_password.length === 0) {
-			_passwordValidation["new_password"] = "New Password is required";
-			_passwordValidation["status"] = "invalid";
+			_passwordValidation.current.changePassword["new_password"] = "New Password is required";
+			_passwordValidation.current["status"] = "invalid";
 			flag = false;
 		}
-		if (confirm_password !== new_password) {
-			_passwordValidation["confirm_password"] = " Must be same as New Password";
-			_passwordValidation["status"] = "invalid";
+		if (new_password.length !== 0) {
+			if (!validatePassword(new_password)) {
+				_passwordValidation.current.changePassword["new_password"] = "Please enter a valid password";
+				_passwordValidation.current["status"] = "invalid";
+				validPasswordFlag = false;
+			}
+		}
+		if (confirmNewPassword.length === 0) {
+			_passwordValidation.current["confirmNewPassword"] = "Confirm New Password is required";
+			_passwordValidation.current["status"] = "invalid";
 			flag = false;
 		}
-		if (flag === true) _passwordValidation["status"] = "valid";
-		else {
-			_passwordValidation["status"] = "invalid";
+		if (confirmNewPassword !== new_password) {
+			_passwordValidation.current["confirmNewPassword"] = "Must be same as New Password";
+			_passwordValidation.current["status"] = "invalid";
+			confirmPasswordFlag = false;
 		}
 
-		setPasswordValidation(Object.assign({}, _passwordValidation));
-		return _passwordValidation["status"];
-	};
+		if (flag === true && confirmPasswordFlag === true && validPasswordFlag === true)
+			_passwordValidation.current["status"] = "valid";
+		else if (confirmPasswordFlag === false) {
+			_passwordValidation.current["status"] = "invalid";
+			alert("Confirm New Password must be same with New Password!");
+		} else if (validPasswordFlag === false) {
+			_passwordValidation.current["status"] = "invalid";
+			alert(
+				"Password length must be at least 8 characters and contain at least one lowercase letter, one uppercase letter, one number and one special character!"
+			);
+		} else {
+			_passwordValidation.current["status"] = "invalid";
+			alert("Please, fill all required fields!");
+		}
+		setPasswordValidation(Object.assign({}, _passwordValidation.current));
+		return _passwordValidation.current["status"];
+	}, [changePassword, confirmNewPassword, passwordValidation]);
 
 	const handleDateChange = (date: MaterialUiPickersDate) => {
 		const _date = new Date(date as unknown as string);
@@ -216,23 +217,6 @@ const MyProfile = () => {
 	};
 
 	const handleEdit = () => setShowSaveButton(true);
-
-	// const findEmail = useDebouncedCallback(async (_email: string) => {
-	// 	if (_email !== "") {
-	// 		const params = {
-	// 			email: _email,
-	// 			role: user?.role.toUpperCase()
-	// 		};
-	// 		const email = await api.find.findEmail(params);
-	// 		if (email === false) {
-	// 			setEmailExists(false);
-	// 		} else {
-	// 			setEmailExists(true);
-	// 		}
-	// 	} else {
-	// 		setEmailExists(false);
-	// 	}
-	// }, 500);
 
 	const handleKeyCheck = useCallback(
 		(event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -269,7 +253,17 @@ const MyProfile = () => {
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		let { value } = event.target as HTMLInputElement;
 		const { name } = event.target as HTMLInputElement;
-		if (name === "SSN") {
+
+		if (name === "user_name") {
+			setCheckInvalidUserName(false);
+
+			if (!validateUserName(value)) {
+				setCheckInvalidUserName(true);
+				//alert("Invalid UserName!");
+			}
+
+			setUser(Object.assign({}, user, { [name]: value }));
+		} else if (name === "SSN") {
 			if (!pasted) {
 				// console.log("Not Pasted");
 				const _value = Number(value.replaceAll("-", ""));
@@ -357,46 +351,6 @@ const MyProfile = () => {
 		}
 	};
 
-	// const editUser = useCallback(async () => {
-	// 	if (user === null) return;
-	// 	const { date_of_birth } = user;
-	// 	const date = new Date(date_of_birth);
-	// 	const _user = {
-	// 		...user,
-	// 		SSN: Number(user?.SSN?.replaceAll("-", "")),
-	// 		date_of_birth: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
-	// 	};
-	// 	const response: User = await trackPromise(api.user.editUser(_user));
-	// 	console.log("User Response", response);
-	// 	if (response) {
-	// 		const ssn = String(response.SSN);
-	// 		const ssnValue = ssn.substring(0, 3) + "-" + ssn.substring(3, 2) + "-" + ssn.substring(5);
-	// 		const _user = {
-	// 			...response,
-	// 			SSN: ssnValue
-	// 		};
-	// 		setUser(Object.assign({}, _user));
-	// 		setSnackbarAPICallProps(
-	// 			Object.assign({}, snackbarAPICallProps, {
-	// 				open: true,
-	// 				message: "Your profile has been saved",
-	// 				severity: "success"
-	// 			})
-	// 		);
-	// 	}
-	// }, [setUser, snackbarAPICallProps, user]);
-
-	// Handle Save Click
-	const handleSaveClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
-		await handleValidation();
-		if (_validation.status === "valid") {
-			event.preventDefault();
-			console.log("form is valid");
-			// editUser();
-			setShowSaveButton(false);
-		}
-	};
-
 	const handleShowChangePassword = async () => {
 		if (showSaveButton) {
 			setShowChangePassword(true);
@@ -413,43 +367,6 @@ const MyProfile = () => {
 		} else setShowChangePassword(false);
 	};
 
-	const postChangePassword = async () => {
-		const token = localStorage.getItem("@jwt");
-		const payload = JSON.stringify(changePassword);
-		const { Authorization, Bearer } = AUTHORIZATION;
-		try {
-			const response = await trackPromise(
-				axios.post(`${url}:${port}/api/v1/user/change-password`, payload, {
-					headers: {
-						...headers,
-						[Authorization]: `${Bearer} ${token}`
-					}
-				})
-			);
-			if (response.status === 200) {
-				setShowChangePassword(false);
-				setSnackbarAPICallProps(
-					Object.assign({}, snackbarAPICallProps, {
-						open: true,
-						message: "Successfully changed your password",
-						severity: "success"
-					})
-				);
-			}
-		} catch (err) {
-			console.log("err", err);
-		}
-	};
-
-	const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
-		await handlePasswordValidation();
-		if (_passwordValidation.status === "valid") {
-			event.preventDefault();
-			console.log("form is valid");
-			await postChangePassword();
-		}
-	};
-
 	const handleclose = () => setShowChangePassword(false);
 
 	const handleShowOldPassword = () => setShowOldPassword(!showOldPassword);
@@ -460,57 +377,149 @@ const MyProfile = () => {
 
 	const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
-		setChangePassword(Object.assign({}, changePassword, { [name]: value }));
+		if (name === "confirm_new_password") setConfirmNewPassword(value);
+		else setChangePassword(Object.assign({}, changePassword, { [name]: value }));
 	};
 
-	// const getUser = useCallback(async () => {
-	// 	const { Authorization, Bearer } = AUTHORIZATION;
-	// 	const token = localStorage.getItem("@jwt");
-	// 	try {
-	// 		const response = await trackPromise(
-	// 			axios.get(`${url}:${port}/api/v1/user`, {
-	// 				headers: {
-	// 					[Authorization]: `${Bearer} ${token}`
-	// 				}
-	// 			})
-	// 		);
-	// 		const { data } = response.data;
-	// 		console.log("getUser", data);
-	// 		const ssn = String(data.SSN);
-	// 		const ssnValue = ssn.substring(0, 3) + "-" + ssn.substring(3, 2) + "-" + ssn.substring(5);
-	// 		const _user = {
-	// 			...data,
-	// 			SSN: ssnValue
-	// 		};
-	// 		setUser(Object.assign({}, _user));
-	// 	} catch (err) {
-	// 		console.log("err", err);
-	// 	}
-	// }, [setUser]);
+	const getGroupOwnerByAuth = useCallback(async () => {
+		try {
+			const response = await trackPromise(api.groupOwner.getGroupOwnerByAuth());
+			// console.log("Users", response);
+			let _SSN;
 
-	const getUser = useCallback(async () => {
-		// console.log("User", user?.info);
-	}, []);
+			const { SSN } = response;
+			// Converting SSN to required type
+			const ssn = String(SSN);
+			if (ssn) _SSN = ssn.substring(0, 3) + "-" + ssn.substring(3, 5) + "-" + ssn.substring(5);
+			if (response) {
+				const _user = {
+					...response,
+					SSN: SSN !== "" || SSN !== undefined ? _SSN : ""
+				};
+				setUser(Object.assign({}, _user));
+			}
+		} catch (err) {
+			alert("Failed to fetch User!");
+		}
+	}, [setUser]);
+
+	const updatePassword = useCallback(async () => {
+		try {
+			const response = await trackPromise(api.auth.changePassword(changePassword));
+
+			if (response) {
+				setShowChangePassword(false);
+				alert("Password Changed Successfully!");
+				setConfirmNewPassword("");
+				setChangePassword(
+					Object.assign({}, changePassword, {
+						old_password: "",
+						new_password: ""
+					})
+				);
+				setSnackbarAPICallProps(
+					Object.assign({}, snackbarAPICallProps, {
+						open: true,
+						message: "Successfully changed your password",
+						severity: "success"
+					})
+				);
+			}
+		} catch (err) {
+			alert("Failed to update password!");
+		}
+	}, [changePassword, snackbarAPICallProps]);
+
+	const handlePasswordSubmit = useCallback(
+		async (event: React.MouseEvent<HTMLButtonElement>) => {
+			try {
+				event.preventDefault();
+				const passwordValidationInstance = await handlePasswordValidation();
+				if (passwordValidationInstance === "valid") {
+					console.log("form is valid");
+					await updatePassword();
+				}
+			} catch (error) {
+				alert("Unable to change password!");
+				throw error;
+			}
+		},
+		[handlePasswordValidation, updatePassword]
+	);
+
+	const editGroupOwner = useCallback(async () => {
+		try {
+			if (user === null || user === undefined) return;
+			let date;
+			const { date_of_birth, SSN } = user;
+			if (date_of_birth !== "" || date_of_birth !== null || date_of_birth !== undefined) {
+				date = new Date(date_of_birth as any);
+				date = date?.getFullYear() + "-" + (date?.getMonth() + 1) + "-" + date?.getDate();
+			}
+			const payload = {
+				first_name: user.first_name,
+				last_name: user.last_name,
+				date_of_birth:
+					date_of_birth !== "" || date_of_birth !== null || date_of_birth !== undefined ? date : null,
+				SSN: SSN !== "" || SSN !== null || SSN !== undefined ? SSN?.replaceAll("-", "") : "",
+				user_name: user.user_name
+			};
+			// console.log("Payload", payload);
+			const response: User = await trackPromise(api.auth.editGroupOwner(payload));
+
+			// console.log("User Response", response);
+			if (response) {
+				let ssnValue = "";
+				const ssn = String(response.SSN);
+				if (ssn) ssnValue = ssn.substring(0, 3) + "-" + ssn.substring(3, 5) + "-" + ssn.substring(5);
+				const _user = {
+					...response,
+					SSN: ssnValue
+				};
+				setUser(Object.assign({}, _user));
+				alert("Profile Updation Successfully!");
+				setSnackbarAPICallProps(
+					Object.assign({}, snackbarAPICallProps, {
+						open: true,
+						message: "Your profile has been saved",
+						severity: "success"
+					})
+				);
+			}
+		} catch (err) {
+			alert("Failed to update password!");
+		}
+	}, [setUser, snackbarAPICallProps, user]);
+
+	// Handle Save Click
+	const handleSaveClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+		try {
+			event.preventDefault();
+			const validation = await handleValidation();
+			if (validation === "valid") {
+				console.log("form is valid");
+				editGroupOwner();
+				setShowSaveButton(false);
+			}
+		} catch (error) {
+			alert("Unable to update profile!");
+			throw error;
+		}
+	};
 
 	useEffect(() => {
-		getUser();
-	}, [getUser]);
-
-	useEffect(() => {
-		console.log(ADMIN_DASHBOARD_HEADER.my_profile);
 		setDashboardHeader(ADMIN_DASHBOARD_HEADER.my_profile);
 	}, [setDashboardHeader]);
 
 	useEffect(() => {
-		setChangePassword(Object.assign({}, changePassword, { user_name: user?.user_name }));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [user?.user_name]);
+		getGroupOwnerByAuth();
+	}, [getGroupOwnerByAuth]);
 
 	return (
 		<div className="my-profile" id="my-profile" style={{ flexGrow: "revert" }}>
-			{/* <Suspense fallback={<div />}>
-				<SnackbarAPICall snackbarProps={snackbarAPICallProps} />
-			</Suspense> */}
+			<Suspense fallback={<div />}>
+				<SnackbarAPI snackbarProps={snackbarAPICallProps} />
+			</Suspense>
 			<div className="my-profile-action-button-container">
 				{!showSaveButton ? (
 					<Grid item className="edit-profile-button">
@@ -573,7 +582,7 @@ const MyProfile = () => {
 												// variant="outlined"
 												onChange={handleChange}
 												style={{ width: "100%", borderRadius: 50 }}
-												helperText={validation?.first_name ? validation?.first_name : null}
+												helperText={validation["first_name"]}
 												InputProps={{
 													startAdornment: (
 														<InputAdornment position="start">
@@ -609,7 +618,7 @@ const MyProfile = () => {
 												// variant="outlined"
 												onChange={handleChange}
 												style={{ width: "100%", borderRadius: 50 }}
-												helperText={validation?.last_name ? validation?.last_name : null}
+												helperText={validation["last_name"]}
 												InputProps={{
 													startAdornment: (
 														<InputAdornment position="start">
@@ -643,21 +652,39 @@ const MyProfile = () => {
 												value={user?.email}
 												onChange={handleChange}
 												style={{ width: "100%", borderRadius: 50 }}
-												helperText={validation?.email ? validation?.email : null}
+												// helperText={validation["email"]}
 												InputProps={{
 													startAdornment: (
 														<InputAdornment position="start">
 															<EmailIcon style={{ color: "#7cb342" }} />
 														</InputAdornment>
 													),
-													readOnly: !showSaveButton
+													endAdornment: (
+														<>
+															{showSaveButton ? (
+																<InputAdornment position="end">
+																	<InfoIcon
+																		style={{
+																			color: "#4169E1",
+																			cursor: !showSaveButton
+																				? "default"
+																				: "pointer",
+																			pointerEvents: "unset"
+																		}}
+																	/>
+																</InputAdornment>
+															) : null}
+														</>
+													),
+													// readOnly: !showSaveButton
+													readOnly: true
 												}}
 											/>
 										</Grid>
 									</Grid>
 									<Grid container spacing={1} className="form-label">
 										<Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-											<div className="label-text required" id="label-text">
+											<div className="label-text" id="label-text">
 												<span>
 													<ArrowForwardIosIcon
 														style={{
@@ -699,9 +726,9 @@ const MyProfile = () => {
 														KeyboardButtonProps={{
 															"aria-label": "change date"
 														}}
-														helperText={
-															validation?.date_of_birth ? validation?.date_of_birth : null
-														}
+														// helperText={
+														// 	validation?.date_of_birth ? validation?.date_of_birth : null
+														// }
 														style={{
 															width: "100%",
 															borderRadius: 50
@@ -713,7 +740,7 @@ const MyProfile = () => {
 									</Grid>
 									<Grid container spacing={1} className="form-label">
 										<Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-											<div className="label-text required" id="label-text">
+											<div className="label-text" id="label-text">
 												<span>
 													<ArrowForwardIosIcon
 														style={{
@@ -739,7 +766,7 @@ const MyProfile = () => {
 												}
 												onPaste={(event: React.ClipboardEvent) => handlePaste(event)}
 												style={{ width: "100%", borderRadius: 50 }}
-												helperText={validation?.SSN ? validation?.SSN : null}
+												helperText={validation["SSN"]}
 												InputProps={{
 													startAdornment: (
 														<InputAdornment position="start">
@@ -775,7 +802,11 @@ const MyProfile = () => {
 												// variant="outlined"
 												onChange={handleChange}
 												style={{ width: "100%", borderRadius: 50 }}
-												helperText={validation?.user_name ? validation?.user_name : null}
+												helperText={
+													checkInvalidUserName
+														? "Username must be between 4 to 20 characters, alpha-numeric and no special characters are allowed!"
+														: validation["user_name"]
+												}
 												InputProps={{
 													startAdornment: (
 														<InputAdornment position="start">
@@ -846,11 +877,7 @@ const MyProfile = () => {
 														// variant="outlined"
 														onChange={handlePasswordChange}
 														style={{ width: "100%", borderRadius: 50 }}
-														helperText={
-															passwordValidation?.old_password
-																? passwordValidation?.old_password
-																: null
-														}
+														helperText={passwordValidation.changePassword["old_password"]}
 														// readOnly={!showOldPassword}
 														InputProps={{
 															startAdornment: (
@@ -904,11 +931,7 @@ const MyProfile = () => {
 														// variant="outlined"
 														onChange={handlePasswordChange}
 														style={{ width: "100%", borderRadius: 50 }}
-														helperText={
-															passwordValidation?.new_password
-																? passwordValidation?.new_password
-																: null
-														}
+														helperText={passwordValidation.changePassword["new_password"]}
 														// readOnly={!showNewPassword}
 														InputProps={{
 															startAdornment: (
@@ -956,15 +979,11 @@ const MyProfile = () => {
 														className="confirm-new-password-input text-input"
 														id="confirm-new-password-input"
 														type={!showNewConfirmPassword ? "password" : "text"}
-														name="confirm_password"
-														value={changePassword.confirm_password}
+														name="confirm_new_password"
+														value={confirmNewPassword}
 														onChange={handlePasswordChange}
 														style={{ width: "100%", borderRadius: 50 }}
-														helperText={
-															passwordValidation?.confirm_password
-																? passwordValidation?.confirm_password
-																: null
-														}
+														helperText={passwordValidation["confirmNewPassword"]}
 														// readOnly={!showNewConfirmPassword}
 														InputProps={{
 															startAdornment: (
@@ -1000,7 +1019,7 @@ const MyProfile = () => {
 											<div className="submit-button">
 												<Button
 													className="button-green"
-													onClick={handleSubmit}
+													onClick={handlePasswordSubmit}
 													variant="contained"
 												>
 													<span className="button-label-with-icon">Submit</span>
