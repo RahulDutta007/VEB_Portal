@@ -33,10 +33,11 @@
 
 .tabs-cotainer {
 	position: fixed;
-	top: 50%;
+	top: calc(50% + 70px);
 	-webkit-transform: translateY(-50%);
 	-ms-transform: translateY(-50%);
 	transform: translateY(-50%);
+	background: #FFFFFF;
 }
 
 .form-container {
