@@ -172,9 +172,10 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 	const [expanded, setExpanded] = useState<string | false>("panel_question");
 	const [expanded_panel, setExpandedPanel] = useState<string | false>("panel_beneficiary");
 	const [family_member, setFamilyMembers] = useState([
-		{ name: "Debasish Manna", relation: "Child" },
-		{ name: "Gourab Das", relation: "Spouse" }
+		{ name: "Satya Dutta", relation: "Child" },
+		{ name: "Mimi Dutta", relation: "Spouse" }
 	]);
+	const [family_member_by_relation, setFamilyMemberByRelation] = useState<any>([]);
 	const [family_member_details, setFamilyMemberDetails] = useState<any>([]);
 	const [showMember, setShowMember] = useState(false);
 	const [showQuestions, setShowQuestions] = useState(false);
@@ -229,6 +230,18 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 		const { value } = event.target as HTMLSelectElement;
 		setCoverageFor(value);
 		if (value !== "Employee Only") {
+			if (value === "Employee and Spouse") {
+				const spouse = family_member.filter((member) => member.relation == "Spouse");
+				setFamilyMemberByRelation(spouse);
+			} else if (value === "Employee and Dependent") {
+				const dependent = family_member.filter(
+					(member) => member.relation == "Son" || member.relation == "Daughter" || member.relation == "Child"
+				);
+				setFamilyMemberByRelation(dependent);
+			} else {
+				setFamilyMemberByRelation(family_member);
+			}
+			console.log(1111, family_member_by_relation);
 			setShowMember(true);
 		} else {
 			setShowMember(false);
@@ -438,72 +451,86 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 							</Grid>
 						</div>
 						{showMember &&
-							family_member.map((member, index) => {
-								return (
-									<div key={index}>
-										<div className="member-name">{`${member.name}(${member.relation})`}</div>
-										<Grid className="grid-container" container columnSpacing={2}>
-											<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
-												<div className="details-form-row">
-													<div className="details-form-label  required">Benefit Amount</div>
-													{member.relation === "Spouse" ? (
-														<Select
-															input={<CustomSelectInput />}
-															style={{ width: "100%" }}
-															name={member.name}
-															onChange={(event: any) =>
-																handleMemberBenefitAmountChange(event, member.relation)
-															}
-														>
-															<MenuItem value={150000}>150000</MenuItem>
-															<MenuItem value={125000}>125000</MenuItem>
-															<MenuItem value={100000}>100000</MenuItem>
-															<MenuItem value={75000}>75000</MenuItem>
-															<MenuItem value={50000}>50000</MenuItem>
-															<MenuItem value={25000}>25000</MenuItem>
-															<MenuItem value={10000}>10000</MenuItem>
-														</Select>
-													) : (
-														<Select
-															input={<CustomSelectInput />}
-															style={{ width: "100%" }}
-															name={member.name}
-															onChange={(event: any) =>
-																handleMemberBenefitAmountChange(event, member.relation)
-															}
-														>
-															<MenuItem value={10000}>10000</MenuItem>
-															<MenuItem value={5000}>5000</MenuItem>
-														</Select>
-													)}
-												</div>
-											</Grid>
-											<Grid item xl={5} lg={5} md={5} sm={6} xs={6}></Grid>
-											<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
-												<div className="details-form-row">
-													<div className="details-form-label required align-center">
-														Premium
-													</div>
-													{family_member_details && (
-														<div className="show-premium">
-															{family_member_details.length === 0
-																? "$0.00"
-																: `$${
-																		family_member_details
-																			.find(
-																				(plan: { member_name: string }) =>
-																					plan.member_name === member.name
-																			)
-																			?.premium_amount.toFixed(2) || "0.00"
-																  }`}
+							family_member_by_relation.length > 0 &&
+							family_member_by_relation.map(
+								(
+									member: { name: string | undefined; relation: string },
+									index: React.Key | null | undefined
+								) => {
+									return (
+										<div key={index}>
+											<div className="member-name">{`${member.name}(${member.relation})`}</div>
+											<Grid className="grid-container" container columnSpacing={2}>
+												<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+													<div className="details-form-row">
+														<div className="details-form-label  required">
+															Benefit Amount
 														</div>
-													)}
-												</div>
+														{member.relation === "Spouse" ? (
+															<Select
+																input={<CustomSelectInput />}
+																style={{ width: "100%" }}
+																name={member.name}
+																onChange={(event: any) =>
+																	handleMemberBenefitAmountChange(
+																		event,
+																		member.relation
+																	)
+																}
+															>
+																<MenuItem value={150000}>150000</MenuItem>
+																<MenuItem value={125000}>125000</MenuItem>
+																<MenuItem value={100000}>100000</MenuItem>
+																<MenuItem value={75000}>75000</MenuItem>
+																<MenuItem value={50000}>50000</MenuItem>
+																<MenuItem value={25000}>25000</MenuItem>
+																<MenuItem value={10000}>10000</MenuItem>
+															</Select>
+														) : (
+															<Select
+																input={<CustomSelectInput />}
+																style={{ width: "100%" }}
+																name={member.name}
+																onChange={(event: any) =>
+																	handleMemberBenefitAmountChange(
+																		event,
+																		member.relation
+																	)
+																}
+															>
+																<MenuItem value={10000}>10000</MenuItem>
+																<MenuItem value={5000}>5000</MenuItem>
+															</Select>
+														)}
+													</div>
+												</Grid>
+												<Grid item xl={5} lg={5} md={5} sm={6} xs={6}></Grid>
+												<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
+													<div className="details-form-row">
+														<div className="details-form-label required align-center">
+															Premium
+														</div>
+														{family_member_details && (
+															<div className="show-premium">
+																{family_member_details.length === 0
+																	? "$0.00"
+																	: `$${
+																			family_member_details
+																				.find(
+																					(plan: { member_name: string }) =>
+																						plan.member_name === member.name
+																				)
+																				?.premium_amount.toFixed(2) || "0.00"
+																	  }`}
+															</div>
+														)}
+													</div>
+												</Grid>
 											</Grid>
-										</Grid>
-									</div>
-								);
-							})}
+										</div>
+									);
+								}
+							)}
 					</div>
 					<div className="theme-plan-inner-section-margin" />
 					{total_premium_amount > 0 ? (

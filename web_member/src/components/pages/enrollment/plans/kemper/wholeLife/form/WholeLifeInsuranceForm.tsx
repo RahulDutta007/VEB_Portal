@@ -72,22 +72,118 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 				waiver_of_premium: 0.46
 			},
 			{
+				face_amount: 95000.0,
+				weekly_premium: 17.06,
+				accidental_death: 0.45,
+				waiver_of_premium: 0.43
+			},
+			{
 				face_amount: 90000.0,
-				weekly_premium: 15.96,
+				weekly_premium: 16.17,
+				accidental_death: 0.43,
+				waiver_of_premium: 0.41
+			},
+			{
+				face_amount: 85000.0,
+				weekly_premium: 15.27,
+				accidental_death: 0.4,
+				waiver_of_premium: 0.39
+			},
+			{
+				face_amount: 80000.0,
+				weekly_premium: 14.37,
 				accidental_death: 0.38,
 				waiver_of_premium: 0.36
 			},
 			{
-				face_amount: 80000.0,
-				weekly_premium: 13.96,
-				accidental_death: 0.28,
-				waiver_of_premium: 0.26
+				face_amount: 75000.0,
+				weekly_premium: 13.47,
+				accidental_death: 0.36,
+				waiver_of_premium: 0.34
 			},
 			{
 				face_amount: 70000.0,
-				weekly_premium: 11.96,
-				accidental_death: 0.18,
+				weekly_premium: 12.57,
+				accidental_death: 0.33,
+				waiver_of_premium: 0.32
+			},
+			{
+				face_amount: 65000.0,
+				weekly_premium: 11.68,
+				accidental_death: 0.31,
+				waiver_of_premium: 0.3
+			},
+			{
+				face_amount: 60000.0,
+				weekly_premium: 10.78,
+				accidental_death: 0.28,
+				waiver_of_premium: 0.27
+			},
+			{
+				face_amount: 55000.0,
+				weekly_premium: 9.88,
+				accidental_death: 0.26,
+				waiver_of_premium: 0.25
+			},
+			{
+				face_amount: 50000.0,
+				weekly_premium: 8.98,
+				accidental_death: 0.24,
+				waiver_of_premium: 0.23
+			},
+			{
+				face_amount: 45000.0,
+				weekly_premium: 8.08,
+				accidental_death: 0.21,
+				waiver_of_premium: 0.2
+			},
+			{
+				face_amount: 40000.0,
+				weekly_premium: 7.18,
+				accidental_death: 0.19,
+				waiver_of_premium: 0.18
+			},
+			{
+				face_amount: 35000.0,
+				weekly_premium: 6.29,
+				accidental_death: 0.16,
 				waiver_of_premium: 0.16
+			},
+			{
+				face_amount: 30000.0,
+				weekly_premium: 5.39,
+				accidental_death: 0.14,
+				waiver_of_premium: 0.13
+			},
+			{
+				face_amount: 25000.0,
+				weekly_premium: 4.49,
+				accidental_death: 0.12,
+				waiver_of_premium: 0.11
+			},
+			{
+				face_amount: 20000.0,
+				weekly_premium: 3.59,
+				accidental_death: 0.09,
+				waiver_of_premium: 0.09
+			},
+			{
+				face_amount: 15000.0,
+				weekly_premium: 2.69,
+				accidental_death: 0.07,
+				waiver_of_premium: 0.06
+			},
+			{
+				face_amount: 10000.0,
+				weekly_premium: 1.8,
+				accidental_death: 0.04,
+				waiver_of_premium: 0.04
+			},
+			{
+				face_amount: 5000.0,
+				weekly_premium: 0.9,
+				accidental_death: 0.02,
+				waiver_of_premium: 0.02
 			}
 		],
 		spouse: [
@@ -98,28 +194,64 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 				waiver_of_premium: 0
 			},
 			{
-				face_amount: 100000.0,
-				weekly_premium: 17.96,
-				accidental_death: 0.48,
-				waiver_of_premium: 0.46
+				face_amount: 50000.0,
+				weekly_premium: 11.12,
+				accidental_death: 0.24,
+				waiver_of_premium: 0.6
 			},
 			{
-				face_amount: 90000.0,
-				weekly_premium: 15.96,
-				accidental_death: 0.38,
+				face_amount: 45000.0,
+				weekly_premium: 10.1,
+				accidental_death: 0.21,
+				waiver_of_premium: 0.54
+			},
+			{
+				face_amount: 40000.0,
+				weekly_premium: 8.98,
+				accidental_death: 0.19,
+				waiver_of_premium: 0.48
+			},
+			{
+				face_amount: 35000.0,
+				weekly_premium: 7.85,
+				accidental_death: 0.16,
+				waiver_of_premium: 0.42
+			},
+			{
+				face_amount: 30000.0,
+				weekly_premium: 6.73,
+				accidental_death: 0.14,
 				waiver_of_premium: 0.36
 			},
 			{
-				face_amount: 80000.0,
-				weekly_premium: 13.96,
-				accidental_death: 0.28,
-				waiver_of_premium: 0.26
+				face_amount: 25000.0,
+				weekly_premium: 5.61,
+				accidental_death: 0.12,
+				waiver_of_premium: 0.3
 			},
 			{
-				face_amount: 70000.0,
-				weekly_premium: 11.96,
-				accidental_death: 0.18,
-				waiver_of_premium: 0.16
+				face_amount: 20000.0,
+				weekly_premium: 4.49,
+				accidental_death: 0.09,
+				waiver_of_premium: 0.24
+			},
+			{
+				face_amount: 15000.0,
+				weekly_premium: 3.37,
+				accidental_death: 0.07,
+				waiver_of_premium: 0.18
+			},
+			{
+				face_amount: 10000.0,
+				weekly_premium: 2.24,
+				accidental_death: 0.04,
+				waiver_of_premium: 0.12
+			},
+			{
+				face_amount: 5000.0,
+				weekly_premium: 1.12,
+				accidental_death: 0.02,
+				waiver_of_premium: 0.06
 			}
 		]
 	});
@@ -129,16 +261,24 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 			premium: 0
 		},
 		{
-			benefit_amount: 60000.0,
-			premium: 17.96
-		},
-		{
 			benefit_amount: 50000.0,
-			premium: 17.96
+			premium: 3.69
 		},
 		{
 			benefit_amount: 40000.0,
-			premium: 17.96
+			premium: 2.95
+		},
+		{
+			benefit_amount: 30000.0,
+			premium: 2.22
+		},
+		{
+			benefit_amount: 20000.0,
+			premium: 1.48
+		},
+		{
+			benefit_amount: 10000.0,
+			premium: 0.74
 		}
 	]);
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);

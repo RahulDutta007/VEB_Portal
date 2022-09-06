@@ -87,108 +87,240 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 		non_occupational_non_accident: {
 			employee: [
 				{
+					benefit_amount: 1500,
+					premium_amount: 65.59
+				},
+				{
+					benefit_amount: 1450,
+					premium_amount: 63.41
+				},
+				{
+					benefit_amount: 1400,
+					premium_amount: 61.22
+				},
+				{
+					benefit_amount: 1350,
+					premium_amount: 59.04
+				},
+				{
+					benefit_amount: 1300,
+					premium_amount: 56.85
+				},
+				{
+					benefit_amount: 1250,
+					premium_amount: 54.66
+				},
+				{
+					benefit_amount: 1200,
+					premium_amount: 52.48
+				},
+				{
+					benefit_amount: 1150,
+					premium_amount: 50.29
+				},
+				{
+					benefit_amount: 1100,
+					premium_amount: 48.1
+				},
+				{
+					benefit_amount: 1050,
+					premium_amount: 45.92
+				},
+				{
+					benefit_amount: 1000,
+					premium_amount: 43.73
+				},
+				{
+					benefit_amount: 950,
+					premium_amount: 41.54
+				},
+				{
+					benefit_amount: 900,
+					premium_amount: 39.36
+				},
+				{
+					benefit_amount: 850,
+					premium_amount: 37.17
+				},
+				{
+					benefit_amount: 800,
+					premium_amount: 34.98
+				},
+				{
+					benefit_amount: 750,
+					premium_amount: 32.8
+				},
+				{
+					benefit_amount: 700,
+					premium_amount: 30.61
+				},
+				{
+					benefit_amount: 650,
+					premium_amount: 28.42
+				},
+				{
+					benefit_amount: 600,
+					premium_amount: 26.24
+				},
+				{
+					benefit_amount: 550,
+					premium_amount: 24.05
+				},
+				{
+					benefit_amount: 500,
+					premium_amount: 21.87
+				},
+				{
+					benefit_amount: 450,
+					premium_amount: 19.68
+				},
+				{
+					benefit_amount: 400,
+					premium_amount: 17.49
+				},
+				{
 					benefit_amount: 350,
-					premium_amount: 10.06
+					premium_amount: 15.31
 				},
 				{
 					benefit_amount: 300,
-					premium_amount: 8.62
+					premium_amount: 13.12
 				},
 				{
 					benefit_amount: 250,
-					premium_amount: 7.18
+					premium_amount: 10.93
 				},
 				{
 					benefit_amount: 200,
-					premium_amount: 5.75
+					premium_amount: 8.57
 				},
 				{
 					benefit_amount: 150,
-					premium_amount: 4.31
+					premium_amount: 6.56
 				},
 				{
 					benefit_amount: 100,
-					premium_amount: 2.87
-				}
-			],
-			employee_and_family: [
-				{
-					benefit_amount: 350,
-					premium_amount: 10.06
-				},
-				{
-					benefit_amount: 300,
-					premium_amount: 8.62
-				},
-				{
-					benefit_amount: 250,
-					premium_amount: 7.18
-				},
-				{
-					benefit_amount: 200,
-					premium_amount: 5.75
-				},
-				{
-					benefit_amount: 150,
-					premium_amount: 4.31
-				},
-				{
-					benefit_amount: 100,
-					premium_amount: 2.87
+					premium_amount: 4.37
 				}
 			]
 		},
 		non_occupational_accident: {
 			employee: [
 				{
+					benefit_amount: 1500,
+					premium_amount: 43.1
+				},
+				{
+					benefit_amount: 1450,
+					premium_amount: 41.66
+				},
+				{
+					benefit_amount: 1400,
+					premium_amount: 40.22
+				},
+				{
+					benefit_amount: 1350,
+					premium_amount: 38.79
+				},
+				{
+					benefit_amount: 1300,
+					premium_amount: 37.35
+				},
+				{
+					benefit_amount: 1250,
+					premium_amount: 35.91
+				},
+				{
+					benefit_amount: 1200,
+					premium_amount: 34.48
+				},
+				{
+					benefit_amount: 1150,
+					premium_amount: 33.04
+				},
+				{
+					benefit_amount: 1100,
+					premium_amount: 31.6
+				},
+				{
+					benefit_amount: 1050,
+					premium_amount: 30.17
+				},
+				{
+					benefit_amount: 1000,
+					premium_amount: 28.73
+				},
+				{
+					benefit_amount: 950,
+					premium_amount: 27.29
+				},
+				{
+					benefit_amount: 900,
+					premium_amount: 25.86
+				},
+				{
+					benefit_amount: 850,
+					premium_amount: 24.42
+				},
+				{
+					benefit_amount: 800,
+					premium_amount: 22.98
+				},
+				{
+					benefit_amount: 750,
+					premium_amount: 21.55
+				},
+				{
+					benefit_amount: 700,
+					premium_amount: 20.11
+				},
+				{
+					benefit_amount: 650,
+					premium_amount: 18.67
+				},
+				{
+					benefit_amount: 600,
+					premium_amount: 17.24
+				},
+				{
+					benefit_amount: 550,
+					premium_amount: 15.8
+				},
+				{
+					benefit_amount: 500,
+					premium_amount: 14.37
+				},
+				{
+					benefit_amount: 450,
+					premium_amount: 12.93
+				},
+				{
+					benefit_amount: 400,
+					premium_amount: 11.49
+				},
+				{
 					benefit_amount: 350,
-					premium_amount: 15.31
+					premium_amount: 10.06
 				},
 				{
 					benefit_amount: 300,
-					premium_amount: 13.12
+					premium_amount: 8.62
 				},
 				{
 					benefit_amount: 250,
-					premium_amount: 10.93
+					premium_amount: 7.18
 				},
 				{
 					benefit_amount: 200,
-					premium_amount: 8.75
+					premium_amount: 5.75
 				},
 				{
 					benefit_amount: 150,
-					premium_amount: 6.56
+					premium_amount: 4.31
 				},
 				{
 					benefit_amount: 100,
-					premium_amount: 4.37
-				}
-			],
-			employee_and_family: [
-				{
-					benefit_amount: 350,
-					premium_amount: 15.31
-				},
-				{
-					benefit_amount: 300,
-					premium_amount: 13.12
-				},
-				{
-					benefit_amount: 250,
-					premium_amount: 10.93
-				},
-				{
-					benefit_amount: 200,
-					premium_amount: 8.75
-				},
-				{
-					benefit_amount: 150,
-					premium_amount: 6.56
-				},
-				{
-					benefit_amount: 100,
-					premium_amount: 4.37
+					premium_amount: 2.87
 				}
 			]
 		}
@@ -353,8 +485,7 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 				plan_type === "non_occupational_non_accident"
 					? "non_occupational_non_accident"
 					: "non_occupational_accident";
-			const coverageFor = coverage_for === "Employee Only" ? "employee" : "employee_and_family";
-			const calculatePremiumAmount = premium_plan[planType][coverageFor].find(
+			const calculatePremiumAmount = premium_plan[planType].employee.find(
 				(plan) => plan.benefit_amount === benefit_amount
 			)?.premium_amount;
 			setPremiumAmount(calculatePremiumAmount ? calculatePremiumAmount : 0);
@@ -407,13 +538,7 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 											name="contact_label"
 											onChange={(event: any) => handleCoverageChange(event)}
 										>
-											{COVERAGE.map((option: string, index: number) => {
-												return (
-													<MenuItem value={option} key={index}>
-														{option}
-													</MenuItem>
-												);
-											})}
+											<MenuItem value="Employee Only">Employee Only</MenuItem>
 										</Select>
 									</div>
 								</Grid>
@@ -446,12 +571,13 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 											name="contact_label"
 											onChange={(event: any) => handleBenefitAmountChange(event)}
 										>
-											<MenuItem value={350}>350.00</MenuItem>
-											<MenuItem value={300}>300.00</MenuItem>
-											<MenuItem value={250}>250.00</MenuItem>
-											<MenuItem value={200}>200.00</MenuItem>
-											<MenuItem value={150}>150.00</MenuItem>
-											<MenuItem value={100}>100.00</MenuItem>
+											{premium_plan.non_occupational_accident.employee.map((plan) => {
+												return (
+													<MenuItem value={plan.benefit_amount}>
+														{plan.benefit_amount.toFixed(2)}
+													</MenuItem>
+												);
+											})}
 										</Select>
 									</div>
 								</Grid>
@@ -593,22 +719,6 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 									</Typography>
 								</AccordionDetails>
 							)}
-						</Accordion>
-					</div>
-
-					<div className="accordion-container">
-						<Accordion
-							expanded={expanded_panel === "panel_beneficiary"}
-							onChange={handleBeneficiaryChange("panel_beneficiary")}
-						>
-							<AccordionSummary aria-controls="panel1d-content" id="panel-header-beneficiary">
-								<Typography>Add Beneficiary</Typography>
-							</AccordionSummary>
-							<AccordionDetails>
-								<Typography>
-									No eligibility questions are required for the selected coverage, please press next.
-								</Typography>
-							</AccordionDetails>
 						</Accordion>
 					</div>
 					<div className="theme-plan-option-content">
