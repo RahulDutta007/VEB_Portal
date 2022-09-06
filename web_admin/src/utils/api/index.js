@@ -10,7 +10,9 @@ import {
 	createEnroller,
 	findUserName
 } from "./auth/login";
+import { editGroupOwner, changePassword } from "./auth/updateUser";
 import { plan } from "./plan/index";
+import { groupOwner } from "./user/user";
 
 import { OTP } from "./OTP/OTP";
 
@@ -23,7 +25,14 @@ export const api = {
 		findEmail,
 		signUpAdmin,
 		createEnroller,
-		findUserName
+		findUserName,
+		editGroupOwner,
+		changePassword
+	},
+	groupOwner: {
+		getGroupOwnerByAuth: groupOwner.getGroupOwnerByAuth,
+		getGroupOwnerCount: groupOwner.getGroupOwnerCount,
+		getGroupOwnerById: groupOwner.getGroupOwnerById
 	},
 	OTP: {
 		sendToEmail: OTP.sendOTPToEmail,
