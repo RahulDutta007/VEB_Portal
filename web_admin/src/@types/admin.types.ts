@@ -4,8 +4,8 @@ export type Admin = {
 	last_name: string | null;
 	email: string;
 	role: string;
-	date_of_birth: string;
-	SSN: string;
+	date_of_birth?: string;
+	SSN?: string;
 	user_name: string | null;
 	password: string | null;
 };

@@ -217,31 +217,14 @@ const SignUp = () => {
 				flag = false;
 			}
 		}
-		if (date_of_birth !== null) {
-			if (date_of_birth.length === 0) {
-				_validation.current.user["date_of_birth"] = "Date of Birth is required";
-				_validation.current.user["status"] = "invalid";
-				flag = false;
-			}
-		}
-		if (String(date_of_birth).length === 0) {
-			_validation.current.user["date_of_birth"] = "Date of birth is required";
-			_validation.current["status"] = "invalid";
-			flag = false;
-		}
-		if (date_of_birth === null) {
-			_validation.current.user["date_of_birth"] = "Date of Birth is required";
-			_validation.current.user["status"] = "invalid";
-			flag = false;
-		}
-		if (SSN === null || SSN === "") {
-			_validation.current.user["SSN"] = "SSN is required";
-			_validation.current.user["status"] = "invalid";
-			flag = false;
-		}
+		// if (SSN === null || SSN === "") {
+		// 	_validation.current.user["SSN"] = "SSN is required";
+		// 	_validation.current.user["status"] = "invalid";
+		// 	flag = false;
+		// }
 		if (SSN !== null) {
 			if (SSN !== "") {
-				const _SSN = SSN.replaceAll("-", "");
+				const _SSN = SSN?.replaceAll("-", "");
 				if (String(_SSN).length !== 9) {
 					_validation.current.user["SSN"] = "Enter correct 9 digit SSN";
 					_validation.current["status"] = "invalid";
@@ -678,11 +661,11 @@ const SignUp = () => {
 					}
 				}
 			} else if (activeStep === 2) {
-				if (user.SSN !== reEnteredSSN) {
-					alert("Please Reenter correct SSN");
-				} else {
-					const personalDetailsValidation = await handlePersonalDetailsValidation();
-					if (personalDetailsValidation === "valid") {
+				const personalDetailsValidation = await handlePersonalDetailsValidation();
+				if (personalDetailsValidation === "valid") {
+					if (user.SSN !== reEnteredSSN) {
+						alert("Please Reenter correct SSN");
+					} else {
 						setActiveStep(activeStep + 1);
 					}
 				}
@@ -694,17 +677,32 @@ const SignUp = () => {
 					if (credentialValidation === "valid") {
 						const { role, date_of_birth } = user;
 						const _role = role.toUpperCase();
-						const date = new Date(date_of_birth);
+						let date;
+						if (date_of_birth) {
+							date = new Date(date_of_birth);
+						}
 						const _user = {
 							...user,
-							SSN: Number(user.SSN.replaceAll("-", "")).toString(),
 							role: user.role.toUpperCase(),
-							date_of_birth: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+							...(user.SSN &&
+								user.SSN.length > 0 && { SSN: Number(user?.SSN.replaceAll("-", "")).toString() }),
+							...(date?.getDate() &&
+								date?.getFullYear() &&
+								date?.getMonth() && {
+									date_of_birth:
+										date?.getFullYear() + "-" + (date?.getMonth() + 1) + "-" + date?.getDate()
+								})
 						};
 						console.log("_user", _user);
 						try {
 							if (!_user.middle_name) {
 								delete _user.middle_name;
+							}
+							if (String(date_of_birth).length === 0 || date_of_birth === null) {
+								delete _user.date_of_birth;
+							}
+							if (_user.SSN === "0" || _user.SSN === "") {
+								delete _user.SSN;
 							}
 							// Old sign up integration
 							const response = await api.auth.signUpAdmin(_user);

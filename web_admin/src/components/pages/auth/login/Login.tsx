@@ -48,6 +48,7 @@ const Login = (props: any): JSX.Element => {
 		confirmPassword: ""
 	});
 	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [validation, setValidation] = useState<Validation>();
 	const [loginDialogProps, setLoginDialogProps] = useState({
@@ -139,6 +140,10 @@ const Login = (props: any): JSX.Element => {
 	const handleShowPassword = useCallback((): void => {
 		setShowPassword(!showPassword);
 	}, [showPassword]);
+
+	const handleShowNewPassword = useCallback((): void => {
+		setShowNewPassword(!showNewPassword);
+	}, [showNewPassword]);
 
 	const handleChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -241,7 +246,7 @@ const Login = (props: any): JSX.Element => {
 	);
 
 	const handleSubmitChangePassword = useCallback(async () => {
-		// event.preventDefault();
+		//event.preventDefault();
 		const payload = {
 			new_password: newPassword
 		};
@@ -250,7 +255,7 @@ const Login = (props: any): JSX.Element => {
 			return false;
 		}
 		const response = await trackPromise(api.auth.changeForgetPassword(payload, token));
-
+		console.log(1111, response);
 		if (response) {
 			setStatusMessage("Password Changed Successfully");
 			navigate("/login");
@@ -472,6 +477,7 @@ const Login = (props: any): JSX.Element => {
 														name="new_password"
 														label="New Password"
 														variant="outlined"
+														type={!showNewPassword ? "password" : "text"}
 														placeholder="Enter New Password"
 														value={newPassword}
 														onChange={handleNewPassowrdChange}
@@ -482,6 +488,19 @@ const Login = (props: any): JSX.Element => {
 															startAdornment: (
 																<InputAdornment position="start">
 																	<LockIcon className="auth-input-icon" />
+																</InputAdornment>
+															),
+															endAdornment: (
+																<InputAdornment position="end">
+																	{!showPassword ? (
+																		<IconButton onClick={handleShowNewPassword}>
+																			<VisibilityOffIcon className="auth-input-icon" />
+																		</IconButton>
+																	) : (
+																		<IconButton onClick={handleShowNewPassword}>
+																			<VisibilityIcon className="auth-input-icon" />
+																		</IconButton>
+																	)}
 																</InputAdornment>
 															)
 														}}
