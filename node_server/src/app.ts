@@ -44,6 +44,7 @@ app.use("/api/v1/test", require("./api/v1/routes/test/test.routes"));
 app.use("/api/v1/auth/group-owner/enroller/creation", require("./api/v1/routes/admin/admin.creation.routes"));
 app.use("/api/v1/auth/group-owner", require("./api/v1/routes/admin/admin.register.routes"));
 app.use("/api/v1/auth", require("./api/v1/routes/admin/user.management.routes"));
+app.use("/api/v1/auth", require("./api/v1/routes/auth/users.routes"));
 app.use("/api/v1/OTP", require("./api/v1/routes/otp/otp.routes"));
 app.use("/api/v1/plan", require("./api/v1/routes/plan/plan.management.routes"));
 app.use("/api/v1/users", require("./api/v1/routes/user/user.routes"));

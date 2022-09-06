@@ -11,9 +11,7 @@ import { ForgetUserId } from "../../controllers/admin/forget.username.controller
 const router = express.Router();
 
 router.route("/login").post(validator(validators.loginValidator, null), login);
-router
-	.route("/change-password")
-	.patch(validator(validators.changePasswordValidator, null), verifyToken, ChangePassword);
+
 router.route("/forget-password/get-token").post(validator(validators.forgetPasswordValidator, null), GetToken);
 router.route("/forget-password/verify-token/:token").post(validator(validators.verifyPasswordValidator, null), VerifyToken);
 router.route("/forget-user-name").post(validator(validators.forgetUserIdValidator, null), ForgetUserId);
