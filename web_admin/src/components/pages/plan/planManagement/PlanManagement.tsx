@@ -5,11 +5,14 @@ import TabPanel from "../../../shared/tabPanelComponent/TabPanel";
 import a11yProps from "../../../../constants/tabPanelProps/ayProps";
 import { api } from "../../../../utils/api";
 import PlanManagementGrid from "./PlanManagementGrid";
+import moment from "moment";
 
 import { Box, Tabs, Tab } from "@mui/material";
 
 const PlanManagement = (): JSX.Element => {
 	const [plans, setPlans] = useState([]);
+	const [active_plans, setActivePlans] = useState([]);
+	const [expired_plans, setExpiredPlans] = useState([]);
 	const [value, setValue] = useState(0);
 	const { setDashboardHeader } = useContext(UIContext);
 
@@ -19,9 +22,41 @@ const PlanManagement = (): JSX.Element => {
 	};
 
 	const getPlans = useCallback(async () => {
-		const _plans = await api.plan.getAllPlan("ACTIVE");
+		const _plans = await api.plan.getAllPlan("");
 		console.log("Plans ", _plans);
 		setPlans(Object.assign([], _plans));
+		setActivePlans(
+			Object.assign(
+				[],
+				_plans
+					.filter((plan) => plan.status === "ACTIVE")
+					.map((plan) => {
+						if (plan.start_date) {
+							plan.start_date = moment(plan.start_date).format("MM/DD/YYYY");
+						}
+						if (plan.end_date) {
+							plan.end_date = moment(plan.end_date).format("MM/DD/YYYY");
+						}
+						return plan;
+					})
+			)
+		);
+		setExpiredPlans(
+			Object.assign(
+				[],
+				_plans
+					.filter((plan) => plan.status === "EXPIRED")
+					.map((plan) => {
+						if (plan.start_date) {
+							plan.start_date = moment(plan.start_date).format("MM/DD/YYYY");
+						}
+						if (plan.end_date) {
+							plan.end_date = moment(plan.end_date).format("MM/DD/YYYY");
+						}
+						return plan;
+					})
+			)
+		);
 	}, []);
 
 	useEffect(() => {
@@ -62,10 +97,10 @@ const PlanManagement = (): JSX.Element => {
 						/>
 					</Tabs>
 					<TabPanel value={value} index={0}>
-						<PlanManagementGrid gridData={plans} />
+						<PlanManagementGrid gridData={active_plans} />
 					</TabPanel>
 					<TabPanel value={value} index={1}>
-						<PlanManagementGrid gridData={plans} />
+						<PlanManagementGrid gridData={expired_plans} />
 					</TabPanel>
 				</Box>
 			</Box>

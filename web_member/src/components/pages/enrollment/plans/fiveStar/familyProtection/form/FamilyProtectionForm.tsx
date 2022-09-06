@@ -17,7 +17,7 @@ import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
-import "./shortTermDisabilityForm.css";
+import "./familyProtectionForm.css";
 
 const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
 	({ theme }) => ({
@@ -49,278 +49,114 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 	borderTop: "1px solid rgba(0, 0, 0, .125)"
 }));
 
-const KemperShortTermDisabilityForm = (): JSX.Element => {
+const FiveStarFamilyProtectionForm = (): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [plan, setPlan] = useState({
-		plan_name: "Short Term Disability",
+		plan_name: "Five Start Family Protection Insurance Plan",
 		plan_code: "plan001",
 		start_date: "01/01/2023",
 		end_date: "01/01/2024"
 	});
 	const [premium_plan, setPremiumPlan] = useState({
-		member: [
+		member_spouse: [
 			{
-				benefit_amount: 350,
-				premium_amount: 10.06
+				benefit_amount: 150000,
+				premium_amount: 16.62
 			},
 			{
-				benefit_amount: 300,
-				premium_amount: 8.62
+				benefit_amount: 125000,
+				premium_amount: 14.09
 			},
 			{
-				benefit_amount: 250,
-				premium_amount: 7.18
+				benefit_amount: 100000,
+				premium_amount: 11.57
 			},
 			{
-				benefit_amount: 200,
-				premium_amount: 5.75
+				benefit_amount: 75000,
+				premium_amount: 9.05
 			},
 			{
-				benefit_amount: 150,
-				premium_amount: 4.31
+				benefit_amount: 50000,
+				premium_amount: 6.54
 			},
 			{
-				benefit_amount: 100,
-				premium_amount: 2.87
+				benefit_amount: 25000,
+				premium_amount: 4.02
+			},
+			{
+				benefit_amount: 10000,
+				premium_amount: 2.51
 			}
 		],
-		non_occupational_non_accident: {
+		member_child: [
+			{
+				benefit_amount: 10000,
+				premium_amount: 0.46
+			},
+			{
+				benefit_amount: 5000,
+				premium_amount: 0.23
+			}
+		],
+		benefit_amount_purchase: {
 			employee: [
 				{
-					benefit_amount: 1500,
-					premium_amount: 65.59
+					benefit_amount: 150000,
+					premium_amount: 13.24
 				},
 				{
-					benefit_amount: 1450,
-					premium_amount: 63.41
+					benefit_amount: 125000,
+					premium_amount: 11.28
 				},
 				{
-					benefit_amount: 1400,
-					premium_amount: 61.22
+					benefit_amount: 100000,
+					premium_amount: 9.33
 				},
 				{
-					benefit_amount: 1350,
-					premium_amount: 59.04
+					benefit_amount: 75000,
+					premium_amount: 7.37
 				},
 				{
-					benefit_amount: 1300,
-					premium_amount: 56.85
+					benefit_amount: 50000,
+					premium_amount: 5.41
 				},
 				{
-					benefit_amount: 1250,
-					premium_amount: 54.66
+					benefit_amount: 25000,
+					premium_amount: 3.45
 				},
 				{
-					benefit_amount: 1200,
-					premium_amount: 52.48
-				},
-				{
-					benefit_amount: 1150,
-					premium_amount: 50.29
-				},
-				{
-					benefit_amount: 1100,
-					premium_amount: 48.1
-				},
-				{
-					benefit_amount: 1050,
-					premium_amount: 45.92
-				},
-				{
-					benefit_amount: 1000,
-					premium_amount: 43.73
-				},
-				{
-					benefit_amount: 950,
-					premium_amount: 41.54
-				},
-				{
-					benefit_amount: 900,
-					premium_amount: 39.36
-				},
-				{
-					benefit_amount: 850,
-					premium_amount: 37.17
-				},
-				{
-					benefit_amount: 800,
-					premium_amount: 34.98
-				},
-				{
-					benefit_amount: 750,
-					premium_amount: 32.8
-				},
-				{
-					benefit_amount: 700,
-					premium_amount: 30.61
-				},
-				{
-					benefit_amount: 650,
-					premium_amount: 28.42
-				},
-				{
-					benefit_amount: 600,
-					premium_amount: 26.24
-				},
-				{
-					benefit_amount: 550,
-					premium_amount: 24.05
-				},
-				{
-					benefit_amount: 500,
-					premium_amount: 21.87
-				},
-				{
-					benefit_amount: 450,
-					premium_amount: 19.68
-				},
-				{
-					benefit_amount: 400,
-					premium_amount: 17.49
-				},
-				{
-					benefit_amount: 350,
-					premium_amount: 15.31
-				},
-				{
-					benefit_amount: 300,
-					premium_amount: 13.12
-				},
-				{
-					benefit_amount: 250,
-					premium_amount: 10.93
-				},
-				{
-					benefit_amount: 200,
-					premium_amount: 8.57
-				},
-				{
-					benefit_amount: 150,
-					premium_amount: 6.56
-				},
-				{
-					benefit_amount: 100,
-					premium_amount: 4.37
+					benefit_amount: 10000,
+					premium_amount: 2.28
 				}
-			]
-		},
-		non_occupational_accident: {
-			employee: [
+			],
+			employee_and_family: [
 				{
-					benefit_amount: 1500,
-					premium_amount: 43.1
+					benefit_amount: 150000,
+					premium_amount: 13.24
 				},
 				{
-					benefit_amount: 1450,
-					premium_amount: 41.66
+					benefit_amount: 125000,
+					premium_amount: 11.28
 				},
 				{
-					benefit_amount: 1400,
-					premium_amount: 40.22
+					benefit_amount: 100000,
+					premium_amount: 9.33
 				},
 				{
-					benefit_amount: 1350,
-					premium_amount: 38.79
+					benefit_amount: 75000,
+					premium_amount: 7.37
 				},
 				{
-					benefit_amount: 1300,
-					premium_amount: 37.35
+					benefit_amount: 50000,
+					premium_amount: 5.41
 				},
 				{
-					benefit_amount: 1250,
-					premium_amount: 35.91
+					benefit_amount: 25000,
+					premium_amount: 3.45
 				},
 				{
-					benefit_amount: 1200,
-					premium_amount: 34.48
-				},
-				{
-					benefit_amount: 1150,
-					premium_amount: 33.04
-				},
-				{
-					benefit_amount: 1100,
-					premium_amount: 31.6
-				},
-				{
-					benefit_amount: 1050,
-					premium_amount: 30.17
-				},
-				{
-					benefit_amount: 1000,
-					premium_amount: 28.73
-				},
-				{
-					benefit_amount: 950,
-					premium_amount: 27.29
-				},
-				{
-					benefit_amount: 900,
-					premium_amount: 25.86
-				},
-				{
-					benefit_amount: 850,
-					premium_amount: 24.42
-				},
-				{
-					benefit_amount: 800,
-					premium_amount: 22.98
-				},
-				{
-					benefit_amount: 750,
-					premium_amount: 21.55
-				},
-				{
-					benefit_amount: 700,
-					premium_amount: 20.11
-				},
-				{
-					benefit_amount: 650,
-					premium_amount: 18.67
-				},
-				{
-					benefit_amount: 600,
-					premium_amount: 17.24
-				},
-				{
-					benefit_amount: 550,
-					premium_amount: 15.8
-				},
-				{
-					benefit_amount: 500,
-					premium_amount: 14.37
-				},
-				{
-					benefit_amount: 450,
-					premium_amount: 12.93
-				},
-				{
-					benefit_amount: 400,
-					premium_amount: 11.49
-				},
-				{
-					benefit_amount: 350,
-					premium_amount: 10.06
-				},
-				{
-					benefit_amount: 300,
-					premium_amount: 8.62
-				},
-				{
-					benefit_amount: 250,
-					premium_amount: 7.18
-				},
-				{
-					benefit_amount: 200,
-					premium_amount: 5.75
-				},
-				{
-					benefit_amount: 150,
-					premium_amount: 4.31
-				},
-				{
-					benefit_amount: 100,
-					premium_amount: 2.87
+					benefit_amount: 10000,
+					premium_amount: 2.28
 				}
 			]
 		}
@@ -336,9 +172,10 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 	const [expanded, setExpanded] = useState<string | false>("panel_question");
 	const [expanded_panel, setExpandedPanel] = useState<string | false>("panel_beneficiary");
 	const [family_member, setFamilyMembers] = useState([
-		{ name: "Debasish Manna", relation: "Son" },
-		{ name: "Gourab Das", relation: "Spouse" }
+		{ name: "Satya Dutta", relation: "Child" },
+		{ name: "Mimi Dutta", relation: "Spouse" }
 	]);
+	const [family_member_by_relation, setFamilyMemberByRelation] = useState<any>([]);
 	const [family_member_details, setFamilyMemberDetails] = useState<any>([]);
 	const [showMember, setShowMember] = useState(false);
 	const [showQuestions, setShowQuestions] = useState(false);
@@ -369,6 +206,15 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 			id: 5,
 			question:
 				"In the past 5 years, has any Applicant been convicted two or more times of driving under the influence of alcohol or drugs or while intoxicated?"
+		},
+		{
+			id: 6,
+			question:
+				"In the past 5 years, has any Applicant been treated by a medical professional or in a medical facility or received professional counseling for alcohol or drug dependency or been advised to reduce or discontinue use of alcohol?"
+		},
+		{
+			id: 7,
+			question: "In the last 10 years, has any Applicant ever applied for and been rejected for life insurance?"
 		}
 	]);
 
@@ -384,6 +230,18 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 		const { value } = event.target as HTMLSelectElement;
 		setCoverageFor(value);
 		if (value !== "Employee Only") {
+			if (value === "Employee and Spouse") {
+				const spouse = family_member.filter((member) => member.relation == "Spouse");
+				setFamilyMemberByRelation(spouse);
+			} else if (value === "Employee and Dependent") {
+				const dependent = family_member.filter(
+					(member) => member.relation == "Son" || member.relation == "Daughter" || member.relation == "Child"
+				);
+				setFamilyMemberByRelation(dependent);
+			} else {
+				setFamilyMemberByRelation(family_member);
+			}
+			console.log(1111, family_member_by_relation);
 			setShowMember(true);
 		} else {
 			setShowMember(false);
@@ -397,17 +255,18 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 
 	const handleBenefitAmountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const { value } = event.target as HTMLSelectElement;
-		//setBenefitedMemberList(value, "Rahul");
+		setBenefitedMemberList(value, "Rahul", 50000);
 		setBenefitAmount(parseInt(value));
 	};
 
-	const handleMemberBenefitAmountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+	const handleMemberBenefitAmountChange = (event: React.ChangeEvent<HTMLSelectElement>, relation: string) => {
 		const { name, value } = event.target as HTMLSelectElement;
+		const memberType = relation.toLowerCase() === "spouse" ? "member_spouse" : "member_child";
 		if (!family_member_details.find((member: { member_name: string }) => member.member_name === name)) {
 			family_member_details.push({
 				member_name: name,
 				benefit_amount: value,
-				premium_amount: premium_plan.member.find((plan) => plan.benefit_amount == parseInt(value))
+				premium_amount: premium_plan[memberType].find((plan) => plan.benefit_amount == parseInt(value))
 					?.premium_amount
 			});
 			const familyDetails = JSON.parse(JSON.stringify(family_member_details));
@@ -418,7 +277,7 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 					return {
 						member_name: name,
 						benefit_amount: value,
-						premium_amount: premium_plan.member.find((plan) => plan.benefit_amount == parseInt(value))
+						premium_amount: premium_plan[memberType].find((plan) => plan.benefit_amount == parseInt(value))
 							?.premium_amount
 					};
 				} else {
@@ -427,11 +286,11 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 			});
 			setFamilyMemberDetails(familyDetails);
 		}
-		//setBenefitedMemberList(value, name);
+		setBenefitedMemberList(value, name, 50000);
 	};
 
-	const setBenefitedMemberList = (value: string, member_name: string) => {
-		if (parseInt(value) === 350) {
+	const setBenefitedMemberList = (value: string, member_name: string, max: number) => {
+		if (parseInt(value) >= max) {
 			if (!max_benefit_member.find((name: string) => name === member_name)) {
 				max_benefit_member.push(member_name);
 				setMaxBenefitMember(JSON.parse(JSON.stringify(max_benefit_member)));
@@ -481,12 +340,10 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 
 	const calculatePremium = () => {
 		if (plan_type && coverage_for && benefit_amount) {
-			const planType =
-				plan_type === "non_occupational_non_accident"
-					? "non_occupational_non_accident"
-					: "non_occupational_accident";
-			const calculatePremiumAmount = premium_plan[planType].employee.find(
-				(plan) => plan.benefit_amount === benefit_amount
+			const planType = plan_type;
+			const coverageFor = coverage_for === "Employee Only" ? "employee" : "employee_and_family";
+			const calculatePremiumAmount = premium_plan.benefit_amount_purchase[coverageFor].find(
+				(plan: { benefit_amount: number }) => plan.benefit_amount === benefit_amount
 			)?.premium_amount;
 			setPremiumAmount(calculatePremiumAmount ? calculatePremiumAmount : 0);
 			setTotalPremiumAmount(calculatePremiumAmount ? calculatePremiumAmount : 0);
@@ -515,7 +372,7 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 		<div className="kemper-cancer-form plan-form">
 			<div className="paper-form-container">
 				<Paper className="theme-border-radius paper-container" elevation={1}>
-					<PlanHeader planName="Kemper Whole Life Insurance Policy" effectiveDate={start_date} />
+					<PlanHeader planName="Five Start Family Protection Insurance Policy" effectiveDate={start_date} />
 					<div className="plan-content">
 						<div className="theme-plan-section-margin" />
 						<div className="header-container header-container-new">
@@ -538,7 +395,13 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 											name="contact_label"
 											onChange={(event: any) => handleCoverageChange(event)}
 										>
-											<MenuItem value="Employee Only">Employee Only</MenuItem>
+											{COVERAGE.map((option: string, index: number) => {
+												return (
+													<MenuItem value={option} key={index}>
+														{option}
+													</MenuItem>
+												);
+											})}
 										</Select>
 									</div>
 								</Grid>
@@ -551,13 +414,8 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 											name="contact_label"
 											onChange={(event: any) => handlePlanChange(event)}
 										>
-											<MenuItem value={"non_occupational_non_accident"}>
-												Non-Occupational(Elim Period accident: 0 Sickness: 7 Benefit Period: 6
-												Months)
-											</MenuItem>
-											<MenuItem value={"non_occupational_accident"}>
-												Non-Occupational(Elim Period accident: 14 Sickness: 14 Benefit Period: 6
-												Months)
+											<MenuItem value={"benefit_amount_purchase"}>
+												Benefit Amount Purchase
 											</MenuItem>
 										</Select>
 									</div>
@@ -571,13 +429,13 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 											name="contact_label"
 											onChange={(event: any) => handleBenefitAmountChange(event)}
 										>
-											{premium_plan.non_occupational_accident.employee.map((plan) => {
-												return (
-													<MenuItem value={plan.benefit_amount}>
-														{plan.benefit_amount.toFixed(2)}
-													</MenuItem>
-												);
-											})}
+											<MenuItem value={150000}>150000</MenuItem>
+											<MenuItem value={125000}>125000</MenuItem>
+											<MenuItem value={100000}>100000</MenuItem>
+											<MenuItem value={75000}>75000</MenuItem>
+											<MenuItem value={50000}>50000</MenuItem>
+											<MenuItem value={25000}>25000</MenuItem>
+											<MenuItem value={10000}>10000</MenuItem>
 										</Select>
 									</div>
 								</Grid>
@@ -593,57 +451,86 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 							</Grid>
 						</div>
 						{showMember &&
-							family_member.map((member, index) => {
-								return (
-									<div key={index}>
-										<div className="member-name">{`${member.name}(${member.relation})`}</div>
-										<Grid className="grid-container" container columnSpacing={2}>
-											<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
-												<div className="details-form-row">
-													<div className="details-form-label  required">Benefit Amount</div>
-													<Select
-														input={<CustomSelectInput />}
-														style={{ width: "100%" }}
-														name={member.name}
-														onChange={(event: any) =>
-															handleMemberBenefitAmountChange(event)
-														}
-													>
-														<MenuItem value={350}>350.00</MenuItem>
-														<MenuItem value={300}>300.00</MenuItem>
-														<MenuItem value={250}>250.00</MenuItem>
-														<MenuItem value={200}>200.00</MenuItem>
-														<MenuItem value={150}>150.00</MenuItem>
-														<MenuItem value={100}>100.00</MenuItem>
-													</Select>
-												</div>
-											</Grid>
-											<Grid item xl={5} lg={5} md={5} sm={6} xs={6}></Grid>
-											<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
-												<div className="details-form-row">
-													<div className="details-form-label required align-center">
-														Premium
-													</div>
-													{family_member_details && (
-														<div className="show-premium">
-															{family_member_details.length === 0
-																? "$0.00"
-																: `$${
-																		family_member_details
-																			.find(
-																				(plan: { member_name: string }) =>
-																					plan.member_name === member.name
-																			)
-																			?.premium_amount.toFixed(2) || "0.00"
-																  }`}
+							family_member_by_relation.length > 0 &&
+							family_member_by_relation.map(
+								(
+									member: { name: string | undefined; relation: string },
+									index: React.Key | null | undefined
+								) => {
+									return (
+										<div key={index}>
+											<div className="member-name">{`${member.name}(${member.relation})`}</div>
+											<Grid className="grid-container" container columnSpacing={2}>
+												<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+													<div className="details-form-row">
+														<div className="details-form-label  required">
+															Benefit Amount
 														</div>
-													)}
-												</div>
+														{member.relation === "Spouse" ? (
+															<Select
+																input={<CustomSelectInput />}
+																style={{ width: "100%" }}
+																name={member.name}
+																onChange={(event: any) =>
+																	handleMemberBenefitAmountChange(
+																		event,
+																		member.relation
+																	)
+																}
+															>
+																<MenuItem value={150000}>150000</MenuItem>
+																<MenuItem value={125000}>125000</MenuItem>
+																<MenuItem value={100000}>100000</MenuItem>
+																<MenuItem value={75000}>75000</MenuItem>
+																<MenuItem value={50000}>50000</MenuItem>
+																<MenuItem value={25000}>25000</MenuItem>
+																<MenuItem value={10000}>10000</MenuItem>
+															</Select>
+														) : (
+															<Select
+																input={<CustomSelectInput />}
+																style={{ width: "100%" }}
+																name={member.name}
+																onChange={(event: any) =>
+																	handleMemberBenefitAmountChange(
+																		event,
+																		member.relation
+																	)
+																}
+															>
+																<MenuItem value={10000}>10000</MenuItem>
+																<MenuItem value={5000}>5000</MenuItem>
+															</Select>
+														)}
+													</div>
+												</Grid>
+												<Grid item xl={5} lg={5} md={5} sm={6} xs={6}></Grid>
+												<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
+													<div className="details-form-row">
+														<div className="details-form-label required align-center">
+															Premium
+														</div>
+														{family_member_details && (
+															<div className="show-premium">
+																{family_member_details.length === 0
+																	? "$0.00"
+																	: `$${
+																			family_member_details
+																				.find(
+																					(plan: { member_name: string }) =>
+																						plan.member_name === member.name
+																				)
+																				?.premium_amount.toFixed(2) || "0.00"
+																	  }`}
+															</div>
+														)}
+													</div>
+												</Grid>
 											</Grid>
-										</Grid>
-									</div>
-								);
-							})}
+										</div>
+									);
+								}
+							)}
 					</div>
 					<div className="theme-plan-inner-section-margin" />
 					{total_premium_amount > 0 ? (
@@ -721,6 +608,22 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 							)}
 						</Accordion>
 					</div>
+
+					<div className="accordion-container">
+						<Accordion
+							expanded={expanded_panel === "panel_beneficiary"}
+							onChange={handleBeneficiaryChange("panel_beneficiary")}
+						>
+							<AccordionSummary aria-controls="panel1d-content" id="panel-header-beneficiary">
+								<Typography>Add Beneficiary</Typography>
+							</AccordionSummary>
+							<AccordionDetails>
+								<Typography>
+									No eligibility questions are required for the selected coverage, please press next.
+								</Typography>
+							</AccordionDetails>
+						</Accordion>
+					</div>
 					<div className="theme-plan-option-content">
 						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
 						<p className="theme-plan-checkbox-label">
@@ -763,4 +666,4 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 	);
 };
 
-export default KemperShortTermDisabilityForm;
+export default FiveStarFamilyProtectionForm;

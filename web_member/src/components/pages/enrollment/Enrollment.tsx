@@ -15,6 +15,8 @@ import KemperHospitalIndemnityForm from "./plans/kemper/hospitalIndemnity/form/H
 import BeazleyIndemnityForm from "./plans/beazley/indemnity/form/IndemnityForm";
 import KemperWholeLifeInsuranceForm from "./plans/kemper/wholeLife/form/WholeLifeInsuranceForm";
 import KemperShortTermDisabilityForm from "./plans/kemper/shortTermDisability/form/ShortTermDisabilityForm";
+import FiveStarFamilyProtectionForm from "./plans/fiveStar/familyProtection/form/FamilyProtectionForm";
+import DoctorAndRxForm from "./plans/doc/docAndRx/form/DocAndRx";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { styled } from "@mui/material/styles";
@@ -95,6 +97,12 @@ const Enrollment = (): JSX.Element => {
 			case "Beazley Indemnity": {
 				return <BeazleyIndemnityForm />;
 			}
+			case "Family Protection": {
+				return <FiveStarFamilyProtectionForm />;
+			}
+			case "Doc and Rx": {
+				return <DoctorAndRxForm />;
+			}
 		}
 	}, [urlSearchParams]);
 
@@ -120,6 +128,12 @@ const Enrollment = (): JSX.Element => {
 			},
 			{
 				plan_name: "Beazley Indemnity"
+			},
+			{
+				plan_name: "Family Protection"
+			},
+			{
+				plan_name: "Doc and Rx"
 			}
 		];
 		setOpenEnrollments(Object.assign([], _openEnrollments));

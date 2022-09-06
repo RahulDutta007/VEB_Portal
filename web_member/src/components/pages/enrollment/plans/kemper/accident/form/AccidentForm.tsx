@@ -173,10 +173,13 @@ const KemperAccidentForm = (): JSX.Element => {
 							<div className="theme-plan-header">Standard Benefits</div>
 						</div>
 						<div>
-							<div className="theme-plan-sub-header plan-text" style={{ borderLeftColor: theme.primary_color }}>
+							<div
+								className="theme-plan-sub-header plan-text"
+								style={{ borderLeftColor: theme.primary_color }}
+							>
 								In addition to yourself, who would you like to cover under this plan?
 							</div>
-							<Grid className="grid-container" container columnSpacing={2} >
+							<Grid className="grid-container" container columnSpacing={2}>
 								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label  required">Coverage For</div>
@@ -213,7 +216,9 @@ const KemperAccidentForm = (): JSX.Element => {
 								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
-										<div className="show-premium">{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}</div>
+										<div className="show-premium">
+											{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}
+										</div>
 									</div>
 								</Grid>
 							</Grid>
@@ -225,10 +230,13 @@ const KemperAccidentForm = (): JSX.Element => {
 							<div className="theme-plan-header">Rider Benefits</div>
 						</div>
 						<div>
-							<div className="theme-plan-sub-header plan-text" style={{ borderLeftColor: theme.primary_color }}>
+							<div
+								className="theme-plan-sub-header plan-text"
+								style={{ borderLeftColor: theme.primary_color }}
+							>
 								Disability income rider rates
 							</div>
-							<Grid className="grid-container" container columnSpacing={2} >
+							<Grid className="grid-container" container columnSpacing={2}>
 								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label  required">Disability income rider type</div>
@@ -264,24 +272,41 @@ const KemperAccidentForm = (): JSX.Element => {
 								<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="">
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
-										<div className="show-premium">{rider_premium_amount == 0 ? "$0.00" : `$${rider_premium_amount.toFixed(2)}`}</div>
+										<div className="show-premium">
+											{rider_premium_amount == 0
+												? "$0.00"
+												: `$${rider_premium_amount.toFixed(2)}`}
+										</div>
 									</div>
 								</Grid>
 							</Grid>
 						</div>
 						<div>
-							<div className="theme-plan-sub-header plan-text" style={{ borderLeftColor: theme.primary_color }}>
+							<div
+								className="theme-plan-sub-header plan-text"
+								style={{ borderLeftColor: theme.primary_color }}
+							>
 								Doctor & Rx
 							</div>
-							<Grid className="grid-container" container columnSpacing={2} >
-								<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className={coverage_for && plan_type ? "margin-adjust-33" : ""}>
+							<Grid className="grid-container" container columnSpacing={2}>
+								<Grid
+									item
+									xl={10}
+									lg={10}
+									md={10}
+									sm={6}
+									xs={6}
+									className={coverage_for && plan_type ? "margin-adjust-33" : ""}
+								>
 									<input type="checkbox" disabled checked></input>
 									<label className="details-form-label required">Doctor & RX</label>
 								</Grid>
 								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
-										<div className="show-premium">{coverage_for && plan_type ? `$${premium_plan.rider_doc_Rx}` : ""}</div>
+										<div className="show-premium">
+											{coverage_for && plan_type ? `$${premium_plan.rider_doc_Rx}` : ""}
+										</div>
 									</div>
 								</Grid>
 							</Grid>
@@ -289,19 +314,23 @@ const KemperAccidentForm = (): JSX.Element => {
 					</div>
 
 					<div className="theme-plan-inner-section-margin" />
-					{total_premium_amount > 0 ? <Grid container className="theme-plan-inner-section-margin">
-						<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-							<div className="details-form-row">
-								<div
-									className="details-form-label theme-plan-total-premium align-right"
-									style={{ color: theme.primary_color }}
-								>
-									Total Premium: <span className="show-premium margin-adjust">{total_premium_amount == 0 ? "" : `$${total_premium_amount.toFixed(2)}`}</span>
+					{total_premium_amount > 0 ? (
+						<Grid container className="theme-plan-inner-section-margin">
+							<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+								<div className="details-form-row">
+									<div
+										className="details-form-label theme-plan-total-premium align-right"
+										style={{ color: theme.primary_color }}
+									>
+										Total Premium:{" "}
+										<span className="show-premium margin-adjust">
+											{total_premium_amount == 0 ? "" : `$${total_premium_amount.toFixed(2)}`}
+										</span>
+									</div>
 								</div>
-							</div>
+							</Grid>
 						</Grid>
-					</Grid> : null
-					}
+					) : null}
 					<div className="theme-plan-option-content">
 						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
 						<p className="theme-plan-checkbox-label">
