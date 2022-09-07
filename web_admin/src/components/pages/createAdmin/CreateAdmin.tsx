@@ -70,6 +70,7 @@ const CreateAdmin = () => {
 		last_name: "",
 		role: "",
 		SSN: "",
+		reenterSSN: "",
 		date_of_birth: "",
 		hire_date: "",
 		gender: "",
@@ -142,6 +143,7 @@ const CreateAdmin = () => {
 			last_name,
 			role,
 			SSN,
+			reenterSSN,
 			date_of_birth,
 			hire_date,
 			email
@@ -189,6 +191,23 @@ const CreateAdmin = () => {
 					_validation.current.createdUser["SSN"] = "Enter correct 9 digit SSN";
 					_validation.current["status"] = "invalid";
 					flag = false;
+				}
+				if (reenterSSN == null || reenterSSN == "") {
+					_validation.current.createdUser["reenterSSN"] = "Please confirm 9 digit SSN";
+					_validation.current["status"] = "invalid";
+					flag = false;
+				} else {
+					const _reSSN = reenterSSN.replaceAll("-", "");
+					if (String(_reSSN).length !== 9) {
+						_validation.current.createdUser["reenterSSN"] = "Enter correct 9 digit SSN";
+						_validation.current["status"] = "invalid";
+						flag = false;
+					}
+					if (SSN !== reenterSSN) {
+						_validation.current.createdUser["reenterSSN"] = "SSN and confirm SSN does not match";
+						_validation.current["status"] = "invalid";
+						flag = false;
+					}
 				}
 			}
 		}
@@ -372,6 +391,79 @@ const CreateAdmin = () => {
 							event.target.value = "";
 							event.target.value = createdUser.SSN;
 							alert("Please enter a valid SSN!");
+						} else {
+							const ssn = ssnValue;
+
+							if (ssn.length === 4) {
+								ssnValue = ssnValue.substr(0, 3) + "-" + ssnValue.substr(3);
+							} else if (ssn.length === 5) {
+								ssnValue = ssnValue.substr(0, 3) + "-" + ssnValue.substr(3);
+							} else if (ssn.length >= 6 && ssn.length <= 9) {
+								ssnValue =
+									ssnValue.substr(0, 3) + "-" + ssnValue.substr(3, 2) + "-" + ssnValue.substr(5);
+							}
+
+							setCreatedUsers(Object.assign({}, createdUser, { [name]: ssnValue }));
+						}
+					}
+				}
+			} else if (name === "reenterSSN") {
+				if (!pasted) {
+					// console.log("Not Pasted");
+					const _value = Number(value.replaceAll("-", ""));
+					if (!isNaN(_value)) {
+						const ssn = value;
+						if (
+							!(
+								/^[0-9]{0,3}$/.test(value) ||
+								/^[0-9]{3}-[0-9]{0,2}$/.test(value) ||
+								/^[0-9]{3}-[0-9]{2}-[0-9]{0,4}$/.test(value)
+							)
+						) {
+							value = value.substr(0, value.length - 1);
+						} else if (ssn.length === 6) {
+							value = value.substr(0, 7) + "-" + value.substr(7);
+						} else if (ssn.length === 3) {
+							value = value.substr(0, 3) + "-" + value.substr(3);
+						}
+
+						setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+					} else {
+						event.target.value = "";
+						event.target.value = createdUser.reenterSSN;
+					}
+				} else {
+					// console.log("Pasted");
+					setPasted(false);
+					if (!isNaN(value as any)) {
+						if (value.length > 9) {
+							event.target.value = "";
+							event.target.value = createdUser.reenterSSN;
+							alert("Please reenter a valid 9 digit SSN!");
+						} else {
+							// console.log("Inside Number");
+							const ssn = value;
+
+							if (ssn.length === 4) {
+								value = value.substr(0, 3) + "-" + value.substr(3);
+							} else if (ssn.length === 5) {
+								value = value.substr(0, 3) + "-" + value.substr(3);
+							} else if (ssn.length >= 6 && ssn.length <= 9) {
+								value = value.substr(0, 3) + "-" + value.substr(3, 2) + "-" + value.substr(5);
+							}
+
+							setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+						}
+					} else {
+						// console.log("Inside alpha-numeric");
+						let ssnValue = value.replace(/[^0-9]/g, "").replace(/[^\w\s]/gi, "");
+						//console.log("replaced string", ssnValue);
+						alert("You have pasted alpha-numeric SSN!");
+
+						if (ssnValue.length > 9) {
+							event.target.value = "";
+							event.target.value = createdUser.SSN;
+							alert("Please reenter a valid SSN!");
 						} else {
 							const ssn = ssnValue;
 
@@ -587,6 +679,7 @@ const CreateAdmin = () => {
 							last_name: "",
 							role: createdUser.role,
 							SSN: "",
+							reenterSSN: "",
 							date_of_birth: "",
 							hire_date: "",
 							gender: "",
@@ -711,6 +804,14 @@ const CreateAdmin = () => {
 							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleUserChange(event),
 							placeholder: "Enter SSN",
 							value: createdUser.SSN,
+							type: "textfield"
+						},
+						{
+							label: "Reenter SSN",
+							name: "reenterSSN",
+							onChange: (event) => handleUserChange(event),
+							placeholder: "Reenter SSN",
+							value: createdUser.reenterSSN,
 							type: "textfield"
 						},
 						{
@@ -1009,6 +1110,12 @@ const CreateAdmin = () => {
 																				: userNameExists
 																				? "User Name exists!"
 																				: ""
+																			: field.name === "SSN"
+																			? field.value.length !== 0 &&
+																			  _validation?.current?.createdUser?.SSN
+																			: field.name === "reenterSSN"
+																			? _validation?.current?.createdUser
+																					?.reenterSSN
 																			: field.name !== "email" &&
 																			  field.name !== "user_name" &&
 																			  _validation?.current?.status ===

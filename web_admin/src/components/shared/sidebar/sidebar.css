@@ -87,6 +87,10 @@
     /* left: 82.5rem !important; */
 }
 
+.css-zxtyt4-MuiPaper-root-MuiAppBar-root{
+    background-color: #EEEEEE !important;
+}
+
 @media (min-width: 320px) and (max-width: 1024px) {
 	.admin-sidebar .toolbar {
 		background-image: linear-gradient(to right, #9370db, #f8acc6);
