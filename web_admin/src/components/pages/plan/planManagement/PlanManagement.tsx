@@ -98,10 +98,10 @@ const PlanManagement = (): JSX.Element => {
 						/>
 					</Tabs>
 					<TabPanel value={value} index={0}>
-						<PlanManagementGrid gridData={active_plans} />
+						<PlanManagementGrid status="ACTIVE" />
 					</TabPanel>
 					<TabPanel value={value} index={1}>
-						<PlanManagementGrid gridData={expired_plans} />
+						<PlanManagementGrid status="EXPIRED" />
 					</TabPanel>
 				</Box>
 			</Box>

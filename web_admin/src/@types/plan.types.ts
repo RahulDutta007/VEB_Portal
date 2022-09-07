@@ -8,7 +8,6 @@ export type CreatePlan = {
 export type PlanStatus = "ACTIVE" | "EXPIRED";
 
 export type Plan = {
-	status?: string;
 	_id?: string;
 	plan_code: string;
 	plan_name: string;

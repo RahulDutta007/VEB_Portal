@@ -6,10 +6,9 @@ export const getCriticalIllnessPremium = (
 	age: number,
 	benefitAmount: number
 ) => {
-	const 
+	const;
 	if (coverage === "Employee Only") {
 		if (coverageLevel === "With Cancer") {
-			if(benefit)
 		}
 	}
 };

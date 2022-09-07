@@ -103,7 +103,7 @@ const PlanManagementGrid = ({ status }: PlanManagementProps): JSX.Element => {
 				<div className="ag-theme-alpine" style={{ height: "400px", width: "100%" }}>
 					<AgGridReact
 						ref={agGridRef}
-						rowData={gridData}
+						rowData={plans}
 						onGridReady={handleAgGridReady}
 						onFirstDataRendered={handleFirstDataRendered}
 						animateRows
