@@ -948,6 +948,12 @@ body {
 	padding-bottom: 6px;
 }
 
+.card-category-5 .per-card-3 .card-footer {
+	padding: 10px 15px;
+	background-color: rgba(0, 0, 0, 0.04);
+	position: relative;
+}
+
 .card-category-5 .per-card-1 .card-content .per-position {
 	color: #002255;
 	padding-bottom: 10px;
@@ -989,13 +995,19 @@ body {
 
 .card-category-5 .per-card-2 {
 	width: 300px;
-	padding: 30px 0 0 0;
-	margin: 0 40px; /*You may have remove this CSS. I used this CSS for apply some margin from the card before*/
+	/* padding: 30px 0 0 0; */
+	/* margin: 0 40px; */
 
 	-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 	-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 	-o-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card-category-5 .per-card-3 .card-title {
+	padding: 10px 15px;
+	background-color: rgba(0, 0, 0, 0.04);
+	position: relative;
 }
 
 .card-category-5 .per-card-2 .card-image {
@@ -1130,7 +1142,6 @@ body {
 
 .card-category-5 .per-card-3 {
 	width: 400px;
-	height: 240px;
 
 	-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 	-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -1177,7 +1188,7 @@ body {
 
 .card-category-5 .per-card-3 .card-content {
 	text-align: center;
-	padding: 20px;
+	/* padding: 20px; */
 	position: relative;
 }
 

@@ -4,7 +4,7 @@ import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { COVERAGE } from "../../../../../../../constants/coverage";
 import { ThemeContext } from "../../../../../../../contexts";
-import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
+import { LazyPlanActions, PlanHeader, VEBPlanCard } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
 import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
 import { Checkbox } from "@mui/material";
@@ -407,7 +407,7 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 			family_member_details.push({
 				member_name: name,
 				benefit_amount: value,
-				premium_amount: premium_plan.member.find((plan) => plan.benefit_amount == parseInt(value))
+				premium_amount: premium_plan.member.find((plan, index) => plan.benefit_amount == parseInt(value))
 					?.premium_amount
 			});
 			const familyDetails = JSON.parse(JSON.stringify(family_member_details));
@@ -418,8 +418,9 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 					return {
 						member_name: name,
 						benefit_amount: value,
-						premium_amount: premium_plan.member.find((plan) => plan.benefit_amount == parseInt(value))
-							?.premium_amount
+						premium_amount: premium_plan.member.find(
+							(plan, index) => plan.benefit_amount == parseInt(value)
+						)?.premium_amount
 					};
 				} else {
 					return member;
@@ -485,13 +486,14 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 				plan_type === "non_occupational_non_accident"
 					? "non_occupational_non_accident"
 					: "non_occupational_accident";
-			const calculatePremiumAmount = premium_plan[planType].employee.find(
-				(plan) => plan.benefit_amount === benefit_amount
+			const coverageFor = coverage_for === "Employee Only" ? "employee" : "employee_and_family";
+			const calculatePremiumAmount = premium_plan[planType][coverageFor].find(
+				(plan: any, index: any) => plan.benefit_amount === benefit_amount
 			)?.premium_amount;
 			setPremiumAmount(calculatePremiumAmount ? calculatePremiumAmount : 0);
 			setTotalPremiumAmount(calculatePremiumAmount ? calculatePremiumAmount : 0);
 			if (family_member_details && family_member_details.length > 0) {
-				const totalMemberPremiumAmount = family_member_details.reduce(
+				const totalMemberPremiumAmount: any = family_member_details.reduce(
 					(previousValue: any, currentValue: any) => previousValue + currentValue.premium_amount,
 					0
 				);
@@ -719,6 +721,22 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 									</Typography>
 								</AccordionDetails>
 							)}
+						</Accordion>
+					</div>
+
+					<div className="accordion-container">
+						<Accordion
+							expanded={expanded_panel === "panel_beneficiary"}
+							onChange={handleBeneficiaryChange("panel_beneficiary")}
+						>
+							<AccordionSummary aria-controls="panel1d-content" id="panel-header-beneficiary">
+								<Typography>Add Beneficiary</Typography>
+							</AccordionSummary>
+							<AccordionDetails>
+								<Typography>
+									No eligibility questions are required for the selected coverage, please press next.
+								</Typography>
+							</AccordionDetails>
 						</Accordion>
 					</div>
 					<div className="theme-plan-option-content">

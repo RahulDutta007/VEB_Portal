@@ -4,7 +4,7 @@ import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { COVERAGE } from "../../../../../../../constants/coverage";
 import { ThemeContext } from "../../../../../../../contexts";
-import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
+import { LazyPlanActions, PlanHeader, VEBPlanCard } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
 import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
 import { Checkbox } from "@mui/material";
@@ -266,7 +266,7 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 			family_member_details.push({
 				member_name: name,
 				benefit_amount: value,
-				premium_amount: premium_plan[memberType].find((plan) => plan.benefit_amount == parseInt(value))
+				premium_amount: premium_plan[memberType].find((plan, index) => plan.benefit_amount == parseInt(value))
 					?.premium_amount
 			});
 			const familyDetails = JSON.parse(JSON.stringify(family_member_details));
@@ -277,8 +277,9 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 					return {
 						member_name: name,
 						benefit_amount: value,
-						premium_amount: premium_plan[memberType].find((plan) => plan.benefit_amount == parseInt(value))
-							?.premium_amount
+						premium_amount: premium_plan[memberType].find(
+							(plan, index) => plan.benefit_amount == parseInt(value)
+						)?.premium_amount
 					};
 				} else {
 					return member;
@@ -618,9 +619,24 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 								<Typography>Add Beneficiary</Typography>
 							</AccordionSummary>
 							<AccordionDetails>
-								<Typography>
-									No eligibility questions are required for the selected coverage, please press next.
-								</Typography>
+								<Grid container>
+									{family_member.map((fm: any, index: any) => {
+										return (
+											<Grid
+												item
+												key={index}
+												xl={5}
+												lg={5}
+												md={5}
+												sm={10}
+												xs={10}
+												columnSpacing={2}
+											>
+												<VEBPlanCard familyMember={family_member}></VEBPlanCard>
+											</Grid>
+										);
+									})}
+								</Grid>
 							</AccordionDetails>
 						</Accordion>
 					</div>
