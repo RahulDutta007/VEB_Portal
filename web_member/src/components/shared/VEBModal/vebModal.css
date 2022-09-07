@@ -1,0 +1,18 @@
+.select-input-style {
+	min-width: 180px;
+	text-align: left;
+	overflow-y: visible;
+}
+.create-user-input-select {
+	min-width: 100%;
+	width: 100%;
+}
+.text-field-input-create-enroller > div > input,
+.create-user-input-select > div > input,
+.create-user-input-date > div > input {
+	color: #000000 !important;
+}
+
+.create-user-input-select > div {
+	color: #000000 !important;
+}

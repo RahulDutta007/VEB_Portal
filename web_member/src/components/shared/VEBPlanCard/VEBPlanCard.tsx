@@ -8,10 +8,33 @@ import VEBModal from "../VEBModal/VEBModal";
 const VEBPlanCard = (props: any) => {
 	const { theme } = useContext(ThemeContext);
 	const [addBeneficiaryDetails, setAddBeneficiaryDetails] = useState({});
+	const [allBeneficiaryDetails, setAllBeneficiaryDetails] = useState({});
 	const [modalOpen, setModalOpen] = useState(false);
 	const handleBenificiary = useCallback((event: any) => {
 		setModalOpen(true);
 	}, []);
+
+	const handleEdit = useCallback(
+		(value: any) => {
+			setAllBeneficiaryDetails(Object.assign({}, allBeneficiaryDetails, value));
+			setModalOpen(true);
+		},
+		[allBeneficiaryDetails]
+	);
+
+	const handleSubmitBeneficiary = useCallback(
+		(value: any) => {
+			setAddBeneficiaryDetails(
+				Object.assign({}, addBeneficiaryDetails, {
+					Name: value.beneficiaryName,
+					Relation: value.relationship,
+					Percentage: parseInt(value.percentage.split(" ")[0]),
+					Type: value.type.substr(0, 1)
+				})
+			);
+		},
+		[addBeneficiaryDetails]
+	);
 	const handleAddBenificiary = useCallback(
 		(event: any) => {
 			if (event.currentTarget.name === "set-to-estate") {
@@ -40,10 +63,10 @@ const VEBPlanCard = (props: any) => {
 					})
 				);
 			} else {
-				setModalOpen(!modalOpen);
+				setModalOpen(false);
 			}
 		},
-		[addBeneficiaryDetails, props.familyMember, modalOpen]
+		[addBeneficiaryDetails, props.familyMember]
 	);
 	return (
 		<div className="VEB-plan-card">
@@ -111,16 +134,15 @@ const VEBPlanCard = (props: any) => {
 												color: theme.button.color,
 												opacity: 0.8
 											}}
-											onClick={handleBenificiary}
+											onClick={(event: any) => handleBenificiary(event)}
 										>
 											Add Beneficiary
 										</Button>
 									</Grid>
 								</Grid>
 							</div>
-							<VEBModal open={modalOpen}></VEBModal>
 							<div className="card-content">
-								<VEBTabular memberDetails={addBeneficiaryDetails}></VEBTabular>
+								<VEBTabular memberDetails={addBeneficiaryDetails} handleEdit={handleEdit}></VEBTabular>
 								{/* <div className="card-text">
 									<span>
 										Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
@@ -135,6 +157,12 @@ const VEBPlanCard = (props: any) => {
 					</li>
 				</div>
 			</ul>
+			<VEBModal
+				open={modalOpen}
+				familyDetails={props.familyMember}
+				submitBeneficiary={handleSubmitBeneficiary}
+				data={allBeneficiaryDetails}
+			></VEBModal>
 		</div>
 	);
 };

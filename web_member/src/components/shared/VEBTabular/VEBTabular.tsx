@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,6 +6,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import CreateIcon from "@mui/icons-material/Create";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function createData(Name: string, Relation: number, Percentage: number, Type: number, protein: number) {
 	return { Name, Relation, Percentage, Type };
@@ -18,6 +20,23 @@ export default function BasicTable(props: any) {
 	useEffect(() => {
 		setRows([...rows, props.memberDetails]);
 	}, [props.memberDetails]);
+	const handleEdit = useCallback(
+		(event: any, data: any) => {
+			props.handleEdit(data);
+		},
+		[props]
+	);
+
+	const handleDelete = useCallback(
+		(event: any, data: any) => {
+			setRows(
+				rows.filter((row: any, index: number) => {
+					return row.Name != data.Name;
+				})
+			);
+		},
+		[rows]
+	);
 	return (
 		<TableContainer component={Paper}>
 			<Table sx={{ minWidth: 400 }} aria-label="simple table">
@@ -42,7 +61,16 @@ export default function BasicTable(props: any) {
 										<TableCell align="right">{row?.Relation}</TableCell>
 										<TableCell align="right">{row?.Percentage}</TableCell>
 										<TableCell align="right">{row?.Type}</TableCell>
-										<TableCell align="right">Action</TableCell>
+										<TableCell
+											align="right"
+											style={{
+												display: "flex",
+												flexDirection: "row"
+											}}
+										>
+											<CreateIcon onClick={(event: any) => handleEdit(event, row)} />
+											<DeleteIcon onClick={(event: any) => handleDelete(event, row)} />
+										</TableCell>
 									</TableRow>
 								);
 							}

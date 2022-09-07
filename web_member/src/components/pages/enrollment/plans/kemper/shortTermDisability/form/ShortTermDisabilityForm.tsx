@@ -202,6 +202,12 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 					benefit_amount: 100,
 					premium_amount: 4.37
 				}
+			],
+			employee_and_family: [
+				{
+					benefit_amount: 100,
+					premium_amount: 4.37
+				}
 			]
 		},
 		non_occupational_accident: {
@@ -321,6 +327,12 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 				{
 					benefit_amount: 100,
 					premium_amount: 2.87
+				}
+			],
+			employee_and_family: [
+				{
+					benefit_amount: 100,
+					premium_amount: 4.37
 				}
 			]
 		}
@@ -573,9 +585,9 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 											name="contact_label"
 											onChange={(event: any) => handleBenefitAmountChange(event)}
 										>
-											{premium_plan.non_occupational_accident.employee.map((plan) => {
+											{premium_plan.non_occupational_accident.employee.map((plan, index) => {
 												return (
-													<MenuItem value={plan.benefit_amount}>
+													<MenuItem key={index} value={plan.benefit_amount}>
 														{plan.benefit_amount.toFixed(2)}
 													</MenuItem>
 												);
