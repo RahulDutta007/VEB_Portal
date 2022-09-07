@@ -22,26 +22,66 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
 	const { member } = useContext(AuthContext);
 	const [criticalIllnessPlanDetails, setCriticalIllnessPlanDetails] = useState<CriticalIllnessPlanDetails>({
-		benefit_amount: [30000.0, 20000.0, 10000.0],
+		benefit_amount: [10000.0, 20000.0, 30000.0],
 		coverage: ["Employee Only", "Employee & Spouse", "Employee & Dependent", "Employee & Family"],
 		coverage_level: ["With Cancer", "Without Cancer"],
 		premium_amount: {
 			standard_premium: {
 				"Employee Only": {
-					"With Cancer": null,
-					"Without Cancer": null
+					10000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					},
+					20000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					},
+					30000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					}
 				},
 				"Employee & Spouse": {
-					"With Cancer": null,
-					"Without Cancer": null
+					10000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					},
+					20000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					},
+					30000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					}
 				},
 				"Employee & Dependent": {
-					"With Cancer": null,
-					"Without Cancer": null
+					10000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					},
+					20000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					},
+					30000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					}
 				},
 				"Employee & Family": {
-					"With Cancer": null,
-					"Without Cancer": null
+					10000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					},
+					20000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					},
+					30000.0: {
+						"With Cancer": null,
+						"Without Cancer": null
+					}
 				}
 			}
 		}
@@ -235,9 +275,9 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 											handleChangePremium(event)
 										}
 									>
-										<MenuItem value={10000.0} key={index}>
-											{"$10000.00"}
-										</MenuItem>
+										<MenuItem value={10000.0}>{"$10000.00"}</MenuItem>
+										<MenuItem value={20000.0}>{"$20000.00"}</MenuItem>
+										<MenuItem value={30000.0}>{"$30000.00"}</MenuItem>
 									</Select>
 								</div>
 							</Grid>

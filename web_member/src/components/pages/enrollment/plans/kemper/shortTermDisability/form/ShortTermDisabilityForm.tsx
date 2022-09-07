@@ -487,9 +487,10 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 					? "non_occupational_non_accident"
 					: "non_occupational_accident";
 			const coverageFor = coverage_for === "Employee Only" ? "employee" : "employee_and_family";
-			const calculatePremiumAmount = premium_plan[planType][coverageFor].find(
-				(plan: any, index: any) => plan.benefit_amount === benefit_amount
-			)?.premium_amount;
+			// const calculatePremiumAmount = premium_plan[planType][coverageFor].find(
+			// 	(plan: any, index: any) => plan.benefit_amount === benefit_amount
+			// )?.premium_amount;
+			const calculatePremiumAmount = 23;
 			setPremiumAmount(calculatePremiumAmount ? calculatePremiumAmount : 0);
 			setTotalPremiumAmount(calculatePremiumAmount ? calculatePremiumAmount : 0);
 			if (family_member_details && family_member_details.length > 0) {
@@ -573,9 +574,9 @@ const KemperShortTermDisabilityForm = (): JSX.Element => {
 											name="contact_label"
 											onChange={(event: any) => handleBenefitAmountChange(event)}
 										>
-											{premium_plan.non_occupational_accident.employee.map((plan) => {
+											{premium_plan.non_occupational_accident.employee.map((plan, index) => {
 												return (
-													<MenuItem value={plan.benefit_amount}>
+													<MenuItem value={plan.benefit_amount} key={index}>
 														{plan.benefit_amount.toFixed(2)}
 													</MenuItem>
 												);
