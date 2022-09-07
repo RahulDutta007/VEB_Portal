@@ -570,7 +570,7 @@ const CreateAdmin = () => {
 						setSnackbarAPICallProps(
 							Object.assign({}, snackbarAPICallProps, {
 								open: true,
-								message: "Member Created Successfully!",
+								message: "User Created Successfully!",
 								severity: "success"
 							})
 						);
@@ -613,7 +613,7 @@ const CreateAdmin = () => {
 						setSnackbarAPICallProps(
 							Object.assign({}, snackbarAPICallProps, {
 								open: true,
-								message: "Member Creation Failed!",
+								message: "User Creation Failed!",
 								severity: "error"
 							})
 						);

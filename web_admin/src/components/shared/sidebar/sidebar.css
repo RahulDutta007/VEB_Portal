@@ -82,6 +82,11 @@
 	font-weight: bold;
 }
 
+.css-3bmhjh-MuiPaper-root-MuiPopover-paper{
+	width: 170px !important;	
+    /* left: 82.5rem !important; */
+}
+
 @media (min-width: 320px) and (max-width: 1024px) {
 	.admin-sidebar .toolbar {
 		background-image: linear-gradient(to right, #9370db, #f8acc6);

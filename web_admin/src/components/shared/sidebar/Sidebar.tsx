@@ -204,6 +204,7 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 			open={isMenuOpen}
 			anchorEl={anchorEl}
 			onClose={handleMenuClose}
+			className="my-profile-popover"
 			anchorOrigin={{
 				vertical: "bottom",
 				horizontal: "center"
@@ -212,11 +213,9 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 				vertical: "top",
 				horizontal: "center"
 			}}
-			style={
-				{
-					//scrollbar: 5
-				}
-			}
+			style={{
+				minWidth: "170px !important"
+			}}
 		>
 			<div className="profile-menu">
 				<List>
@@ -358,7 +357,7 @@ const Sidebar = ({ WrappedComponent }: SidebarProps) => {
 					zIndex: 9999,
 					position: "absolute",
 					top: 43,
-					right: 30,
+					right: "2.8rem",
 					transition: "2s",
 					display: "none"
 				}}
