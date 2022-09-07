@@ -81,8 +81,7 @@ export const findPlanCode = async (planCode: string): Promise<any> => {
 
 export const getAllPlan = async (status: string): Promise<Plan[]> => {
 	try {
-		const endpoint: Endpoint =
-			status !== "" ? `${initialRoute}/get-all-plan?status=${status}` : `${initialRoute}/get-all-plan`;
+		const endpoint: Endpoint = `${initialRoute}?status=${status}`;
 		/*
 			Add response type here in next line
 		*/

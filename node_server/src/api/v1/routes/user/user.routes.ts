@@ -17,5 +17,7 @@ router
 	.route("/members/assinged/paginated")
 	.get(verifyToken, getMembersByAssignedGroups);
 router.route("/members/count").get(verifyToken, getMemberCount);
+router.route("/group-owners/paginated/:role");
+router.route("/group-owners/count/:role");
 
 module.exports = router;

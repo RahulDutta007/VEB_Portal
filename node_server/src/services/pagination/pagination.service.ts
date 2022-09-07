@@ -1,7 +1,7 @@
 import { Model } from "mongoose";
 import { nexcalCollection } from "../../config/db";
 
-type Operation = "Members" | "Groups";
+type Operation = "Members" | "Groups" | "GROUP OWNERS";
 
 export const getPaginatedDocuments = async (
 	model: Model<any>,
@@ -37,11 +37,11 @@ export const getPaginatedDocuments = async (
 			allDocuments = await model.find(filter).populate("group").populate("location").limit(limit).skip(startIndex);
 		} catch (err) {
 			console.log("errrrrrrrrrrrrrrrr", err);
-		}		
+		}
 	} else if (operation === "Groups") {
 		allDocuments = await model.find(filter).populate("branding").limit(limit).skip(startIndex);
 	}
-	
+
 
 	if (!allDocuments) {
 		// return res.status(StatusCodes.BAD_REQUEST).json({

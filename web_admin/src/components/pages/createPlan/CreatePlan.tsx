@@ -26,6 +26,7 @@ import { Plan } from "../../../@types/plan.types";
 import "./createPlan.css";
 import { UIContext } from "../../../contexts";
 import { ADMIN_DASHBOARD_HEADER } from "../../../constants/caption/dashboardHeader";
+import { useNavigate } from "react-router-dom";
 
 const GreenCheckbox = withStyles({
 	root: {
@@ -48,7 +49,7 @@ const CreatePlan = () => {
 		end_date: "",
 		has_end_date: false
 	});
-	const [activePlans, setActivePlans] = useState<Plan[]>([]);
+	const navigate = useNavigate();
 	const [validation, setValidation] = useState<Validation>({
 		plan: {},
 		status: "invalid"
@@ -174,22 +175,6 @@ const CreatePlan = () => {
 				};
 				const response = await api.plan.createPlan(payload);
 				if (response.message === "Data added successfully") {
-					setPlan(
-						Object.assign({}, plan, {
-							plan_code: "",
-							plan_name: "",
-							start_date: "",
-							end_date: ""
-						})
-					);
-					setPlan(
-						Object.assign({}, plan, {
-							plan_code: "",
-							plan_name: "",
-							start_date: "",
-							end_date: ""
-						})
-					);
 					setSnackbarAPICallProps(
 						Object.assign({}, snackbarAPICallProps, {
 							open: true,
@@ -197,6 +182,8 @@ const CreatePlan = () => {
 							severity: "success"
 						})
 					);
+					setTimeout(() => null, 2000);
+					navigate("/plans");
 				} else {
 					setPlan(
 						Object.assign({}, plan, {
@@ -238,15 +225,7 @@ const CreatePlan = () => {
 	);
 
 	const getActivePlans = useCallback(async () => {
-		if (activePlans.length === 0) {
-			const _activePlans: Plan[] = await api.plan.getAllPlan("ACTIVE");
-			setActivePlans(Object.assign([], _activePlans));
-		}
-	}, [activePlans.length]);
-
-	useEffect(() => {
-		getActivePlans();
-		setDashboardHeader(ADMIN_DASHBOARD_HEADER.create_plan);
+		const activePlans: Plan[] = await api.plan.getAllPlan("ACTIVE");
 		setPlanForm(
 			Object.assign(
 				{},
@@ -276,6 +255,7 @@ const CreatePlan = () => {
 								"Critical Illness Group",
 								"Whole Life"
 							].filter((plan: string) => {
+								console.log("plan", plan);
 								return !activePlans.some((activePlan: Plan) => {
 									return activePlan.plan_name === plan;
 								});
@@ -309,17 +289,20 @@ const CreatePlan = () => {
 			)
 		);
 	}, [
-		plan.plan_code,
-		plan.end_date,
-		plan.plan_name,
-		plan.start_date,
-		handlePlanChange,
-		plan.has_end_date,
 		handleEnableCheckbox,
+		handlePlanChange,
 		handlePlanDateChange,
-		getActivePlans,
-		activePlans
+		plan.end_date,
+		plan.has_end_date,
+		plan.plan_code,
+		plan.plan_name,
+		plan.start_date
 	]);
+
+	useEffect(() => {
+		getActivePlans();
+		setDashboardHeader(ADMIN_DASHBOARD_HEADER.create_plan);
+	}, [getActivePlans, setDashboardHeader]);
 
 	return (
 		<div className="create-createdUser" id="create-createdUser">

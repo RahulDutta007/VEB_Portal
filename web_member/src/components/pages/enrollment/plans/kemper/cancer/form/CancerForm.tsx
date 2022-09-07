@@ -1,8 +1,7 @@
-import { Button, MenuItem } from "@mui/material";
+import { Button, MenuItem, SelectChangeEvent } from "@mui/material";
 import { Select } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
-import React, { useContext } from "react";
-import { COVERAGE } from "../../../../../../../constants/coverage";
+import React, { useContext, useEffect } from "react";
 import { ThemeContext } from "../../../../../../../contexts";
 import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
@@ -12,12 +11,61 @@ import { useState } from "react";
 import { useCallback } from "react";
 
 import "./cancerForm.css";
+import { CANCER_PLAN_DETAILS } from "../../../../../../../constants/plan";
+import { COVERAGE } from "../../../../../../../constants/coverage";
+import { dollarize } from "../../../../../../../utils/commonFunctions/dollarize";
+import {
+	CancerPlanCoverage,
+	CancerPlanCoverageLevel,
+	CancerPlanDetails,
+	CancerPlanPremiumAmount
+} from "../../../../../../../@types/plan.types";
 
 const KemperCancerForm = (): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
 	const { theme } = useContext(ThemeContext);
+	const [cancerPlanDetails, setCancerPlanDetails] = useState<CancerPlanDetails>({
+		coverage: ["Employee Only", "Employee & Family"],
+		coverage_level: ["High Plan", "Low Plan"],
+		premium_amount: {
+			standard_premium: {
+				"Employee Only": {
+					"High Plan": 7.47,
+					"Low Plan": 6.1
+				},
+				"Employee & Family": {
+					// eslint-disable-next-line prettier/prettier
+					"High Plan": 11.1,
+					"Low Plan": 13.47
+				}
+			},
+			rider_premium: {
+				"Employee Only": {
+					// eslint-disable-next-line prettier/prettier
+					"High Plan": 1.4,
+					// eslint-disable-next-line prettier/prettier
+					"Low Plan": 1.4
+				},
+				"Employee & Family": {
+					// eslint-disable-next-line prettier/prettier
+					"High Plan": 2.83,
+					"Low Plan": 2.83
+				}
+			}
+		}
+	});
+	const [cancerPlanInputs, setCancerPlanInputs] = useState<{
+		coverage: null | string;
+		coverage_level: null | string;
+	}>({
+		coverage: null,
+		coverage_level: null
+	});
+	const [standardPremium, setStandardPremium] = useState(0);
+	const [riderPremium, setRiderPremium] = useState(0);
+	const [totalPremium, setTotalPremium] = useState(0);
 
 	const handleWritingNumberChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,6 +79,39 @@ const KemperCancerForm = (): JSX.Element => {
 		},
 		[prevWritingNumber]
 	);
+
+	const handleCoverageChange = (event: SelectChangeEvent<unknown>, child: React.ReactNode) => {
+		const { name, value } = event.target;
+		setCancerPlanInputs(
+			Object.assign({}, cancerPlanInputs, {
+				[name]: value
+			})
+		);
+	};
+
+	const calculatePremium = useCallback(() => {
+		const { coverage, coverage_level } = cancerPlanInputs;
+		if (coverage && coverage_level) {
+			const newStandardPremium =
+				cancerPlanDetails.premium_amount.standard_premium[coverage as keyof CancerPlanCoverage][
+					coverage_level as keyof CancerPlanCoverageLevel
+				];
+			setStandardPremium(newStandardPremium);
+			const newRiderPremium =
+				cancerPlanDetails.premium_amount.rider_premium[coverage as keyof CancerPlanCoverage][
+					coverage_level as keyof CancerPlanCoverageLevel
+				];
+			setRiderPremium(newRiderPremium);
+		}
+	}, [cancerPlanDetails, cancerPlanInputs]);
+
+	useEffect(() => {
+		setTotalPremium(standardPremium + riderPremium);
+	}, [riderPremium, standardPremium]);
+
+	useEffect(() => {
+		calculatePremium();
+	}, [calculatePremium, cancerPlanInputs.coverage, cancerPlanInputs.coverage_level]);
 
 	return (
 		<div className="kemper-cancer-form plan-form">
@@ -56,15 +137,11 @@ const KemperCancerForm = (): JSX.Element => {
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
-										name="contact_label"
+										name="coverage"
+										onChange={handleCoverageChange}
 									>
-										{COVERAGE.map((option: string, index: number) => {
-											return (
-												<MenuItem value={option} key={index}>
-													{option}
-												</MenuItem>
-											);
-										})}
+										<MenuItem value={"Employee Only"}>{"Employee Only"}</MenuItem>
+										<MenuItem value={"Employee & Family"}>{"Employee & Family"}</MenuItem>
 									</Select>
 								</div>
 							</Grid>
@@ -74,7 +151,8 @@ const KemperCancerForm = (): JSX.Element => {
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
-										name="contact_label"
+										name="coverage_level"
+										onChange={handleCoverageChange}
 									>
 										<MenuItem value={"High Plan"}>High Plan</MenuItem>
 										<MenuItem value={"Low Plan"}>Low Plan</MenuItem>
@@ -84,7 +162,7 @@ const KemperCancerForm = (): JSX.Element => {
 							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
-									<div className="show-premium">$0.00</div>
+									<div className="show-premium">{dollarize(standardPremium)}</div>
 								</div>
 							</Grid>
 						</Grid>
@@ -103,7 +181,6 @@ const KemperCancerForm = (): JSX.Element => {
 							</div>
 							<Grid className="grid-container" container columnSpacing={2}>
 								<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className="margin-adjust-33">
-									<input type="checkbox" disabled checked></input>
 									<label className="details-form-label required">
 										Intensive Care Unit - Rider Premium
 									</label>
@@ -111,7 +188,7 @@ const KemperCancerForm = (): JSX.Element => {
 								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
-										<div className="show-premium">$200.00</div>
+										<div className="show-premium">{dollarize(riderPremium)}</div>
 									</div>
 								</Grid>
 							</Grid>
@@ -125,7 +202,8 @@ const KemperCancerForm = (): JSX.Element => {
 									className="details-form-label theme-plan-total-premium align-right"
 									style={{ color: theme.primary_color }}
 								>
-									Total Premium: <span className="show-premium margin-adjust">$200.00</span>
+									Total Premium:{" "}
+									<span className="show-premium margin-adjust">{dollarize(totalPremium)}</span>
 								</div>
 							</div>
 						</Grid>

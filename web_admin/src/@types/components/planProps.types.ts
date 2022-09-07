@@ -1,5 +1,5 @@
-import { Plan } from "../plan.types";
+import { Plan, PlanStatus } from "../plan.types";
 
 export type PlanManagementProps = {
-	type: "ACTIVE" | "EXPIRED";
+	status: PlanStatus;
 };

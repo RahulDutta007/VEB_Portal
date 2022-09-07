@@ -1,0 +1,38 @@
+import { Gender, MaritalStatus, UploadType } from "./member.types";
+import { Role } from "./role.types";
+
+export type GroupOwner = {
+	admin_id: string;
+	first_name: string;
+	last_name: string;
+	middle_name: string | null;
+	user_name: string;
+	password: string | null;
+	role: Role;
+	email: string;
+	SSN: string | null;
+	date_of_birth: string;
+	gender: Gender;
+	marital_status: MaritalStatus;
+	address_line_1: string | null;
+	group_number: number | null;
+	address_line_2: string | null;
+	city: string | null;
+	state: string | null;
+	country: string | null;
+	ZIP: string | null;
+	contact_label: string | null;
+	phone_number: number | null;
+	phone_extension: number | null;
+	is_active: boolean | null;
+	is_member_chat_support: boolean | null;
+	is_employer_chat_support: boolean | null;
+	hire_date: string;
+	upload_type: UploadType;
+	created_by: string | null;
+	created_date: string;
+	is_registered: boolean | null;
+	writing_number: number | null;
+	enroller_id: string | null;
+	otp: number | null;
+};

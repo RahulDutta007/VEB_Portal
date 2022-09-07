@@ -40,5 +40,5 @@ const PlanSchema: Schema<IPlan> = new Schema(
   }
 );
 
-const PlanModel = model("plan", PlanSchema);
+const PlanModel = model("veb_plans", PlanSchema);
 export default PlanModel;
