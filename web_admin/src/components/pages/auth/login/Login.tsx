@@ -1,6 +1,6 @@
 import "../auth.css";
 import "./login.css";
-import React, { Suspense, useCallback, useRef, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Credential } from "../../../../@types/credential.types";
 import { DialogProps } from "../../../../@types/dialogProps.types";
@@ -107,13 +107,13 @@ const Login = (props: any): JSX.Element => {
 				_validation.current["status"] = "invalid";
 				flag = false;
 			}
-			if (validationType === "Change Password" && newPassword?.length) {
+			if (validationType === "Change Password" && newPassword?.length === 0) {
 				_validation.current["newPassword"] = "New Password is required";
 				_validation.current["status"] = "invalid";
 				flag = false;
 			}
-			if (validationType === "Change Password" && confirmPassword?.length) {
-				_validation.current["newPassword"] = "Confirm Password is required";
+			if (validationType === "Change Password" && confirmPassword?.length === 0) {
+				_validation.current["confirmPassword"] = "Confirm Password is required";
 				_validation.current["status"] = "invalid";
 				flag = false;
 			}
@@ -134,7 +134,7 @@ const Login = (props: any): JSX.Element => {
 			setValidation(Object.assign({}, _validation.current));
 			return _validation.current["status"];
 		},
-		[credential]
+		[confirmPassword, credential, newPassword, snackbarAPIProps]
 	);
 
 	const handleShowPassword = useCallback((): void => {
@@ -245,32 +245,35 @@ const Login = (props: any): JSX.Element => {
 		[credential.role, credential.user_id, handleValidation, navigate, snackbarAPIProps]
 	);
 
-	const handleSubmitChangePassword = useCallback(async () => {
-		//event.preventDefault();
-		const payload = {
-			new_password: newPassword
-		};
-		const validationResult = await handleValidation("Change Password");
-		if (validationResult === "invalid") {
-			return false;
-		}
-		const response = await trackPromise(api.auth.changeForgetPassword(payload, token));
-		console.log(1111, response);
-		if (response) {
-			setStatusMessage("Password Changed Successfully");
-			navigate("/login");
-			setSnackbarAPIProps(
-				Object.assign({}, snackbarAPIProps, {
-					open: true,
-					message: "Password has been changed successfully",
-					severity: "success"
-				})
-			);
-		} else {
-			setStatusMessage("Error Occurred");
-			navigate("/login");
-		}
-	}, [newPassword, handleValidation, token, navigate, snackbarAPIProps]);
+	const handleSubmitChangePassword = useCallback(
+		async (event: any) => {
+			event.preventDefault();
+			const payload = {
+				new_password: newPassword
+			};
+			const validationResult = await handleValidation("Change Password");
+			if (validationResult === "invalid") {
+				return false;
+			}
+			const response = await trackPromise(api.auth.changeForgetPassword(payload, token));
+			console.log(1111, response);
+			if (response) {
+				setStatusMessage("Password Changed Successfully");
+				navigate("/login");
+				setSnackbarAPIProps(
+					Object.assign({}, snackbarAPIProps, {
+						open: true,
+						message: "Password has been changed successfully",
+						severity: "success"
+					})
+				);
+			} else {
+				setStatusMessage("Error Occurred");
+				navigate("/login");
+			}
+		},
+		[newPassword, handleValidation, token, navigate, snackbarAPIProps]
+	);
 
 	const handleRoleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		const { currentTarget } = event;
@@ -369,6 +372,22 @@ const Login = (props: any): JSX.Element => {
 		},
 		[handleValidation, credential.user_id, credential.password, credential.role, navigate, loginDialogProps]
 	);
+
+	useEffect(() => {
+		_validation.current = {
+			role: null,
+			status: "invalid",
+			user_id: null
+		};
+		setValidation(Object.assign({}, validation, _validation.current));
+		setCredential({
+			user_id: "",
+			role: "",
+			password: "",
+			newPassword: "",
+			confirmPassword: ""
+		});
+	}, [location.pathname]);
 
 	const { role, user_id, password } = credential;
 
@@ -641,7 +660,9 @@ const Login = (props: any): JSX.Element => {
 										) : token != undefined ? (
 											<Button
 												className="button theme-button-violet"
-												onClick={handleSubmitChangePassword}
+												onClick={(event: any) => {
+													handleSubmitChangePassword(event);
+												}}
 												variant="contained"
 												type="submit"
 											>
