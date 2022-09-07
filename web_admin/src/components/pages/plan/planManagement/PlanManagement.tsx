@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, useContext, Suspense } from "react";
+import { useCallback, useEffect, useRef, useState, useContext } from "react";
 import { ADMIN_DASHBOARD_HEADER } from "../../../../constants/caption/dashboardHeader";
 import { UIContext } from "../../../../contexts";
 import TabPanel from "../../../shared/tabPanelComponent/TabPanel";
@@ -6,9 +6,9 @@ import a11yProps from "../../../../constants/tabPanelProps/ayProps";
 import { api } from "../../../../utils/api";
 import PlanManagementGrid from "./PlanManagementGrid";
 import moment from "moment";
+import dateConverterUS from "../../../../utils/commonFunctions/date";
 
 import { Box, Tabs, Tab } from "@mui/material";
-import { LazyPlanManagementGrid } from "../..";
 
 const PlanManagement = (): JSX.Element => {
 	const [plans, setPlans] = useState([]);
@@ -30,13 +30,13 @@ const PlanManagement = (): JSX.Element => {
 			Object.assign(
 				[],
 				_plans
-					.filter((plan: any) => plan.status === "ACTIVE")
-					.map((plan: any) => {
+					.filter((plan) => plan.status === "ACTIVE")
+					.map((plan) => {
 						if (plan.start_date) {
-							plan.start_date = moment(plan.start_date).format("MM/DD/YYYY");
+							plan.start_date = dateConverterUS(plan.start_date);
 						}
 						if (plan.end_date) {
-							plan.end_date = moment(plan.end_date).format("MM/DD/YYYY");
+							plan.end_date = dateConverterUS(plan.end_date);
 						}
 						return plan;
 					})
@@ -46,8 +46,8 @@ const PlanManagement = (): JSX.Element => {
 			Object.assign(
 				[],
 				_plans
-					.filter((plan: any) => plan.status === "EXPIRED")
-					.map((plan: any) => {
+					.filter((plan) => plan.status === "EXPIRED")
+					.map((plan) => {
 						if (plan.start_date) {
 							plan.start_date = moment(plan.start_date).format("MM/DD/YYYY");
 						}
@@ -98,10 +98,10 @@ const PlanManagement = (): JSX.Element => {
 						/>
 					</Tabs>
 					<TabPanel value={value} index={0}>
-						<PlanManagementGrid status="ACTIVE" />
+						<PlanManagementGrid gridData={active_plans} />
 					</TabPanel>
 					<TabPanel value={value} index={1}>
-						<PlanManagementGrid status="EXPIRED" />
+						<PlanManagementGrid gridData={expired_plans} />
 					</TabPanel>
 				</Box>
 			</Box>
