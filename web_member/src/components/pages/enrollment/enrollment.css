@@ -174,11 +174,24 @@
 	margin-right: 30px;
 }
 
-.MuiCollapse-wrapperInner.MuiCollapse-vertical.css-9l5vo-MuiCollapse-wrapperInner {
+/* .MuiCollapse-wrapperInner.MuiCollapse-vertical.css-9l5vo-MuiCollapse-wrapperInner {
 	max-height: 400px;
 	overflow-y: scroll;
-}
+} */
 
 .margin-top-20{
 	margin-top: 20px;
+}
+
+.card-position-middle {   
+    max-width: 95% !important;
+	width: 95% !important;
+    margin: 0 auto;
+}
+
+.card-grid-container > div {
+    flex-basis: 50% !important;
+    margin: 0 auto;
+    width: 99% !important;
+	max-width: 99% !important;
 }

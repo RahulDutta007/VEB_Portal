@@ -620,7 +620,7 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 								<Typography>Add Beneficiary</Typography>
 							</AccordionSummary>
 							<AccordionDetails>
-								<Grid container>
+								<Grid container className="card-grid-container">
 									{family_member.map((fm: any, index: any) => {
 										return (
 											<Grid
