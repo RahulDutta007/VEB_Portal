@@ -5,6 +5,8 @@ export type CreatePlan = {
 	end_date: string | null;
 };
 
+export type PlanStatus = "ACTIVE" | "EXPIRED";
+
 export type Plan = {
 	status?: string;
 	_id?: string;
@@ -13,4 +15,5 @@ export type Plan = {
 	start_date: string;
 	end_date: string;
 	has_end_date: boolean;
+	status?: PlanStatus;
 };

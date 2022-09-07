@@ -10,7 +10,8 @@ import {
 	PlanManagement,
 	AdminManagement,
 	AgentManagement,
-	Members
+	Members,
+	Enrollers
 } from "./components/pages";
 import { Sidebar } from "./components/shared";
 import CreatePlan from "./components/pages/createPlan/CreatePlan";
@@ -35,7 +36,7 @@ const App = (): JSX.Element => {
 							<Route path="/forgot-user-id" element={<Login />} />
 							<Route path="/forget-password/verify-token/:token" element={<Login />} />
 							<Route path="/sign-up" element={<SignUp />} />
-							<Route path="/enroller" element={<Sidebar WrappedComponent={CreateAdmin} />} />
+							<Route path="/enrollers" element={<Sidebar WrappedComponent={Enrollers} />} />
 							<Route path="/my-profile" element={<Sidebar WrappedComponent={MyProfile} />} />
 							<Route path="/create-plan" element={<Sidebar WrappedComponent={CreatePlan} />} />
 							<Route path="/plans" element={<Sidebar WrappedComponent={PlanManagement} />} />

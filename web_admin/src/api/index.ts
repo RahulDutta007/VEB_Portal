@@ -8,6 +8,8 @@ export const api = {
 	},
 	user: {
 		getAssignedPaginatedMembers: member.getAssignedPaginatedMembers,
-		getAssignedMemberCount: member.getAssignedMemberCount
+		getAssignedMemberCount: member.getAssignedMemberCount,
+		getGroupOwnerCount: member.getGroupOwnerCount,
+		getGroupOwnersPaginated: member.getGroupOwnersPaginated
 	}
 };

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
-import { useCallback, useRef, useState, Suspense } from "react";
+import { useCallback, useRef, useState, Suspense, useEffect } from "react";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import { CellValueChangedEvent, ColumnApi, GridApi, GridReadyEvent } from "ag-grid-community";
 import CustomDatePickerDialog from "../../../shared/dialogs/customDatePickerDialog/CustomDatePickerDialog";
@@ -11,8 +11,11 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import { PlanManagementProps } from "../../../../@types/components/planProps.types";
+import { Plan } from "../../../../@types/plan.types";
+import { api } from "../../../../utils/api";
 
-const PlanManagementGrid = ({ gridData }: any): JSX.Element => {
+const PlanManagementGrid = ({ status }: PlanManagementProps): JSX.Element => {
 	const [agGridAPI, setAgGridAPI] = useState<GridApi | null>(null);
 	const [agGridColumnAPI, setAgGridColumnAPI] = useState<ColumnApi | null>(null);
 	const [customDatePickerDialogProps, setCustomDatePickerDialogProps] = useState({
@@ -42,6 +45,7 @@ const PlanManagementGrid = ({ gridData }: any): JSX.Element => {
 		]
 	});
 	const agGridRef = useRef<any>(null);
+	const [plans, setPlans] = useState<Plan[]>([]);
 
 	const handleAgGridReady = (params: GridReadyEvent) => {
 		const { api, columnApi } = params;
@@ -76,6 +80,16 @@ const PlanManagementGrid = ({ gridData }: any): JSX.Element => {
 			</Tooltip>
 		);
 	}, [handleOpenDialog]);
+
+	const getPlans = useCallback(async () => {
+		const _plans = await api.plan.getAllPlan(status);
+		console.log("Plans ", _plans);
+		setPlans(Object.assign([], _plans));
+	}, [status]);
+
+	useEffect(() => {
+		getPlans();
+	}, [getPlans]);
 
 	return (
 		<>

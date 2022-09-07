@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, useContext } from "react";
+import { useCallback, useEffect, useRef, useState, useContext, Suspense } from "react";
 import { ADMIN_DASHBOARD_HEADER } from "../../../../constants/caption/dashboardHeader";
 import { UIContext } from "../../../../contexts";
 import TabPanel from "../../../shared/tabPanelComponent/TabPanel";
@@ -8,6 +8,7 @@ import PlanManagementGrid from "./PlanManagementGrid";
 import moment from "moment";
 
 import { Box, Tabs, Tab } from "@mui/material";
+import { LazyPlanManagementGrid } from "../..";
 
 const PlanManagement = (): JSX.Element => {
 	const [plans, setPlans] = useState([]);

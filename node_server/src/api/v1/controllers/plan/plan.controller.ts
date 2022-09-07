@@ -27,9 +27,9 @@ export const PlanCreation = async (req: Request, res: Response) => {
 
         // Validate start date and end date
         if (end_date) {
-            if (!moment(start_date).isBefore(end_date, 'day')) {
+            if (!moment(start_date).isBefore(end_date, "day")) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
-                    message: MESSAGE.custom(`End date should be less than a day of start date`)
+                    message: MESSAGE.custom("End date should be less than a day of start date")
                 });
             }
         }
@@ -94,12 +94,7 @@ export const PlanCreation = async (req: Request, res: Response) => {
 export const GetAllPlan = async (req: Request, res: Response) => {
     try {
         const status = req.query.status ? req.query.status : "";
-        if (!req.user) {
-            return res.status(StatusCodes.BAD_REQUEST).json({
-                message: MESSAGE.get.fail,
-                result: "Not authorized!"
-            });
-        }
+
         const plans = await service.plan.GetPlans(PlanModel, status.toString());
         if (plans) {
             return res.status(StatusCodes.OK).json({

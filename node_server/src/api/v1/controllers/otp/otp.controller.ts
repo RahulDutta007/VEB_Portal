@@ -49,7 +49,7 @@ export const sendOTPToEmail = async (req: Request, res: Response) => {
 			},
 			res: res
 		};
-
+		console.log("OPT", OTP)
 		await postEmail(mailDetails);
 
 

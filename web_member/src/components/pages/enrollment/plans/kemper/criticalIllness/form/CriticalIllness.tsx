@@ -6,7 +6,7 @@ import { COVERAGE } from "../../../../../../../constants/coverage";
 import { INSUARANCEPRIMIER } from "../../../../../../../constants/insuarancePremier";
 import { AGERANGE } from "../../../../../../../constants/ageRange";
 import { BENEFITAMOUNT } from "../../../../../../../constants/benefitAmount";
-import { ThemeContext } from "../../../../../../../contexts";
+import { AuthContext, ThemeContext } from "../../../../../../../contexts";
 import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
 import { CustomInput, CustomSelectInput } from "../../../../../../shared/customInput";
 import { Checkbox } from "@mui/material";
@@ -15,10 +15,37 @@ import { useCallback } from "react";
 
 import "./criticalIllness.css";
 import { CriticalIllnessPremium } from "../../../../../../../@types/criticalIllnessPrimium.types";
+import { CriticalIllnessPlanDetails } from "../../../../../../../@types/plan.types";
 
 const KemperCriticalIllnessForm = (): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
+	const { member } = useContext(AuthContext);
+	const [criticalIllnessPlanDetails, setCriticalIllnessPlanDetails] = useState<CriticalIllnessPlanDetails>({
+		benefit_amount: [30000.0, 20000.0, 10000.0],
+		coverage: ["Employee Only", "Employee & Spouse", "Employee & Dependent", "Employee & Family"],
+		coverage_level: ["With Cancer", "Without Cancer"],
+		premium_amount: {
+			standard_premium: {
+				"Employee Only": {
+					"With Cancer": null,
+					"Without Cancer": null
+				},
+				"Employee & Spouse": {
+					"With Cancer": null,
+					"Without Cancer": null
+				},
+				"Employee & Dependent": {
+					"With Cancer": null,
+					"Without Cancer": null
+				},
+				"Employee & Family": {
+					"With Cancer": null,
+					"Without Cancer": null
+				}
+			}
+		}
+	});
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
 	const [standerdPremium, setStanderdPremium] = useState("");
 	const [criticalIllnessPremium, setCriticalIllnessPremium] = useState<CriticalIllnessPremium>({
@@ -138,6 +165,11 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 		}
 	}, [criticalIllnessPremium]);
 
+	useEffect(() => {
+		if (member?.date_of_birth) {
+		}
+	}, [member]);
+
 	return (
 		<div className="kemper-cancer-form plan-form">
 			<div className="paper-form-container">
@@ -157,53 +189,27 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 						<Grid className="grid-container" container columnSpacing={2}>
 							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
-									<div className="details-form-label  required">Coverage For</div>
-									<Select
-										input={<CustomSelectInput />}
-										style={{ width: "100%" }}
-										name="insuarance_premier"
-										onChange={(event: SelectChangeEvent<HTMLInputElement>) =>
-											handleChangePremium(event)
-										}
-									>
-										{INSUARANCEPRIMIER.map((option: string, index: number) => {
-											return (
-												<MenuItem value={option} key={index}>
-													{option}
-												</MenuItem>
-											);
-										})}
-									</Select>
-								</div>
-							</Grid>
-							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
-								<div className="details-form-row">
-									<div className="details-form-label  required">Coverage Level</div>
-									<Select
-										input={<CustomSelectInput />}
-										style={{ width: "100%" }}
-										name="age_range"
-										onChange={(event: SelectChangeEvent<HTMLInputElement>) =>
-											handleChangePremium(event)
-										}
-									>
-										{AGERANGE.map((option: string, index: number) => {
-											return (
-												<MenuItem value={option} key={index}>
-													{option}
-												</MenuItem>
-											);
-										})}
-									</Select>
-								</div>
-							</Grid>
-							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
-								<div className="details-form-row">
 									<div className="details-form-label  required">Coverage Level</div>
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
 										name="coverage"
+										onChange={(event: SelectChangeEvent<HTMLInputElement>) =>
+											handleChangePremium(event)
+										}
+									>
+										<MenuItem value={"With Cancer"}>With Cancer</MenuItem>
+										<MenuItem value={"Without Cancer"}>Without Cancer</MenuItem>
+									</Select>
+								</div>
+							</Grid>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+								<div className="details-form-row">
+									<div className="details-form-label  required">Coverage For</div>
+									<Select
+										input={<CustomSelectInput />}
+										style={{ width: "100%" }}
+										name="insuarance_premier"
 										onChange={(event: SelectChangeEvent<HTMLInputElement>) =>
 											handleChangePremium(event)
 										}
@@ -220,7 +226,7 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 							</Grid>
 							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
-									<div className="details-form-label  required">Coverage Level</div>
+									<div className="details-form-label  required">Benefit Amount</div>
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
@@ -229,13 +235,9 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 											handleChangePremium(event)
 										}
 									>
-										{BENEFITAMOUNT.map((option: string, index: number) => {
-											return (
-												<MenuItem value={option} key={index}>
-													{option}
-												</MenuItem>
-											);
-										})}
+										<MenuItem value={10000.0} key={index}>
+											{"$10000.00"}
+										</MenuItem>
 									</Select>
 								</div>
 							</Grid>
