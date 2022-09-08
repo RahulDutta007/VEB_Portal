@@ -231,11 +231,12 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 		setCoverageFor(value);
 		if (value !== "Employee Only") {
 			if (value === "Employee and Spouse") {
-				const spouse = family_member.filter((member) => member.relation == "Spouse");
+				const spouse = family_member.filter((member, index) => member.relation == "Spouse");
 				setFamilyMemberByRelation(spouse);
 			} else if (value === "Employee and Dependent") {
 				const dependent = family_member.filter(
-					(member) => member.relation == "Son" || member.relation == "Daughter" || member.relation == "Child"
+					(member, index) =>
+						member.relation == "Son" || member.relation == "Daughter" || member.relation == "Child"
 				);
 				setFamilyMemberByRelation(dependent);
 			} else {
