@@ -13,3 +13,7 @@ export { default as PaycheckContextProvider } from "./paycheckContext/provider";
 //Group Context
 export { default as GroupContext } from "./groupContext/groupContext";
 export { default as GroupContextProvider } from "./groupContext/provider";
+
+//Enrollment Context
+export { default as EnrollmentContext } from "./enrollmentContext/enrollmentContext";
+export { default as EnrollmentContextProvider } from "./enrollmentContext/provider";

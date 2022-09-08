@@ -2,7 +2,7 @@ import { Button, MenuItem, SelectChangeEvent } from "@mui/material";
 import { Select } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect } from "react";
-import { ThemeContext } from "../../../../../../../contexts";
+import { EnrollmentContext, ThemeContext } from "../../../../../../../contexts";
 import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
 import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
@@ -23,6 +23,7 @@ import {
 
 const KemperCancerForm = (): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
+	const { setCurrentEnrollment, deleteCurrentEnrollment } = useContext(EnrollmentContext);
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
 	const { theme } = useContext(ThemeContext);
@@ -102,8 +103,23 @@ const KemperCancerForm = (): JSX.Element => {
 					coverage_level as keyof CancerPlanCoverageLevel
 				];
 			setRiderPremium(newRiderPremium);
+			setCurrentEnrollment(
+				Object.assign(
+					{},
+					{
+						plan_name: "Cancer",
+						premium_amount: newRiderPremium + newStandardPremium,
+						status: "Current"
+					}
+				)
+			);
 		}
-	}, [cancerPlanDetails, cancerPlanInputs]);
+	}, [
+		cancerPlanDetails.premium_amount.rider_premium,
+		cancerPlanDetails.premium_amount.standard_premium,
+		cancerPlanInputs,
+		setCurrentEnrollment
+	]);
 
 	useEffect(() => {
 		setTotalPremium(standardPremium + riderPremium);
@@ -112,6 +128,10 @@ const KemperCancerForm = (): JSX.Element => {
 	useEffect(() => {
 		calculatePremium();
 	}, [calculatePremium, cancerPlanInputs.coverage, cancerPlanInputs.coverage_level]);
+
+	useEffect(() => {
+		deleteCurrentEnrollment();
+	}, [deleteCurrentEnrollment]);
 
 	return (
 		<div className="kemper-cancer-form plan-form">

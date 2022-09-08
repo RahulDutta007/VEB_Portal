@@ -298,7 +298,6 @@ const KemperAccidentForm = (): JSX.Element => {
 									xs={6}
 									className={coverage_for && plan_type ? "margin-adjust-33" : ""}
 								>
-									<input type="checkbox" disabled checked></input>
 									<label className="details-form-label required">Doctor & RX</label>
 								</Grid>
 								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>

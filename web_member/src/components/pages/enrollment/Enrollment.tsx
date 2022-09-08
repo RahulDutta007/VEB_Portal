@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import Draggable from "react-draggable";
 import { useLocation, useNavigate } from "react-router-dom";
 import { OpenEnrollment } from "../../../@types/enrollment.types";
-import { ThemeContext } from "../../../contexts";
+import { EnrollmentContext, ThemeContext } from "../../../contexts";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import "./enrollment.css";
 import KemperCancerForm from "./plans/kemper/cancer/form/CancerForm";
@@ -27,6 +27,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { dollarize } from "../../../utils/commonFunctions/dollarize";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -56,9 +57,11 @@ function a11yProps(index: number) {
 
 const Enrollment = (): JSX.Element => {
 	const [activeTab, setActiveTab] = useState<string>();
+	const { currentEnrollment, setCurrentEnrollment } = useContext(EnrollmentContext);
 	const [value, setValue] = useState<string>();
 	const [overallPremiums, setOverallPremiums] = useState<any[]>([]);
 	const [openEnrollments, setOpenEnrollments] = useState<OpenEnrollment[]>([]);
+	const [totalPremium, setTotalPremium] = useState<number>(0.0);
 	const location = useLocation();
 	const { theme } = useContext(ThemeContext);
 	const urlSearchParams: URLSearchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
@@ -162,6 +165,8 @@ const Enrollment = (): JSX.Element => {
 				status: "Submitted"
 			}
 		];
+		const _totalPremium = 70.5;
+		setTotalPremium(_totalPremium);
 		setOverallPremiums(Object.assign([], _overallPremiums));
 	}, []);
 
@@ -175,6 +180,12 @@ const Enrollment = (): JSX.Element => {
 			navigate("?step=" + activeTab + "&stage=0");
 		}
 	}, [activeTab, navigate]);
+
+	useEffect(() => {
+		if (currentEnrollment) {
+			setTotalPremium((prevTotalPremium: number) => prevTotalPremium + currentEnrollment.premium_amount);
+		}
+	}, [currentEnrollment]);
 
 	return (
 		<>
@@ -276,6 +287,44 @@ const Enrollment = (): JSX.Element => {
 												<StyledTableCell align="right">{overallPremium.status}</StyledTableCell>
 											</StyledTableRow>
 										))}
+										{currentEnrollment ? (
+											<StyledTableRow>
+												<StyledTableCell
+													component="th"
+													scope="row"
+													style={{ color: theme.primary_color }}
+												>
+													{currentEnrollment.plan_name}
+												</StyledTableCell>
+												<StyledTableCell align="right" style={{ color: theme.primary_color }}>
+													{currentEnrollment.premium_amount}
+												</StyledTableCell>
+												<StyledTableCell align="right" style={{ color: theme.primary_color }}>
+													{currentEnrollment.status}
+												</StyledTableCell>
+											</StyledTableRow>
+										) : null}
+										<StyledTableRow>
+											<StyledTableCell
+												component="th"
+												scope="row"
+												style={{
+													fontWeight: "bold"
+												}}
+											>
+												AMOUNT
+											</StyledTableCell>
+											<StyledTableCell
+												align="right"
+												style={{
+													fontWeight: "bold",
+													color: currentEnrollment ? theme.primary_color : "initial"
+												}}
+											>
+												{dollarize(totalPremium) + (currentEnrollment ? "*" : "")}
+											</StyledTableCell>
+											<StyledTableCell align="right"></StyledTableCell>
+										</StyledTableRow>
 									</TableBody>
 								</Table>
 							</TableContainer>
