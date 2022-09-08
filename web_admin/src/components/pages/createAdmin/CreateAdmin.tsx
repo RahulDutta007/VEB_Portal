@@ -13,9 +13,11 @@ import {
 	Grid,
 	Button,
 	Select,
-	MenuItem
+	MenuItem,
+	InputAdornment
 } from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
+import SecurityIcon from "@material-ui/icons/Security";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import "date-fns";
 import { green } from "@material-ui/core/colors";
@@ -37,6 +39,7 @@ import { DynamicForm, DynamicFormField } from "../../../@types/dynamicForm.types
 import { Validation } from "../../../@types/validation.types";
 
 import "./createAdmin.css";
+import { GroupOwner } from "../../../@types/groupOwner.types";
 
 const mailformat = /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/;
 const specialCharacters = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
@@ -62,9 +65,9 @@ const CreateAdmin = () => {
 	const [selectedGroup, setSelectedGroup] = useState({});
 	const { setDashboardHeader } = useContext(UIContext);
 	const { user } = useContext(AuthContext); // Extracting logged in user from central storage.
-	const [createdUser, setCreatedUsers] = useState({
+	const [createdUser, setCreatedUsers] = useState<GroupOwner>({
 		user_name: "", // This Id is mapped with Group HR (Group Specific)
-		admin_id: null,
+		admin_id: "",
 		first_name: "",
 		middle_name: "",
 		last_name: "",
@@ -272,9 +275,9 @@ const CreateAdmin = () => {
 	}, [createdUser, emailExists, userNameExists, validation]);
 
 	const handleKeyCheck = useCallback(
-		(event: React.KeyboardEvent<HTMLInputElement | HTMLDivElement>) => {
-			const { name } = event.target as HTMLInputElement;
-			let { value } = event.target as HTMLInputElement;
+		(event: any) => {
+			const { name } = event.target;
+			let value: any = event.target.value;
 			const keyID = event.keyCode;
 
 			if (name === "ZIP") {
@@ -301,7 +304,7 @@ const CreateAdmin = () => {
 				}
 			}
 		},
-		[createdUser]
+		[createdUser, setCreatedUsers]
 	);
 
 	const handlePaste = (event: React.ClipboardEvent<HTMLInputElement | HTMLDivElement>) => {
@@ -313,264 +316,267 @@ const CreateAdmin = () => {
 	};
 
 	const handleUserChange = useCallback(
-		async (event: React.ChangeEvent<HTMLInputElement>) => {
+		async (event: any) => {
 			let { value } = event.target;
 			const { name } = event.target;
-			if (name === "first_name") {
-				const regex = /^[a-zA-Z]+$/;
-				if (value.match(regex) || value === "") {
-					value = value.slice(0, 1).toUpperCase() + value.slice(1);
-					setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
-				} else if (/\s/g.test(value)) {
-					setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
-				}
-			} else if (name === "user_name") {
-				setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
-				await findUserName(value);
-			} else if (name === "email") {
-				setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
-				if (validateEmail(value)) {
-					await findUserEmail(value);
-				} else {
-					setCheckInvalidEmail(true);
-				}
-			} else if (name === "SSN") {
-				if (!pasted) {
-					// console.log("Not Pasted");
-					const _value = Number(value.replaceAll("-", ""));
-					if (!isNaN(_value)) {
-						const ssn = value;
-						if (
-							!(
-								/^[0-9]{0,3}$/.test(value) ||
-								/^[0-9]{3}-[0-9]{0,2}$/.test(value) ||
-								/^[0-9]{3}-[0-9]{2}-[0-9]{0,4}$/.test(value)
-							)
-						) {
-							value = value.substr(0, value.length - 1);
-						} else if (ssn.length === 6) {
-							value = value.substr(0, 7) + "-" + value.substr(7);
-						} else if (ssn.length === 3) {
-							value = value.substr(0, 3) + "-" + value.substr(3);
-						}
-
+			const keyID = event.keyCode;
+			if (keyID !== 8 || keyID !== 46) {
+				if (name === "first_name") {
+					const regex = /^[a-zA-Z]+$/;
+					if (value.match(regex) || value === "") {
+						value = value.slice(0, 1).toUpperCase() + value.slice(1);
 						setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
-					} else {
-						event.target.value = "";
-						event.target.value = createdUser.SSN;
+					} else if (/\s/g.test(value)) {
+						setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 					}
-				} else {
-					// console.log("Pasted");
-					setPasted(false);
-					if (!isNaN(value as any)) {
-						if (value.length > 9) {
-							event.target.value = "";
-							event.target.value = createdUser.SSN;
-							alert("Please enter a valid 9 digit SSN!");
-						} else {
-							// console.log("Inside Number");
+				} else if (name === "user_name") {
+					setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+					await findUserName(value);
+				} else if (name === "email") {
+					setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+					if (validateEmail(value)) {
+						await findUserEmail(value);
+					} else {
+						setCheckInvalidEmail(true);
+					}
+				} else if (name === "SSN") {
+					if (!pasted) {
+						// console.log("Not Pasted");
+						const _value = Number(value.replaceAll("-", ""));
+						if (!isNaN(_value)) {
 							const ssn = value;
-
-							if (ssn.length === 4) {
+							if (
+								!(
+									/^[0-9]{0,3}$/.test(value) ||
+									/^[0-9]{3}-[0-9]{0,2}$/.test(value) ||
+									/^[0-9]{3}-[0-9]{2}-[0-9]{0,4}$/.test(value)
+								)
+							) {
+								value = value.substr(0, value.length - 1);
+							} else if (ssn.length === 6) {
+								value = value.substr(0, 7) + "-" + value.substr(7);
+							} else if (ssn.length === 3) {
 								value = value.substr(0, 3) + "-" + value.substr(3);
-							} else if (ssn.length === 5) {
-								value = value.substr(0, 3) + "-" + value.substr(3);
-							} else if (ssn.length >= 6 && ssn.length <= 9) {
-								value = value.substr(0, 3) + "-" + value.substr(3, 2) + "-" + value.substr(5);
 							}
 
 							setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
-						}
-					} else {
-						// console.log("Inside alpha-numeric");
-						let ssnValue = value.replace(/[^0-9]/g, "").replace(/[^\w\s]/gi, "");
-						//console.log("replaced string", ssnValue);
-						alert("You have pasted alpha-numeric SSN!");
-
-						if (ssnValue.length > 9) {
+						} else {
 							event.target.value = "";
 							event.target.value = createdUser.SSN;
-							alert("Please enter a valid SSN!");
-						} else {
-							const ssn = ssnValue;
+						}
+					} else {
+						// console.log("Pasted");
+						setPasted(false);
+						if (!isNaN(value as any)) {
+							if (value.length > 9) {
+								event.target.value = "";
+								event.target.value = createdUser.SSN;
+								alert("Please enter a valid 9 digit SSN!");
+							} else {
+								// console.log("Inside Number");
+								const ssn = value;
 
-							if (ssn.length === 4) {
-								ssnValue = ssnValue.substr(0, 3) + "-" + ssnValue.substr(3);
-							} else if (ssn.length === 5) {
-								ssnValue = ssnValue.substr(0, 3) + "-" + ssnValue.substr(3);
-							} else if (ssn.length >= 6 && ssn.length <= 9) {
-								ssnValue =
-									ssnValue.substr(0, 3) + "-" + ssnValue.substr(3, 2) + "-" + ssnValue.substr(5);
+								if (ssn.length === 4) {
+									value = value.substr(0, 3) + "-" + value.substr(3);
+								} else if (ssn.length === 5) {
+									value = value.substr(0, 3) + "-" + value.substr(3);
+								} else if (ssn.length >= 6 && ssn.length <= 9) {
+									value = value.substr(0, 3) + "-" + value.substr(3, 2) + "-" + value.substr(5);
+								}
+
+								setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+							}
+						} else {
+							// console.log("Inside alpha-numeric");
+							let ssnValue = value.replace(/[^0-9]/g, "").replace(/[^\w\s]/gi, "");
+							//console.log("replaced string", ssnValue);
+							alert("You have pasted alpha-numeric SSN!");
+
+							if (ssnValue.length > 9) {
+								event.target.value = "";
+								event.target.value = createdUser.SSN;
+								alert("Please enter a valid SSN!");
+							} else {
+								const ssn = ssnValue;
+
+								if (ssn.length === 4) {
+									ssnValue = ssnValue.substr(0, 3) + "-" + ssnValue.substr(3);
+								} else if (ssn.length === 5) {
+									ssnValue = ssnValue.substr(0, 3) + "-" + ssnValue.substr(3);
+								} else if (ssn.length >= 6 && ssn.length <= 9) {
+									ssnValue =
+										ssnValue.substr(0, 3) + "-" + ssnValue.substr(3, 2) + "-" + ssnValue.substr(5);
+								}
+
+								setCreatedUsers(Object.assign({}, createdUser, { [name]: ssnValue }));
+							}
+						}
+					}
+				} else if (name === "reenterSSN") {
+					if (!pasted) {
+						// console.log("Not Pasted");
+						const _value = Number(value.replaceAll("-", ""));
+						if (!isNaN(_value)) {
+							const ssn = value;
+							if (
+								!(
+									/^[0-9]{0,3}$/.test(value) ||
+									/^[0-9]{3}-[0-9]{0,2}$/.test(value) ||
+									/^[0-9]{3}-[0-9]{2}-[0-9]{0,4}$/.test(value)
+								)
+							) {
+								value = value.substr(0, value.length - 1);
+							} else if (ssn.length === 6) {
+								value = value.substr(0, 7) + "-" + value.substr(7);
+							} else if (ssn.length === 3) {
+								value = value.substr(0, 3) + "-" + value.substr(3);
 							}
 
-							setCreatedUsers(Object.assign({}, createdUser, { [name]: ssnValue }));
-						}
-					}
-				}
-			} else if (name === "reenterSSN") {
-				if (!pasted) {
-					// console.log("Not Pasted");
-					const _value = Number(value.replaceAll("-", ""));
-					if (!isNaN(_value)) {
-						const ssn = value;
-						if (
-							!(
-								/^[0-9]{0,3}$/.test(value) ||
-								/^[0-9]{3}-[0-9]{0,2}$/.test(value) ||
-								/^[0-9]{3}-[0-9]{2}-[0-9]{0,4}$/.test(value)
-							)
-						) {
-							value = value.substr(0, value.length - 1);
-						} else if (ssn.length === 6) {
-							value = value.substr(0, 7) + "-" + value.substr(7);
-						} else if (ssn.length === 3) {
-							value = value.substr(0, 3) + "-" + value.substr(3);
-						}
-
-						setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
-					} else {
-						event.target.value = "";
-						event.target.value = createdUser.reenterSSN;
-					}
-				} else {
-					// console.log("Pasted");
-					setPasted(false);
-					if (!isNaN(value as any)) {
-						if (value.length > 9) {
+							setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+						} else {
 							event.target.value = "";
 							event.target.value = createdUser.reenterSSN;
-							alert("Please reenter a valid 9 digit SSN!");
-						} else {
-							// console.log("Inside Number");
-							const ssn = value;
-
-							if (ssn.length === 4) {
-								value = value.substr(0, 3) + "-" + value.substr(3);
-							} else if (ssn.length === 5) {
-								value = value.substr(0, 3) + "-" + value.substr(3);
-							} else if (ssn.length >= 6 && ssn.length <= 9) {
-								value = value.substr(0, 3) + "-" + value.substr(3, 2) + "-" + value.substr(5);
-							}
-
-							setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 						}
 					} else {
-						// console.log("Inside alpha-numeric");
-						let ssnValue = value.replace(/[^0-9]/g, "").replace(/[^\w\s]/gi, "");
-						//console.log("replaced string", ssnValue);
-						alert("You have pasted alpha-numeric SSN!");
+						// console.log("Pasted");
+						setPasted(false);
+						if (!isNaN(value as any)) {
+							if (value.length > 9) {
+								event.target.value = "";
+								event.target.value = createdUser.reenterSSN;
+								alert("Please reenter a valid 9 digit SSN!");
+							} else {
+								// console.log("Inside Number");
+								const ssn = value;
 
-						if (ssnValue.length > 9) {
-							event.target.value = "";
-							event.target.value = createdUser.SSN;
-							alert("Please reenter a valid SSN!");
-						} else {
-							const ssn = ssnValue;
+								if (ssn.length === 4) {
+									value = value.substr(0, 3) + "-" + value.substr(3);
+								} else if (ssn.length === 5) {
+									value = value.substr(0, 3) + "-" + value.substr(3);
+								} else if (ssn.length >= 6 && ssn.length <= 9) {
+									value = value.substr(0, 3) + "-" + value.substr(3, 2) + "-" + value.substr(5);
+								}
 
-							if (ssn.length === 4) {
-								ssnValue = ssnValue.substr(0, 3) + "-" + ssnValue.substr(3);
-							} else if (ssn.length === 5) {
-								ssnValue = ssnValue.substr(0, 3) + "-" + ssnValue.substr(3);
-							} else if (ssn.length >= 6 && ssn.length <= 9) {
-								ssnValue =
-									ssnValue.substr(0, 3) + "-" + ssnValue.substr(3, 2) + "-" + ssnValue.substr(5);
+								setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 							}
-
-							setCreatedUsers(Object.assign({}, createdUser, { [name]: ssnValue }));
-						}
-					}
-				}
-			} else if (name === "ZIP") {
-				if (!pasted) {
-					const _value = Number(value.replaceAll("-", ""));
-					if (!isNaN(_value) && value.length <= 10) {
-						const zip = value;
-						if (zip.length === 6) {
-							value = value.substr(0, 5) + "-" + value.substr(5);
-						}
-
-						console.log("ZIP Event", event.target.value);
-						setCreatedUsers(
-							Object.assign({}, createdUser, {
-								[name]: value
-							})
-						);
-					} else {
-						event.target.value = "";
-						event.target.value = createdUser.ZIP;
-					}
-				} else {
-					setPasted(false);
-					if (!isNaN(value as any)) {
-						if (value.length > 9) {
-							event.target.value = "";
-							event.target.value = createdUser.ZIP;
-							alert("Please enter a valid 5 or 9 digit ZIP!");
 						} else {
-							// console.log("Inside Number");
+							// console.log("Inside alpha-numeric");
+							let ssnValue = value.replace(/[^0-9]/g, "").replace(/[^\w\s]/gi, "");
+							//console.log("replaced string", ssnValue);
+							alert("You have pasted alpha-numeric SSN!");
+
+							if (ssnValue.length > 9) {
+								event.target.value = "";
+								event.target.value = createdUser.SSN;
+								alert("Please reenter a valid SSN!");
+							} else {
+								const ssn = ssnValue;
+
+								if (ssn.length === 4) {
+									ssnValue = ssnValue.substr(0, 3) + "-" + ssnValue.substr(3);
+								} else if (ssn.length === 5) {
+									ssnValue = ssnValue.substr(0, 3) + "-" + ssnValue.substr(3);
+								} else if (ssn.length >= 6 && ssn.length <= 9) {
+									ssnValue =
+										ssnValue.substr(0, 3) + "-" + ssnValue.substr(3, 2) + "-" + ssnValue.substr(5);
+								}
+
+								setCreatedUsers(Object.assign({}, createdUser, { [name]: ssnValue }));
+							}
+						}
+					}
+				} else if (name === "ZIP") {
+					if (!pasted) {
+						const _value = Number(value.replaceAll("-", ""));
+						if (!isNaN(_value) && value.length <= 10) {
 							const zip = value;
-
-							if (zip.length >= 6 && zip.length <= 9) {
+							if (zip.length === 6) {
 								value = value.substr(0, 5) + "-" + value.substr(5);
 							}
 
-							setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
-						}
-					} else {
-						// console.log("Inside alpha-numeric");
-						let zipValue = value.replace(/[^0-9]/g, "").replace(/[^\w\s]/gi, "");
-						//console.log("replaced string", zipValue);
-						alert("You have pasted alpha-numeric ZIP!");
-
-						if (zipValue.length > 9) {
+							console.log("ZIP Event", event.target.value);
+							setCreatedUsers(
+								Object.assign({}, createdUser, {
+									[name]: value
+								})
+							);
+						} else {
 							event.target.value = "";
 							event.target.value = createdUser.ZIP;
-							alert("Please enter a valid 5 or 9 digit ZIP!");
-						} else {
-							const zip = zipValue;
+						}
+					} else {
+						setPasted(false);
+						if (!isNaN(value as any)) {
+							if (value.length > 9) {
+								event.target.value = "";
+								event.target.value = createdUser.ZIP;
+								alert("Please enter a valid 5 or 9 digit ZIP!");
+							} else {
+								// console.log("Inside Number");
+								const zip = value;
 
-							if (zip.length >= 6 && zip.length <= 9) {
-								zipValue = zipValue.substr(0, 5) + "-" + zipValue.substr(5);
+								if (zip.length >= 6 && zip.length <= 9) {
+									value = value.substr(0, 5) + "-" + value.substr(5);
+								}
+
+								setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 							}
+						} else {
+							// console.log("Inside alpha-numeric");
+							let zipValue = value.replace(/[^0-9]/g, "").replace(/[^\w\s]/gi, "");
+							//console.log("replaced string", zipValue);
+							alert("You have pasted alpha-numeric ZIP!");
 
-							setCreatedUsers(Object.assign({}, createdUser, { [name]: zipValue }));
+							if (zipValue.length > 9) {
+								event.target.value = "";
+								event.target.value = createdUser.ZIP;
+								alert("Please enter a valid 5 or 9 digit ZIP!");
+							} else {
+								const zip = zipValue;
+
+								if (zip.length >= 6 && zip.length <= 9) {
+									zipValue = zipValue.substr(0, 5) + "-" + zipValue.substr(5);
+								}
+
+								setCreatedUsers(Object.assign({}, createdUser, { [name]: zipValue }));
+							}
 						}
 					}
-				}
-			} else if (name === "phone_number") {
-				if (!isNaN(value as any)) {
-					if (value.length <= 10) {
-						setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+				} else if (name === "phone_number") {
+					if (!isNaN(value as any)) {
+						if (value.length <= 10) {
+							setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+						} else {
+							event.target.value = createdUser?.phone_number
+								? (createdUser?.phone_number as unknown as string)
+								: "";
+							alert("Phone Number cannot be greater 10 digit!");
+						}
 					} else {
+						event.target.value = "";
 						event.target.value = createdUser?.phone_number
 							? (createdUser?.phone_number as unknown as string)
 							: "";
-						alert("Phone Number cannot be greater 10 digit!");
 					}
-				} else {
-					event.target.value = "";
-					event.target.value = createdUser?.phone_number
-						? (createdUser?.phone_number as unknown as string)
-						: "";
-				}
-			} else if (name === "phone_extension") {
-				if (!isNaN(value as any)) {
-					if (value.length <= 3) {
-						setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+				} else if (name === "phone_extension") {
+					if (!isNaN(value as any)) {
+						if (value.length <= 3) {
+							setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
+						} else {
+							event.target.value = createdUser?.phone_extension
+								? (createdUser?.phone_extension as unknown as string)
+								: "";
+							alert("Phone Extension cannot be greater 3 digit!");
+						}
 					} else {
+						event.target.value = "";
 						event.target.value = createdUser?.phone_extension
 							? (createdUser?.phone_extension as unknown as string)
 							: "";
-						alert("Phone Extension cannot be greater 3 digit!");
 					}
 				} else {
-					event.target.value = "";
-					event.target.value = createdUser?.phone_extension
-						? (createdUser?.phone_extension as unknown as string)
-						: "";
+					setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 				}
-			} else {
-				setCreatedUsers(Object.assign({}, createdUser, { [name]: value }));
 			}
 		},
 		[createdUser, findUserEmail, findUserName, pasted]
@@ -653,7 +659,7 @@ const CreateAdmin = () => {
 								createdUser.marital_status !== "" ? createdUser.marital_status.toUpperCase() : null
 						}
 					};
-
+					delete payload?.createdUser?.reenterSSN;
 					console.log("Payload", payload);
 					const response = await api.auth.createEnroller(payload.createdUser);
 
@@ -667,13 +673,11 @@ const CreateAdmin = () => {
 							})
 						);
 						setHasCreateClick(false);
-						_validation.current = {
-							createdUser: {},
-							status: "invalid"
-						};
+						_validation.current = undefined;
+						// setValidation(Object.assign({}, validation, _validation.current));
 						setCreatedUsers({
 							user_name: "", // This Id is mapped with Group HR (Group Specific)
-							admin_id: null,
+							admin_id: "",
 							first_name: "",
 							middle_name: "",
 							last_name: "",
@@ -801,7 +805,8 @@ const CreateAdmin = () => {
 						{
 							label: "SSN",
 							name: "SSN",
-							onChange: (event: React.ChangeEvent<HTMLInputElement>) => handleUserChange(event),
+							onChange: (event: any) => handleUserChange(event),
+							onKeyDown: (event: any) => handleKeyCheck(event),
 							placeholder: "Enter SSN",
 							value: createdUser.SSN,
 							type: "textfield"
@@ -809,7 +814,8 @@ const CreateAdmin = () => {
 						{
 							label: "Reenter SSN",
 							name: "reenterSSN",
-							onChange: (event) => handleUserChange(event),
+							onChange: (event: any) => handleUserChange(event),
+							onKeyDown: (event: any) => handleKeyCheck(event),
 							placeholder: "Reenter SSN",
 							value: createdUser.reenterSSN,
 							type: "textfield"
@@ -930,19 +936,18 @@ const CreateAdmin = () => {
 				}
 			)
 		);
+		setDashboardHeader(ADMIN_DASHBOARD_HEADER.create_user);
 	}, [
 		assignedGroups,
 		createdUser,
 		handleEnableCheckbox,
 		handleGroupChange,
+		handleKeyCheck,
 		handleUserChange,
 		handleUserDateChange,
+		setDashboardHeader,
 		user?.role
 	]);
-
-	useEffect(() => {
-		setDashboardHeader(ADMIN_DASHBOARD_HEADER.create_user);
-	}, [setDashboardHeader]);
 
 	return (
 		<div className="create-createdUser" id="create-createdUser">
@@ -1079,9 +1084,7 @@ const CreateAdmin = () => {
 																	value={field.value}
 																	onChange={field.onChange}
 																	//onBlur={field.onBlur}
-																	onKeyDown={(
-																		event: React.KeyboardEvent<HTMLDivElement>
-																	) => handleKeyCheck(event)}
+																	onKeyDown={(event: any) => handleKeyCheck(event)}
 																	onPaste={(
 																		event: React.ClipboardEvent<HTMLDivElement>
 																	) => handlePaste(event)}
@@ -1091,7 +1094,10 @@ const CreateAdmin = () => {
 																			field.value ===
 																			"USA - United States of America"
 																				? true
-																				: false
+																				: false,
+																		startAdornment: (
+																			<InputAdornment position="start"></InputAdornment>
+																		)
 																	}}
 																	helperText={
 																		field.name === "email"

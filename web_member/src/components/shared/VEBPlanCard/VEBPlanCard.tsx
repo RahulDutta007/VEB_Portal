@@ -71,9 +71,9 @@ const VEBPlanCard = (props: any) => {
 	return (
 		<div className="VEB-plan-card">
 			<ul>
-				<div className="card-category-5">
+				<div className="card-category-5 ">
 					<li>
-						<div className="per-card-3">
+						<div className="per-card-3 card-position-middle">
 							{/* <div className="card-image">
 								<ul>
 									<li>
