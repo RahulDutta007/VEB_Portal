@@ -701,24 +701,22 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 						</Grid>
 					</Grid>
 					{/* End Child */}
-
-					{totalPremium > 0 ? (
-						<Grid container className="theme-plan-inner-section-margin">
-							<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-								<div className="details-form-row">
-									<div
-										className="details-form-label theme-plan-total-premium align-right"
-										style={{ color: theme.primary_color }}
-									>
-										Total Premium:{" "}
-										<span className="show-premium margin-adjust">
-											{totalPremium == 0 ? "" : `$${totalPremium && totalPremium.toFixed(2)}`}
-										</span>
-									</div>
+					<div className="theme-plan-inner-section-margin-2" />
+					<Grid container className="theme-plan-inner-section-margin">
+						<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+							<div className="details-form-row">
+								<div
+									className="details-form-label theme-plan-total-premium align-right"
+									style={{ color: theme.primary_color }}
+								>
+									Total Premium:{" "}
+									<span className="show-premium margin-adjust">
+										{totalPremium == 0 ? "$0.00" : `$${totalPremium && totalPremium.toFixed(2)}`}
+									</span>
 								</div>
-							</Grid>
+							</div>
 						</Grid>
-					) : null}
+					</Grid>
 
 					{/* <Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
 									<div className="details-form-row">
@@ -740,24 +738,6 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 							</AccordionDetails>
 						</Accordion>
 					</div>
-					<div className="theme-plan-inner-section-margin" />
-					{total_premium_amount > 0 ? (
-						<Grid container className="theme-plan-inner-section-margin">
-							<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-								<div className="details-form-row">
-									<div
-										className="details-form-label theme-plan-total-premium align-right"
-										style={{ color: theme.primary_color }}
-									>
-										Total Premium:{" "}
-										<span className="show-premium margin-adjust">
-											{total_premium_amount == 0 ? "" : `$${total_premium_amount.toFixed(2)}`}
-										</span>
-									</div>
-								</div>
-							</Grid>
-						</Grid>
-					) : null}
 					<div className="theme-plan-option-content">
 						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
 						<p className="theme-plan-checkbox-label">

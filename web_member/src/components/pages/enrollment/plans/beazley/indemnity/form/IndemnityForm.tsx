@@ -230,15 +230,7 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 								Clinic Card
 							</div>
 							<Grid className="grid-container" container columnSpacing={2}>
-								<Grid
-									item
-									xl={10}
-									lg={10}
-									md={10}
-									sm={6}
-									xs={6}
-									className={clinic_card ? "margin-adjust-33" : ""}
-								>
+								<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className="margin-adjust-33">
 									<input
 										type="checkbox"
 										onChange={(event: any) => handleClinicCardChange(event)}
@@ -251,7 +243,7 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 										<div className="show-premium">
 											{coverage_for && coverage_level && clinic_card
 												? `$${clinic_card_amount}`
-												: ""}
+												: "$0.00"}
 										</div>
 									</div>
 								</Grid>
@@ -269,7 +261,7 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 								>
 									Total Premium:{" "}
 									<span className="show-premium margin-adjust">
-										{total_premium_amount == 0 ? "" : `$${total_premium_amount.toFixed(2)}`}
+										{total_premium_amount == 0 ? "$0.00" : `$${total_premium_amount.toFixed(2)}`}
 									</span>
 								</div>
 							</div>

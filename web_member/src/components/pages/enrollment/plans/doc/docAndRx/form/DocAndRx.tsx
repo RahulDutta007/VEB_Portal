@@ -144,23 +144,21 @@ const DoctorAndRxForm = (): JSX.Element => {
 						</Grid>
 					</div>
 					<div className="theme-plan-inner-section-margin" />
-					{premium_amount > 0 ? (
-						<Grid container className="theme-plan-inner-section-margin">
-							<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-								<div className="details-form-row">
-									<div
-										className="details-form-label theme-plan-total-premium align-right"
-										style={{ color: theme.primary_color }}
-									>
-										Total Premium:{" "}
-										<span className="show-premium margin-adjust">
-											{premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}
-										</span>
-									</div>
+					<Grid container className="theme-plan-inner-section-margin">
+						<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+							<div className="details-form-row">
+								<div
+									className="details-form-label theme-plan-total-premium align-right"
+									style={{ color: theme.primary_color }}
+								>
+									Total Premium:{" "}
+									<span className="show-premium margin-adjust">
+										{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}
+									</span>
 								</div>
-							</Grid>
+							</div>
 						</Grid>
-					) : null}
+					</Grid>
 					<div className="theme-plan-option-content">
 						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
 						<p className="theme-plan-checkbox-label">
