@@ -172,6 +172,7 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 	const [expanded, setExpanded] = useState<string | false>("panel_question");
 	const [expanded_panel, setExpandedPanel] = useState<string | false>("panel_beneficiary");
 	const [family_member, setFamilyMembers] = useState([
+		{ name: "Rahul Dutta", relation: "Self" },
 		{ name: "Satya Dutta", relation: "Child" },
 		{ name: "Mimi Dutta", relation: "Spouse" }
 	]);
@@ -621,22 +622,66 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 							</AccordionSummary>
 							<AccordionDetails>
 								<Grid container className="card-grid-container">
-									{family_member.map((fm: any, index: any) => {
-										return (
-											<Grid
-												item
-												key={index}
-												xl={5}
-												lg={5}
-												md={5}
-												sm={10}
-												xs={10}
-												columnSpacing={2}
-											>
-												<VEBPlanCard familyMember={family_member}></VEBPlanCard>
-											</Grid>
-										);
-									})}
+									{coverage_for === "Employee Only" && plan_type.length > 0 && benefit_amount > 0
+										? family_member
+												.filter((val, index) => val.relation === "Self")
+												.map((fm: any, index: any) => {
+													return (
+														<Grid
+															item
+															key={index}
+															xl={5}
+															lg={5}
+															md={5}
+															sm={10}
+															xs={10}
+															columnSpacing={2}
+														>
+															<VEBPlanCard familyMember={family_member}></VEBPlanCard>
+														</Grid>
+													);
+												})
+										: coverage_for === "Employee and Spouse" &&
+										  plan_type.length > 0 &&
+										  benefit_amount > 0
+										? family_member
+												.filter(
+													(val, index) => val.relation === "Self" || val.relation === "Spouse"
+												)
+												.map((fm: any, index: any) => {
+													return (
+														<Grid
+															item
+															key={index}
+															xl={5}
+															lg={5}
+															md={5}
+															sm={10}
+															xs={10}
+															columnSpacing={2}
+														>
+															<VEBPlanCard familyMember={family_member}></VEBPlanCard>
+														</Grid>
+													);
+												})
+										: coverage_for.length > 0 && plan_type.length > 0 && benefit_amount > 0
+										? family_member.map((fm: any, index: any) => {
+												return (
+													<Grid
+														item
+														key={index}
+														xl={5}
+														lg={5}
+														md={5}
+														sm={10}
+														xs={10}
+														columnSpacing={2}
+													>
+														<VEBPlanCard familyMember={family_member}></VEBPlanCard>
+													</Grid>
+												);
+										  })
+										: null}
 								</Grid>
 							</AccordionDetails>
 						</Accordion>
