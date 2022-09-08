@@ -16,6 +16,7 @@ import { useCallback } from "react";
 import "./criticalIllness.css";
 import { CriticalIllnessPremium } from "../../../../../../../@types/criticalIllnessPrimium.types";
 import { CriticalIllnessPlanDetails } from "../../../../../../../@types/plan.types";
+import { dollarize } from "../../../../../../../utils/commonFunctions/dollarize";
 
 const KemperCriticalIllnessForm = (): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
@@ -87,7 +88,7 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 		}
 	});
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
-	const [standerdPremium, setStanderdPremium] = useState("");
+	const [standerdPremium, setStanderdPremium] = useState(0.0);
 	const [criticalIllnessPremium, setCriticalIllnessPremium] = useState<CriticalIllnessPremium>({
 		insuarance_premier: "",
 		age_range: "",
@@ -98,9 +99,9 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 
 	function calculateCoverage(key: string, employeeValue: string, familyValue: string) {
 		if (key === "Employee Only") {
-			setStanderdPremium(employeeValue);
+			setStanderdPremium(0.0);
 		} else {
-			setStanderdPremium(familyValue);
+			setStanderdPremium(0.0);
 		}
 	}
 
@@ -198,10 +199,10 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 					}
 				}
 			} else {
-				setStanderdPremium("");
+				setStanderdPremium(0.0);
 			}
 		} else {
-			setStanderdPremium("");
+			setStanderdPremium(0.0);
 		}
 	}, [criticalIllnessPremium]);
 
@@ -284,28 +285,24 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 							<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
-									<div className="show-premium">
-										{standerdPremium == "" ? "$0.00" : standerdPremium}{" "}
-									</div>
+									<div className="show-premium">{standerdPremium}</div>
 								</div>
 							</Grid>
 						</Grid>
 						<div className="theme-plan-inner-section-margin" />
-						{standerdPremium !== "" ? (
-							<Grid container className="theme-plan-inner-section-margin">
-								<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-									<div className="details-form-row">
-										<div
-											className="details-form-label theme-plan-total-premium align-right"
-											style={{ color: theme.primary_color }}
-										>
-											Total Premium:{" "}
-											<span className="show-premium margin-adjust">{standerdPremium}</span>
-										</div>
+						<Grid container className="theme-plan-inner-section-margin">
+							<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+								<div className="details-form-row">
+									<div
+										className="details-form-label theme-plan-total-premium align-right"
+										style={{ color: theme.primary_color }}
+									>
+										Total Premium:{" "}
+										<span className="show-premium margin-adjust">{dollarize(standerdPremium)}</span>
 									</div>
-								</Grid>
+								</div>
 							</Grid>
-						) : null}
+						</Grid>
 					</div>
 					<div className="theme-plan-option-content">
 						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
