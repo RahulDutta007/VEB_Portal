@@ -4,10 +4,11 @@ import "./VEBPlanCard.css";
 import { ThemeContext } from "../../../../src/contexts/index";
 import VEBTabular from "../VEBTabular/VEBTabular";
 import VEBModal from "../VEBModal/VEBModal";
+import { AddBeneficiary } from "../../../@types/addBeneficiary.types";
 
 const VEBPlanCard = (props: any) => {
 	const { theme } = useContext(ThemeContext);
-	const [addBeneficiaryDetails, setAddBeneficiaryDetails] = useState({});
+	const [addBeneficiaryDetails, setAddBeneficiaryDetails] = useState<AddBeneficiary>({});
 	const [allBeneficiaryDetails, setAllBeneficiaryDetails] = useState({});
 	const [modalOpen, setModalOpen] = useState(false);
 	const handleBenificiary = useCallback((event: any) => {
@@ -40,7 +41,7 @@ const VEBPlanCard = (props: any) => {
 			if (event.currentTarget.name === "set-to-estate") {
 				setAddBeneficiaryDetails(
 					Object.assign({}, addBeneficiaryDetails, {
-						Name: "abcd",
+						Name: "Estate",
 						Relation: "Estate",
 						Percentage: 100,
 						Type: "P"
@@ -88,7 +89,7 @@ const VEBPlanCard = (props: any) => {
 									</li>
 								</ul>
 							</div> */}
-							<div className="card-title">Becca has 1 primary and 0 contingent</div>
+							<div className="card-title">{props.memberName} has 1 primary and 0 contingent</div>
 							<div className="card-title">
 								<Grid container spacing={1}>
 									<Grid item xl={4} lg={4} md={4} sm={12} xs={12}>
@@ -152,7 +153,20 @@ const VEBPlanCard = (props: any) => {
 									</span>
 								</div> */}
 							</div>
-							<div className="card-footer">6% primary and 0% contingent</div>
+							<div className="card-footer">
+								{addBeneficiaryDetails?.Percentage && addBeneficiaryDetails?.Relation === "Spouse"
+									? 50
+									: addBeneficiaryDetails?.Percentage === undefined &&
+									  addBeneficiaryDetails?.Relation === undefined
+									? 0
+									: 100}
+								% Primary and{" "}
+								{addBeneficiaryDetails?.Percentage && addBeneficiaryDetails?.Relation === "Spouse"
+									? 50
+									: 0}
+								{"% "}
+								contingent
+							</div>
 						</div>
 					</li>
 				</div>
