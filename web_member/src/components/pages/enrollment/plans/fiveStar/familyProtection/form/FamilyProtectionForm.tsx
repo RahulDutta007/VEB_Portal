@@ -637,7 +637,10 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 															xs={10}
 															columnSpacing={2}
 														>
-															<VEBPlanCard familyMember={family_member}></VEBPlanCard>
+															<VEBPlanCard
+																familyMember={family_member}
+																memberName={fm.name}
+															></VEBPlanCard>
 														</Grid>
 													);
 												})
@@ -660,7 +663,14 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 															xs={10}
 															columnSpacing={2}
 														>
-															<VEBPlanCard familyMember={family_member}></VEBPlanCard>
+															<VEBPlanCard
+																familyMember={family_member}
+																memberName={
+																	fm.relation === "Spouse"
+																		? `${fm.name}(Spouse)`
+																		: fm.name
+																}
+															></VEBPlanCard>
 														</Grid>
 													);
 												})
@@ -677,7 +687,10 @@ const FiveStarFamilyProtectionForm = (): JSX.Element => {
 														xs={10}
 														columnSpacing={2}
 													>
-														<VEBPlanCard familyMember={family_member}></VEBPlanCard>
+														<VEBPlanCard
+															familyMember={family_member}
+															memberName={fm.name}
+														></VEBPlanCard>
 													</Grid>
 												);
 										  })

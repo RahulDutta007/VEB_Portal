@@ -161,18 +161,6 @@ const DoctorAndRxForm = (): JSX.Element => {
 							</Grid>
 						</Grid>
 					) : null}
-					<div className="accordion-container">
-						<Accordion expanded={expanded === "panel_question"} onChange={handleChange("panel_question")}>
-							<AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-								<Typography>Questions</Typography>
-							</AccordionSummary>
-							<AccordionDetails>
-								<Typography>
-									No eligibility questions are required for the selected coverage, please press next.
-								</Typography>
-							</AccordionDetails>
-						</Accordion>
-					</div>
 					<div className="theme-plan-option-content">
 						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
 						<p className="theme-plan-checkbox-label">
