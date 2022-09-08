@@ -290,7 +290,6 @@ const KemperAccidentForm = (): JSX.Element => {
 							</div>
 							<Grid className="grid-container" container columnSpacing={2}>
 								<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className="margin-adjust-33">
-									<input type="checkbox" disabled checked></input>
 									<label className="details-form-label required">Doctor & RX</label>
 								</Grid>
 								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>

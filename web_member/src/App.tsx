@@ -5,7 +5,7 @@ import "./App.css";
 import { Navbar } from "./components/navbar";
 import { VEBEnrollment, VEBPlans } from "./components/pages";
 import { THEME } from "./constants/theme/theme";
-import { AuthContext, ThemeContext } from "./contexts";
+import { AuthContext, EnrollmentContextProvider, ThemeContext } from "./contexts";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import "./globalStyles/theme.css";
@@ -28,7 +28,14 @@ const App = (): JSX.Element => {
 			<BrowserRouter>
 				<Navbar />
 				<Routes>
-					<Route path="/VEB/enrollment" element={<VEBEnrollment />} />
+					<Route
+						path="/VEB/enrollment"
+						element={
+							<EnrollmentContextProvider>
+								<VEBEnrollment />
+							</EnrollmentContextProvider>
+						}
+					/>
 					<Route path="/verify" element={<Redirection />} />
 					<Route path="/VEB/plans" element={<VEBPlans />} />
 				</Routes>
