@@ -13,6 +13,11 @@
 	font-weight: 800 !important;
 }
 
+.default-tab,
+.active-tab {
+	height: 60px !important;
+}
+
 .active-tab {
 	width: 200px;
 
@@ -37,7 +42,7 @@
 	-webkit-transform: translateY(-50%);
 	-ms-transform: translateY(-50%);
 	transform: translateY(-50%);
-	background: #FFFFFF;
+	background: #ffffff;
 }
 
 .form-container {
@@ -95,8 +100,6 @@
 	font-weight: bold;
 }
 
-
-
 /* CSS for New form Design */
 
 .plan-header {
@@ -121,7 +124,7 @@
 
 .show-premium {
 	text-align: center;
-	color: #E02826;
+	color: #e02826;
 	font-size: 27px;
 	font-weight: 700;
 	font-family: cursive;
@@ -179,19 +182,19 @@
 	overflow-y: scroll;
 } */
 
-.margin-top-20{
+.margin-top-20 {
 	margin-top: 20px;
 }
 
-.card-position-middle {   
-    max-width: 95% !important;
+.card-position-middle {
+	max-width: 95% !important;
 	width: 95% !important;
-    margin: 0 auto;
+	margin: 0 auto;
 }
 
 .card-grid-container > div {
-    flex-basis: 50% !important;
-    margin: 0 auto;
-    width: 99% !important;
+	flex-basis: 50% !important;
+	margin: 0 auto;
+	width: 99% !important;
 	max-width: 99% !important;
 }
