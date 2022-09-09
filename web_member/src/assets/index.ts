@@ -1,2 +1,10 @@
 export { default as Logo } from "./logo.png";
 export { default as KemperLogo } from "./kemper_logo.png";
+export { default as KemperBanner } from "./branding/KemperBanner.jpg";
+export { default as WholeLifeBanner } from "./branding/WholeLife.jpg";
+export { default as HIBanner } from "./branding/HI.jpg";
+export { default as GLIBanner } from "./branding/GLI.jpg";
+export { default as STDBanner } from "./branding/STD.jpg";
+export { default as CIBanner } from "./branding/CI.jpg";
+export { default as AccidentBanner } from "./branding/Accident.jpg";
+export { default as FiveStarBanner } from "./branding/5Star.jpg";

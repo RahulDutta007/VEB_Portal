@@ -1,11 +1,12 @@
-import { Box, Tabs, Tab, IconButton } from "@mui/material";
+import { Grid, Box, SpeedDial, Tabs, Tab, IconButton, SpeedDialAction } from "@mui/material";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { useCallback, useMemo, useState } from "react";
 import Draggable from "react-draggable";
+import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import { useLocation, useNavigate } from "react-router-dom";
 import { OpenEnrollment } from "../../../@types/enrollment.types";
-import { ThemeContext } from "../../../contexts";
+import { EnrollmentContext, ThemeContext } from "../../../contexts";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import "./enrollment.css";
 import KemperCancerForm from "./plans/kemper/cancer/form/CancerForm";
@@ -27,6 +28,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { dollarize } from "../../../utils/commonFunctions/dollarize";
+import KemperCancerBranding from "./plans/kemper/cancer/branding/Branding";
+import DownloadIcon from "@mui/icons-material/Download";
+import AttachEmailIcon from "@mui/icons-material/AttachEmail";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -56,15 +61,30 @@ function a11yProps(index: number) {
 
 const Enrollment = (): JSX.Element => {
 	const [activeTab, setActiveTab] = useState<string>();
+	const { currentEnrollment, setCurrentEnrollment } = useContext(EnrollmentContext);
 	const [value, setValue] = useState<string>();
 	const [overallPremiums, setOverallPremiums] = useState<any[]>([]);
 	const [openEnrollments, setOpenEnrollments] = useState<OpenEnrollment[]>([]);
+	const [totalPremium, setTotalPremium] = useState<number>(0.0);
 	const location = useLocation();
 	const { theme } = useContext(ThemeContext);
 	const urlSearchParams: URLSearchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
 	const height = screen.height;
 	const [showOverallPremium, setShowOverallPremium] = useState(true);
 	const navigate = useNavigate();
+	const speedDialActions = [
+		// eslint-disable-next-line prettier/prettier
+		{
+			name: <div className="tooltip-speed-dial">Download&nbsp;Brochure</div>,
+			icon: <DownloadIcon />
+		},
+		{ name: <div className="tooltip-speed-dial">Email&nbsp;Brochure</div>, icon: <AttachEmailIcon /> }
+	];
+	const [speedDialOpen, setSpeedDialOpen] = useState(true);
+
+	const handleOpen = () => setSpeedDialOpen(true);
+
+	const handleClose = () => setSpeedDialOpen(false);
 
 	const handleChange = (event: React.SyntheticEvent<Element, Event>, newValue: string) => {
 		setActiveTab(newValue);
@@ -77,7 +97,7 @@ const Enrollment = (): JSX.Element => {
 		console.log("step", step);
 		switch (step) {
 			case "Cancer": {
-				return <KemperCancerForm />;
+				return stage === "0" ? <KemperCancerBranding /> : <KemperCancerForm />;
 			}
 			case "Whole Life": {
 				return <KemperWholeLifeInsuranceForm />;
@@ -109,10 +129,10 @@ const Enrollment = (): JSX.Element => {
 	const getOpenEnrollments = useCallback(() => {
 		const _openEnrollments = [
 			{
-				plan_name: "Whole Life"
+				plan_name: "Cancer"
 			},
 			{
-				plan_name: "Cancer"
+				plan_name: "Whole Life"
 			},
 			{
 				plan_name: "Short Term Disability"
@@ -153,7 +173,7 @@ const Enrollment = (): JSX.Element => {
 			},
 			{
 				plan_name: "Group Life Insurance",
-				premium_amount: 23.35,
+				premium_amount: 0.0,
 				status: "Waived"
 			},
 			{
@@ -162,6 +182,8 @@ const Enrollment = (): JSX.Element => {
 				status: "Submitted"
 			}
 		];
+		const _totalPremium = 70.5;
+		setTotalPremium(_totalPremium);
 		setOverallPremiums(Object.assign([], _overallPremiums));
 	}, []);
 
@@ -175,6 +197,12 @@ const Enrollment = (): JSX.Element => {
 			navigate("?step=" + activeTab + "&stage=0");
 		}
 	}, [activeTab, navigate]);
+
+	useEffect(() => {
+		if (currentEnrollment) {
+			setTotalPremium((prevTotalPremium: number) => prevTotalPremium + currentEnrollment.premium_amount);
+		}
+	}, [currentEnrollment]);
 
 	return (
 		<>
@@ -276,6 +304,44 @@ const Enrollment = (): JSX.Element => {
 												<StyledTableCell align="right">{overallPremium.status}</StyledTableCell>
 											</StyledTableRow>
 										))}
+										{currentEnrollment ? (
+											<StyledTableRow>
+												<StyledTableCell
+													component="th"
+													scope="row"
+													style={{ color: theme.primary_color }}
+												>
+													{currentEnrollment.plan_name}
+												</StyledTableCell>
+												<StyledTableCell align="right" style={{ color: theme.primary_color }}>
+													{currentEnrollment.premium_amount}
+												</StyledTableCell>
+												<StyledTableCell align="right" style={{ color: theme.primary_color }}>
+													{currentEnrollment.status}
+												</StyledTableCell>
+											</StyledTableRow>
+										) : null}
+										<StyledTableRow>
+											<StyledTableCell
+												component="th"
+												scope="row"
+												style={{
+													fontWeight: "bold"
+												}}
+											>
+												AMOUNT
+											</StyledTableCell>
+											<StyledTableCell
+												align="right"
+												style={{
+													fontWeight: "bold",
+													color: currentEnrollment ? theme.primary_color : "initial"
+												}}
+											>
+												{dollarize(totalPremium) + (currentEnrollment ? "*" : "")}
+											</StyledTableCell>
+											<StyledTableCell align="right"></StyledTableCell>
+										</StyledTableRow>
 									</TableBody>
 								</Table>
 							</TableContainer>
@@ -300,6 +366,33 @@ const Enrollment = (): JSX.Element => {
 					</Draggable>
 				)}
 			</div>
+			<SpeedDial
+				ariaLabel="SpeedDial tooltip example"
+				sx={{ position: "fixed", bottom: 16, right: 16 }}
+				icon={<SpeedDialIcon />}
+				onOpen={handleOpen}
+				onClose={handleClose}
+				open={speedDialOpen}
+				style={{ fontSize: "10px" }}
+				FabProps={{
+					sx: {
+						bgcolor: theme.primary_color,
+						"&:hover": {
+							bgcolor: theme.primary_color
+						}
+					}
+				}}
+			>
+				{speedDialActions.map((speedDialAction: any) => (
+					<SpeedDialAction
+						key={speedDialAction.name}
+						icon={speedDialAction.icon}
+						tooltipTitle={speedDialAction.name}
+						tooltipOpen
+						style={{ fontSize: "10px" }}
+					/>
+				))}
+			</SpeedDial>
 		</>
 	);
 };

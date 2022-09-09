@@ -17,11 +17,12 @@ import "./criticalIllness.css";
 import { CriticalIllnessPremium } from "../../../../../../../@types/criticalIllnessPrimium.types";
 import { CriticalIllnessPlanDetails } from "../../../../../../../@types/plan.types";
 import { dollarize } from "../../../../../../../utils/commonFunctions/dollarize";
+import { getCriticalIllnessPremium } from "../../../../../../../utils/commonFunctions/plan";
+import calculateAge from "../../../../../../../utils/commonFunctions/age";
 
 const KemperCriticalIllnessForm = (): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
-	const { member } = useContext(AuthContext);
 	const [criticalIllnessPlanDetails, setCriticalIllnessPlanDetails] = useState<CriticalIllnessPlanDetails>({
 		benefit_amount: [10000.0, 20000.0, 30000.0],
 		coverage: ["Employee Only", "Employee & Spouse", "Employee & Dependent", "Employee & Family"],
@@ -89,26 +90,29 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 	});
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
 	const [standerdPremium, setStanderdPremium] = useState(0.0);
-	const [criticalIllnessPremium, setCriticalIllnessPremium] = useState<CriticalIllnessPremium>({
-		insuarance_premier: "",
-		age_range: "",
-		benefit_amount: "",
-		coverage: ""
+	const [criticalIllnessPlanInputs, setCriticalIllnessPlanInputs] = useState<{
+		coverage: null | string;
+		coverage_level: null | "With Cancer" | "Without Cancer";
+		benefit_amount: null | number;
+	}>({
+		coverage: null,
+		coverage_level: null,
+		benefit_amount: null
 	});
 	const { theme } = useContext(ThemeContext);
+	const { member } = useContext(AuthContext);
 
-	function calculateCoverage(key: string, employeeValue: string, familyValue: string) {
-		if (key === "Employee Only") {
-			setStanderdPremium(0.0);
-		} else {
-			setStanderdPremium(0.0);
-		}
-	}
-
-	const handleChangePremium = (event: SelectChangeEvent<HTMLInputElement>) => {
-		const { name, value } = event.target;
-		setCriticalIllnessPremium(Object.assign({}, criticalIllnessPremium, { [name]: value }));
-	};
+	const handlePlanInputChange = useCallback(
+		(event: SelectChangeEvent<unknown>, child: React.ReactNode) => {
+			const { name, value } = event.target;
+			setCriticalIllnessPlanInputs(
+				Object.assign({}, criticalIllnessPlanInputs, {
+					[name]: value
+				})
+			);
+		},
+		[criticalIllnessPlanInputs]
+	);
 
 	const handleWritingNumberChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,93 +127,29 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 		[prevWritingNumber]
 	);
 
-	useEffect(() => {
+	const calculatePremium = useCallback(() => {
+		const { coverage, coverage_level, benefit_amount } = criticalIllnessPlanInputs;
 		if (
-			Object.entries(criticalIllnessPremium).every(([key, value], index: number) => {
-				return value.length > 0;
-			})
+			coverage !== null &&
+			coverage_level !== null &&
+			coverage_level !== null &&
+			benefit_amount !== null &&
+			member?.date_of_birth
 		) {
-			const { insuarance_premier, age_range, benefit_amount, coverage } = criticalIllnessPremium;
-			if (insuarance_premier === "Without Cancer") {
-				if (age_range === "18-39") {
-					if (benefit_amount === "$10,000") {
-						calculateCoverage(coverage, "$0.66", "$1.52");
-					} else if (benefit_amount === "$20,000") {
-						calculateCoverage(coverage, "$1.03", "$2.31");
-					} else {
-						calculateCoverage(coverage, "$1.40", "$3.10");
-					}
-				} else if (age_range === "40-59") {
-					if (benefit_amount === "$10,000") {
-						calculateCoverage(coverage, "$3.03", "$6.17");
-					} else if (benefit_amount === "$20,000") {
-						calculateCoverage(coverage, "$5.71", "$11.52");
-					} else {
-						calculateCoverage(coverage, "$8.40", "$16.86");
-					}
-				} else if (age_range === "60-64") {
-					if (benefit_amount === "$10,000") {
-						calculateCoverage(coverage, "$5.13", "$10.30");
-					} else if (benefit_amount === "$20,000") {
-						calculateCoverage(coverage, "$9.92", "$19.77");
-					} else {
-						calculateCoverage(coverage, "$14.71", "$29.24");
-					}
-				} else {
-					if (benefit_amount === "$10,000") {
-						calculateCoverage(coverage, "$8.47", "$16.03");
-					} else if (benefit_amount === "$20,000") {
-						calculateCoverage(coverage, "$16.59", "$31.22");
-					} else {
-						calculateCoverage(coverage, "$24.71", "$46.42");
-					}
-				}
-			} else if (insuarance_premier === "With Cancer") {
-				if (age_range === "18-39") {
-					if (benefit_amount === "$10,000") {
-						calculateCoverage(coverage, "$1.12", "$2.46");
-					} else if (benefit_amount === "$20,000") {
-						calculateCoverage(coverage, "$1.94", "$4.18");
-					} else {
-						calculateCoverage(coverage, "$2.77", "$5.91");
-					}
-				} else if (age_range === "40-59") {
-					if (benefit_amount === "$10,000") {
-						calculateCoverage(coverage, "$5.71", "$11.15");
-					} else if (benefit_amount === "$20,000") {
-						calculateCoverage(coverage, "$11.07", "$21.47");
-					} else {
-						calculateCoverage(coverage, "$16.44", "$31.79");
-					}
-				} else if (age_range === "60-64") {
-					if (benefit_amount === "$10,000") {
-						calculateCoverage(coverage, "$9.75", "$19.16");
-					} else if (benefit_amount === "$20,000") {
-						calculateCoverage(coverage, "$19.16", "$37.48");
-					} else {
-						calculateCoverage(coverage, "$28.57", "$55.81");
-					}
-				} else {
-					if (benefit_amount === "$10,000") {
-						calculateCoverage(coverage, "$15.05", "$28.37");
-					} else if (benefit_amount === "$20,000") {
-						calculateCoverage(coverage, "$29.75", "$55.90");
-					} else {
-						calculateCoverage(coverage, "$44.46", "$83.44");
-					}
-				}
-			} else {
-				setStanderdPremium(0.0);
-			}
-		} else {
-			setStanderdPremium(0.0);
+			const age = calculateAge(member?.date_of_birth, new Date());
+			const _standardPremium = getCriticalIllnessPremium(coverage, coverage_level, benefit_amount, age);
+			setStanderdPremium(_standardPremium);
 		}
-	}, [criticalIllnessPremium]);
+	}, [criticalIllnessPlanInputs, member?.date_of_birth]);
 
 	useEffect(() => {
-		if (member?.date_of_birth) {
-		}
-	}, [member]);
+		calculatePremium();
+	}, [
+		calculatePremium,
+		criticalIllnessPlanInputs.coverage,
+		criticalIllnessPlanInputs.coverage_level,
+		criticalIllnessPlanInputs.benefit_amount
+	]);
 
 	return (
 		<div className="kemper-cancer-form plan-form">
@@ -234,13 +174,18 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
-										name="coverage"
-										onChange={(event: SelectChangeEvent<HTMLInputElement>) =>
-											handleChangePremium(event)
-										}
+										name="coverage_level"
+										onChange={handlePlanInputChange}
 									>
-										<MenuItem value={"With Cancer"}>With Cancer</MenuItem>
-										<MenuItem value={"Without Cancer"}>Without Cancer</MenuItem>
+										{criticalIllnessPlanDetails.coverage_level.map(
+											(coverage_level: string, index: number) => {
+												return (
+													<MenuItem value={coverage_level} key={index}>
+														{coverage_level}
+													</MenuItem>
+												);
+											}
+										)}
 									</Select>
 								</div>
 							</Grid>
@@ -250,15 +195,13 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
-										name="insuarance_premier"
-										onChange={(event: SelectChangeEvent<HTMLInputElement>) =>
-											handleChangePremium(event)
-										}
+										name="coverage"
+										onChange={handlePlanInputChange}
 									>
-										{COVERAGE.map((option: string, index: number) => {
+										{criticalIllnessPlanDetails.coverage.map((coverage: string, index: number) => {
 											return (
-												<MenuItem value={option} key={index}>
-													{option}
+												<MenuItem value={coverage} key={index}>
+													{coverage}
 												</MenuItem>
 											);
 										})}
@@ -272,20 +215,24 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
 										name="benefit_amount"
-										onChange={(event: SelectChangeEvent<HTMLInputElement>) =>
-											handleChangePremium(event)
-										}
+										onChange={handlePlanInputChange}
 									>
-										<MenuItem value={10000.0}>{"$10000.00"}</MenuItem>
-										<MenuItem value={20000.0}>{"$20000.00"}</MenuItem>
-										<MenuItem value={30000.0}>{"$30000.00"}</MenuItem>
+										{criticalIllnessPlanDetails.benefit_amount.map(
+											(amount: number, index: number) => {
+												return (
+													<MenuItem key={index} value={amount}>
+														{dollarize(amount)}
+													</MenuItem>
+												);
+											}
+										)}
 									</Select>
 								</div>
 							</Grid>
 							<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
-									<div className="show-premium">{standerdPremium}</div>
+									<div className="show-premium">{dollarize(standerdPremium)}</div>
 								</div>
 							</Grid>
 						</Grid>
@@ -347,6 +294,3 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 };
 
 export default KemperCriticalIllnessForm;
-function index(arg0: any[], index: any, number: any) {
-	throw new Error("Function not implemented.");
-}

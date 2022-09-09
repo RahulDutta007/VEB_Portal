@@ -120,7 +120,10 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 							<div className="header-container header-container-new">
 								<div className="theme-plan-header">Standard Benefits</div>
 							</div>
-							<div className="theme-plan-sub-header plan-text" style={{ borderLeftColor: theme.primary_color }}>
+							<div
+								className="theme-plan-sub-header plan-text"
+								style={{ borderLeftColor: theme.primary_color }}
+							>
 								In addition to yourself, who would you like to cover under this plan?
 							</div>
 						</div>
@@ -164,25 +167,29 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
-									<div className="show-premium">{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}</div>
+									<div className="show-premium">
+										{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}
+									</div>
 								</div>
 							</Grid>
 						</Grid>
 					</div>
 					<div className="theme-plan-inner-section-margin" />
-					{premium_amount > 0 ? <Grid container className="theme-plan-inner-section-margin">
+					<Grid container className="theme-plan-inner-section-margin">
 						<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
 							<div className="details-form-row">
 								<div
 									className="details-form-label theme-plan-total-premium align-right"
 									style={{ color: theme.primary_color }}
 								>
-									Total Premium: <span className="show-premium margin-adjust">{premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}</span>
+									Total Premium:{" "}
+									<span className="show-premium margin-adjust">
+										{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}
+									</span>
 								</div>
 							</div>
 						</Grid>
-					</Grid> : null
-					}
+					</Grid>
 					<div className="theme-plan-option-content">
 						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
 						<p className="theme-plan-checkbox-label">

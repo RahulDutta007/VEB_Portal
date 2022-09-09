@@ -103,7 +103,7 @@ const DoctorAndRxForm = (): JSX.Element => {
 		<div className="kemper-cancer-form plan-form">
 			<div className="paper-form-container">
 				<Paper className="theme-border-radius paper-container" elevation={1}>
-					<PlanHeader planName="Doctor & Rx Policy" effectiveDate={start_date} />
+					<PlanHeader planName="Call Up a Doc Group Doc & Rx" effectiveDate={start_date} />
 					<div className="plan-content">
 						<div className="theme-plan-section-margin" />
 						<div className="header-container">
@@ -144,35 +144,21 @@ const DoctorAndRxForm = (): JSX.Element => {
 						</Grid>
 					</div>
 					<div className="theme-plan-inner-section-margin" />
-					{premium_amount > 0 ? (
-						<Grid container className="theme-plan-inner-section-margin">
-							<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-								<div className="details-form-row">
-									<div
-										className="details-form-label theme-plan-total-premium align-right"
-										style={{ color: theme.primary_color }}
-									>
-										Total Premium:{" "}
-										<span className="show-premium margin-adjust">
-											{premium_amount == 0 ? "" : `$${premium_amount.toFixed(2)}`}
-										</span>
-									</div>
+					<Grid container className="theme-plan-inner-section-margin">
+						<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+							<div className="details-form-row">
+								<div
+									className="details-form-label theme-plan-total-premium align-right"
+									style={{ color: theme.primary_color }}
+								>
+									Total Premium:{" "}
+									<span className="show-premium margin-adjust">
+										{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}
+									</span>
 								</div>
-							</Grid>
+							</div>
 						</Grid>
-					) : null}
-					<div className="accordion-container">
-						<Accordion expanded={expanded === "panel_question"} onChange={handleChange("panel_question")}>
-							<AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-								<Typography>Questions</Typography>
-							</AccordionSummary>
-							<AccordionDetails>
-								<Typography>
-									No eligibility questions are required for the selected coverage, please press next.
-								</Typography>
-							</AccordionDetails>
-						</Accordion>
-					</div>
+					</Grid>
 					<div className="theme-plan-option-content">
 						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
 						<p className="theme-plan-checkbox-label">
