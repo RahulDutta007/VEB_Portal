@@ -1,0 +1,67 @@
+.disclaimer-dialog-container #alert-dialog-slide-title {
+	padding: 0.8rem 1.2rem 0.6rem 1.2rem !important;
+}
+
+.disclaimer-dialog-container .custom-discliamer-dialog-content-container {
+	padding: 0.2rem 1.2rem 0.9rem 1.2rem !important;
+}
+
+.custom-dialog-content {
+	font-family: "Quicksand", sans-serif !important;
+	font-size: 0.8rem;
+}
+
+.custom-dialog-title {
+	font-family: "Quicksand", sans-serif !important;
+}
+
+.disclaimer-dialog-content-container {
+	margin-top: 0.8rem !important;
+	margin-bottom: 0.6rem !important;
+}
+
+.disclaimer-dialog-content-container .important-content-title {
+	font-weight: 600;
+	font-size: 1rem;
+}
+
+.disclaimer-dialog-content-container .important-content {
+	margin-left: 0.5rem !important;
+	font-size: 0.9rem !important;
+}
+
+.disclaimer-dialog-container .discalimer-dialog-action-field-container {
+	margin-top: 0.8rem;
+	margin-bottom: 0.2rem;
+}
+
+.disclaimer-dialog-container .form-field-container {
+	margin-right: 0.5rem;
+	width: 100%;
+	padding-left: 0.5rem;
+}
+
+.disclaimer-dialog-container .form-field {
+	width: 100%;
+	border: 2px solid #aaa;
+	border-radius: 4px;
+	margin: 8px 0;
+	outline: none;
+	padding: 8px;
+	box-sizing: border-box;
+	transition: 0.3s;
+}
+
+.disclaimer-dialog-container .disclaimer-action-btn-container {
+	margin-top: 0.5rem;
+	padding-left: 0.8rem !important;
+}
+
+.disclaimer-dialog-container .enroll-disclaimer-action-btn {
+	background-color: rgb(224, 40, 38);
+	font-size: 0.6rem;
+	font-weight: bold;
+	color: #fff;
+	letter-spacing: 1px;
+	height: 2.1rem;
+}
