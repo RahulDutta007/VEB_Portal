@@ -263,6 +263,7 @@ const KemperCancerForm = (): JSX.Element => {
 						</Grid>
 					</Grid>
 					<div className="theme-plan-inner-section-margin-2" />
+					<div className="theme-plan-inner-section-margin-2" />
 					<LazyPlanActions waiveButtonCallback={() => null} activateButtonCallback={() => null} />
 				</Paper>
 			</div>

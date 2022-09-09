@@ -1,8 +1,9 @@
-import { Box, Tabs, Tab, IconButton } from "@mui/material";
+import { Grid, Box, SpeedDial, Tabs, Tab, IconButton, SpeedDialAction } from "@mui/material";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { useCallback, useMemo, useState } from "react";
 import Draggable from "react-draggable";
+import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import { useLocation, useNavigate } from "react-router-dom";
 import { OpenEnrollment } from "../../../@types/enrollment.types";
 import { EnrollmentContext, ThemeContext } from "../../../contexts";
@@ -28,6 +29,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { dollarize } from "../../../utils/commonFunctions/dollarize";
+import KemperCancerBranding from "./plans/kemper/cancer/branding/Branding";
+import DownloadIcon from "@mui/icons-material/Download";
+import AttachEmailIcon from "@mui/icons-material/AttachEmail";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -68,6 +72,19 @@ const Enrollment = (): JSX.Element => {
 	const height = screen.height;
 	const [showOverallPremium, setShowOverallPremium] = useState(true);
 	const navigate = useNavigate();
+	const speedDialActions = [
+		// eslint-disable-next-line prettier/prettier
+		{
+			name: <div className="tooltip-speed-dial">Download&nbsp;Brochure</div>,
+			icon: <DownloadIcon />
+		},
+		{ name: <div className="tooltip-speed-dial">Email&nbsp;Brochure</div>, icon: <AttachEmailIcon /> }
+	];
+	const [speedDialOpen, setSpeedDialOpen] = useState(true);
+
+	const handleOpen = () => setSpeedDialOpen(true);
+
+	const handleClose = () => setSpeedDialOpen(false);
 
 	const handleChange = (event: React.SyntheticEvent<Element, Event>, newValue: string) => {
 		setActiveTab(newValue);
@@ -80,7 +97,7 @@ const Enrollment = (): JSX.Element => {
 		console.log("step", step);
 		switch (step) {
 			case "Cancer": {
-				return <KemperCancerForm />;
+				return stage === "0" ? <KemperCancerBranding /> : <KemperCancerForm />;
 			}
 			case "Whole Life": {
 				return <KemperWholeLifeInsuranceForm />;
@@ -112,10 +129,10 @@ const Enrollment = (): JSX.Element => {
 	const getOpenEnrollments = useCallback(() => {
 		const _openEnrollments = [
 			{
-				plan_name: "Whole Life"
+				plan_name: "Cancer"
 			},
 			{
-				plan_name: "Cancer"
+				plan_name: "Whole Life"
 			},
 			{
 				plan_name: "Short Term Disability"
@@ -156,7 +173,7 @@ const Enrollment = (): JSX.Element => {
 			},
 			{
 				plan_name: "Group Life Insurance",
-				premium_amount: 23.35,
+				premium_amount: 0.0,
 				status: "Waived"
 			},
 			{
@@ -349,6 +366,33 @@ const Enrollment = (): JSX.Element => {
 					</Draggable>
 				)}
 			</div>
+			<SpeedDial
+				ariaLabel="SpeedDial tooltip example"
+				sx={{ position: "fixed", bottom: 16, right: 16 }}
+				icon={<SpeedDialIcon />}
+				onOpen={handleOpen}
+				onClose={handleClose}
+				open={speedDialOpen}
+				style={{ fontSize: "10px" }}
+				FabProps={{
+					sx: {
+						bgcolor: theme.primary_color,
+						"&:hover": {
+							bgcolor: theme.primary_color
+						}
+					}
+				}}
+			>
+				{speedDialActions.map((speedDialAction: any) => (
+					<SpeedDialAction
+						key={speedDialAction.name}
+						icon={speedDialAction.icon}
+						tooltipTitle={speedDialAction.name}
+						tooltipOpen
+						style={{ fontSize: "10px" }}
+					/>
+				))}
+			</SpeedDial>
 		</>
 	);
 };
