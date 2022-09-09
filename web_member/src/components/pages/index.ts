@@ -1,3 +1,12 @@
 export { default as VEBPlans } from "./VEBPlans/VEBPlans";
 export { default as VEBEnrollment } from "./enrollment/Enrollment";
 export { default as KemperCancerForm } from "./enrollment/plans/kemper/cancer/form/CancerForm";
+export { default as KemperCancerBranding } from "./enrollment/plans/kemper/cancer/branding/Branding";
+export { default as KemperAccidentBranding } from "./enrollment/plans/kemper/accident/branding/Branding";
+export { default as KemperCIBranding } from "./enrollment/plans/kemper/criticalIllness/branding/Branding";
+export { default as KemperHIBranding } from "./enrollment/plans/kemper/hospitalIndemnity/branding/Branding";
+export { default as KemperSTDBranding } from "./enrollment/plans/kemper/shortTermDisability/branding/Branding";
+export { default as KemperWholeLife } from "./enrollment/plans/kemper/shortTermDisability/branding/Branding";
+export { default as FiveStartBranding } from "./enrollment/plans/fiveStar/familyProtection/branding/Branding";
+export { default as DocRxBranding } from "./enrollment/plans/doc/docAndRx/branding/Branding";
+export { default as BeazleyBranding } from "./enrollment/plans/beazley/indemnity/branding/Branding";

@@ -9,7 +9,7 @@ const KemperHospitalIndemnityBranding = () => {
 	const navigate = useNavigate();
 	const urlSearchParams: URLSearchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
 
-	const handleEnroll = useCallback(() => {
+	const handleEnrollClick = useCallback(() => {
 		const step = urlSearchParams.get("step");
 		navigate(`?step=${step}&stage=1`);
 	}, [navigate, urlSearchParams]);
@@ -17,11 +17,11 @@ const KemperHospitalIndemnityBranding = () => {
 	return (
 		<div className="paper-form-container">
 			<Paper className="theme-border-radius paper-container" elevation={1}>
-				<PlanHeader planName="Kemper Group Cancer Insurance Policy" effectiveDate="01/22/2022" />
+				<PlanHeader planName="Kemper Group Hospital Indemnity Insurance Policy" effectiveDate="01/22/2022" />
 				<div className="theme-plan-section-margin" />
 				<PlanBranding imgSrc={AccidentBanner} />
 				<Suspense fallback={<div />}>
-					<LazyBrandingActions waiveButtonCallback={() => null} enrollButtonCallback={() => handleEnroll()} />
+					<LazyBrandingActions waiveButtonCallback={() => null} enrollButtonCallback={handleEnrollClick} />
 				</Suspense>
 			</Paper>
 		</div>

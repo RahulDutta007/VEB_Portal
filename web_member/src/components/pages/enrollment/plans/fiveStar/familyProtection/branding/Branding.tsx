@@ -1,10 +1,10 @@
 import { Suspense, useMemo, useCallback } from "react";
 import { LazyBrandingActions, PlanBranding, PlanHeader } from "../../../../../../shared";
 import { Paper } from "@mui/material";
-import { AccidentBanner, KemperBanner } from "../../../../../../../assets";
+import { AccidentBanner, FiveStarBanner, KemperBanner } from "../../../../../../../assets";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const KemperCriticalIllnessBranding = () => {
+const FiveStarBranding = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const urlSearchParams: URLSearchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
@@ -17,9 +17,9 @@ const KemperCriticalIllnessBranding = () => {
 	return (
 		<div className="paper-form-container">
 			<Paper className="theme-border-radius paper-container" elevation={1}>
-				<PlanHeader planName="Kemper Group Cancer Insurance Policy" effectiveDate="01/22/2022" />
+				<PlanHeader planName="Kemper Accident Insurance Policy" effectiveDate="01/22/2022" />
 				<div className="theme-plan-section-margin" />
-				<PlanBranding imgSrc={AccidentBanner} />
+				<PlanBranding imgSrc={FiveStarBanner} />
 				<Suspense fallback={<div />}>
 					<LazyBrandingActions waiveButtonCallback={() => null} enrollButtonCallback={handleEnrollClick} />
 				</Suspense>
@@ -28,4 +28,4 @@ const KemperCriticalIllnessBranding = () => {
 	);
 };
 
-export default KemperCriticalIllnessBranding;
+export default FiveStarBranding;

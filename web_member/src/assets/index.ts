@@ -8,3 +8,4 @@ export { default as STDBanner } from "./branding/STD.jpg";
 export { default as CIBanner } from "./branding/CI.jpg";
 export { default as AccidentBanner } from "./branding/Accident.jpg";
 export { default as FiveStarBanner } from "./branding/5Star.jpg";
+export { default as DocRxBanner } from "./branding/DocRx.jpg";

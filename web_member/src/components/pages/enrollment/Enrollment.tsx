@@ -32,6 +32,13 @@ import { dollarize } from "../../../utils/commonFunctions/dollarize";
 import KemperCancerBranding from "./plans/kemper/cancer/branding/Branding";
 import DownloadIcon from "@mui/icons-material/Download";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
+import KemperWholeLifeBranding from "./plans/kemper/wholeLife/branding/Branding";
+import KemperSTDBranding from "./plans/kemper/shortTermDisability/branding/Branding";
+import KemperCriticalIllnessBranding from "./plans/kemper/criticalIllness/branding/Branding";
+import KemperAccidentBranding from "./plans/kemper/accident/branding/Branding";
+import { DocRxBranding, KemperHIBranding } from "..";
+import BeazleyGLIBranding from "./plans/beazley/indemnity/branding/Branding";
+import FiveStarBranding from "./plans/fiveStar/familyProtection/branding/Branding";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -100,28 +107,28 @@ const Enrollment = (): JSX.Element => {
 				return stage === "0" ? <KemperCancerBranding /> : <KemperCancerForm />;
 			}
 			case "Whole Life": {
-				return <KemperWholeLifeInsuranceForm />;
+				return stage === "0" ? <KemperWholeLifeBranding /> : <KemperWholeLifeInsuranceForm />;
 			}
 			case "Short Term Disability": {
-				return <KemperShortTermDisabilityForm />;
+				return stage === "0" ? <KemperSTDBranding /> : <KemperShortTermDisabilityForm />;
 			}
 			case "Critical Illness Group": {
-				return <KemperCriticalIllnessForm />;
+				return stage === "0" ? <KemperCriticalIllnessBranding /> : <KemperCriticalIllnessForm />;
 			}
 			case "Accident": {
-				return <KemperAccidentForm />;
+				return stage === "0" ? <KemperAccidentBranding /> : <KemperAccidentForm />;
 			}
 			case "Hospital Indemnity": {
-				return <KemperHospitalIndemnityForm />;
+				return stage === "0" ? <KemperHIBranding /> : <KemperHospitalIndemnityForm />;
 			}
 			case "Beazley Indemnity": {
-				return <BeazleyIndemnityForm />;
+				return stage === "0" ? <BeazleyGLIBranding /> : <BeazleyIndemnityForm />;
 			}
 			case "Family Protection": {
-				return <FiveStarFamilyProtectionForm />;
+				return stage === "0" ? <FiveStarBranding /> : <FiveStarFamilyProtectionForm />;
 			}
 			case "Doc and Rx": {
-				return <DoctorAndRxForm />;
+				return stage === "0" ? <DocRxBranding /> : <DoctorAndRxForm />;
 			}
 		}
 	}, [urlSearchParams]);

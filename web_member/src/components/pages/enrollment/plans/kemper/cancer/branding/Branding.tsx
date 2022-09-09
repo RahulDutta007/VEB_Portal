@@ -9,7 +9,7 @@ const KemperCancerBranding = () => {
 	const navigate = useNavigate();
 	const urlSearchParams: URLSearchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
 
-	const handleEnroll = useCallback(() => {
+	const handleEnrollClick = useCallback(() => {
 		const step = urlSearchParams.get("step");
 		navigate(`?step=${step}&stage=1`);
 	}, [navigate, urlSearchParams]);
@@ -21,7 +21,7 @@ const KemperCancerBranding = () => {
 				<div className="theme-plan-section-margin" />
 				<PlanBranding imgSrc={KemperBanner} />
 				<Suspense fallback={<div />}>
-					<LazyBrandingActions waiveButtonCallback={() => null} enrollButtonCallback={() => handleEnroll()} />
+					<LazyBrandingActions waiveButtonCallback={() => null} enrollButtonCallback={handleEnrollClick} />
 				</Suspense>
 			</Paper>
 		</div>

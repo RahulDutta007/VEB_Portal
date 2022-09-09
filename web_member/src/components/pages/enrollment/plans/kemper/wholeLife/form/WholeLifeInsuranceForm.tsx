@@ -449,7 +449,7 @@ const KemperWholeLifeInsuaranceForm = (): JSX.Element => {
 		<div className="kemper-cancer-form plan-form">
 			<div className="paper-form-container">
 				<Paper className="theme-border-radius paper-container" elevation={1}>
-					<PlanHeader planName="Kemper Whole Life Insurance Policy" effectiveDate={start_date} />
+					<PlanHeader planName="Kemper Group Cancer Insurance Policy" effectiveDate={start_date} />
 					<div className="plan-content">
 						<div className="theme-plan-section-margin" />
 						<div className="header-container header-container-new">
