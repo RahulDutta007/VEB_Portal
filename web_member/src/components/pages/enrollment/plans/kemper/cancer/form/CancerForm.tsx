@@ -2,7 +2,7 @@ import { Button, MenuItem, SelectChangeEvent } from "@mui/material";
 import { Select } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect, Suspense } from "react";
-import { ThemeContext } from "../../../../../../../contexts";
+import { AuthContext, EnrollmentContext, ThemeContext } from "../../../../../../../contexts";
 import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
 import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
@@ -19,42 +19,122 @@ import {
 	CancerPlanCoverage,
 	CancerPlanCoverageLevel,
 	CancerPlanDetails,
-	CancerPlanPremiumAmount
+	CancerPlanPremiumAmount,
+	PaycheckFrequency
 } from "../../../../../../../@types/plan.types";
 import { CustomDisclaimerDialogPropsType } from "../../../../../../../@types/dialogProps.types";
+import { PlanFormProps } from "../../../../../../../@types/components/enrollment.types";
+import { Member } from "../../../../../../../@types/member.types";
+import { getKemperCancerEligibleDependents } from "../../../../../../../utils/commonFunctions/eligibleDependents";
+import initCapitalize from "../../../../../../../utils/commonFunctions/initCapitalize";
+import {
+	Enrollment,
+	EnrollmentCommonDetails,
+	EnrollmentStandardDetails
+} from "../../../../../../../@types/enrollment.types";
+import { getCoveredDependents } from "../../../../../../../utils/commonFunctions/coveredDependents";
 
-const KemperCancerForm = (): JSX.Element => {
+const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
 	const [emailDisclaimer, setEmailDisclaimer] = useState("");
+	const { paycheck, member } = useContext(AuthContext);
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
+	const [eligibleDependents, setEligibleDependents] = useState<Member[]>([]);
 	const { theme } = useContext(ThemeContext);
+	const [plan, setPlan] = useState({
+		_id: "123zxkbnkabb3w2123",
+		plan_name: "Kemper Cancer",
+		plan_code: "KC"
+	});
 	const [cancerPlanDetails, setCancerPlanDetails] = useState<CancerPlanDetails>({
-		coverage: ["Employee Only", "Employee & Family"],
+		coverage: [],
 		coverage_level: ["High Plan", "Low Plan"],
 		premium_amount: {
 			standard_premium: {
 				"Employee Only": {
-					"High Plan": 7.47,
-					"Low Plan": 6.1
+					"High Plan": {
+						WEEKLY: 7.47,
+						MONTHLY: 7.47
+					},
+					"Low Plan": {
+						WEEKLY: 6.41,
+						MONTHLY: 6.41
+					}
+				},
+				"Employee & Dependents": {
+					"High Plan": {
+						WEEKLY: 11.1,
+						MONTHLY: 11.1
+					},
+					"Low Plan": {
+						WEEKLY: 13.47,
+						MONTHLY: 13.47
+					}
+				},
+				"Employee & Spouse": {
+					"High Plan": {
+						WEEKLY: 11.1,
+						MONTHLY: 11.1
+					},
+					"Low Plan": {
+						WEEKLY: 13.47,
+						MONTHLY: 13.47
+					}
 				},
 				"Employee & Family": {
-					// eslint-disable-next-line prettier/prettier
-					"High Plan": 11.1,
-					"Low Plan": 13.47
+					"High Plan": {
+						WEEKLY: 11.1,
+						MONTHLY: 11.1
+					},
+					"Low Plan": {
+						WEEKLY: 13.47,
+						MONTHLY: 13.47
+					}
 				}
 			},
 			rider_premium: {
 				"Employee Only": {
 					// eslint-disable-next-line prettier/prettier
-					"High Plan": 1.4,
+					"High Plan": {
+						WEEKLY: 1.4,
+						MONTHLY: 1.4
+					},
 					// eslint-disable-next-line prettier/prettier
-					"Low Plan": 1.4
+					"Low Plan": {
+						WEEKLY: 1.4,
+						MONTHLY: 1.4
+					}
+				},
+				"Employee & Dependents": {
+					"High Plan": {
+						WEEKLY: 2.83,
+						MONTHLY: 2.83
+					},
+					"Low Plan": {
+						WEEKLY: 2.83,
+						MONTHLY: 2.83
+					}
+				},
+				"Employee & Spouse": {
+					"High Plan": {
+						WEEKLY: 2.83,
+						MONTHLY: 2.83
+					},
+					"Low Plan": {
+						WEEKLY: 2.83,
+						MONTHLY: 2.83
+					}
 				},
 				"Employee & Family": {
-					// eslint-disable-next-line prettier/prettier
-					"High Plan": 2.83,
-					"Low Plan": 2.83
+					"High Plan": {
+						WEEKLY: 2.83,
+						MONTHLY: 2.83
+					},
+					"Low Plan": {
+						WEEKLY: 2.83,
+						MONTHLY: 2.83
+					}
 				}
 			}
 		}
@@ -96,6 +176,7 @@ const KemperCancerForm = (): JSX.Element => {
 	const [standardPremium, setStandardPremium] = useState(0);
 	const [riderPremium, setRiderPremium] = useState(0);
 	const [totalPremium, setTotalPremium] = useState(0);
+	const { setCurrentEnrollment } = useContext(EnrollmentContext);
 
 	const handleWritingNumberChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,19 +202,74 @@ const KemperCancerForm = (): JSX.Element => {
 
 	const calculatePremium = useCallback(() => {
 		const { coverage, coverage_level } = cancerPlanInputs;
-		if (coverage && coverage_level) {
+		if (coverage && coverage_level && paycheck) {
 			const newStandardPremium =
 				cancerPlanDetails.premium_amount.standard_premium[coverage as keyof CancerPlanCoverage][
 					coverage_level as keyof CancerPlanCoverageLevel
-				];
+				][paycheck.pay_frequency as keyof PaycheckFrequency];
 			setStandardPremium(newStandardPremium);
 			const newRiderPremium =
 				cancerPlanDetails.premium_amount.rider_premium[coverage as keyof CancerPlanCoverage][
 					coverage_level as keyof CancerPlanCoverageLevel
-				];
+				][paycheck.pay_frequency as keyof PaycheckFrequency];
 			setRiderPremium(newRiderPremium);
+			console.log("newRiderPremium", newRiderPremium);
+			console.log("newStandardPremium", newStandardPremium);
+			setCurrentEnrollment(
+				Object.assign(
+					{},
+					{
+						plan_name: "Cancer",
+						status: "Current",
+						premium_amount: Number((newStandardPremium + newRiderPremium).toFixed(2))
+					}
+				)
+			);
 		}
-	}, [cancerPlanDetails, cancerPlanInputs]);
+	}, [
+		cancerPlanDetails.premium_amount.rider_premium,
+		cancerPlanDetails.premium_amount.standard_premium,
+		cancerPlanInputs,
+		paycheck,
+		setCurrentEnrollment
+	]);
+
+	const handleActivateButtonClick = useCallback(() => {
+		if (member && cancerPlanInputs.coverage) {
+			console.log("cancerPlanInputs", cancerPlanInputs);
+			const enrollmentCommonDetails: EnrollmentCommonDetails = {
+				agent_id: null,
+				location_number: member.location_number,
+				location_name: member.location.location_name,
+				group_number: member.group_number,
+				group_name: member.group.name,
+				plan_object_id: plan._id,
+				plan_code: plan.plan_code,
+				enrollment_status: "APPROVED",
+				insured_object_id: member._id,
+				insured_SSN: member.SSN,
+				unenrolled_reason: null,
+				waive_reason: null,
+				termination_reason: null,
+				enrollment_date: "01/23/22",
+				effective_date: "01/23/22",
+				termination_date: null,
+				open_enrollment_id: "0xqwe123123"
+			};
+			console.log("enrollmentCommonDetails", enrollmentCommonDetails);
+			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [];
+			console.log("eligible xxxx", eligibleDependents);
+			const coveredDependents = getCoveredDependents(cancerPlanInputs.coverage, eligibleDependents);
+			console.log("coveredDependents", coveredDependents);
+			const dep_SSNs = coveredDependents.dep_SSNs;
+			const enrollment: Enrollment = {
+				standard_details: coveredDependents.enrollmentStandardDetails,
+				common_details: enrollmentCommonDetails,
+				dep_SSNs
+			};
+			console.log("enrollment", enrollment);
+		}
+	}, [cancerPlanInputs, eligibleDependents, member, plan._id, plan.plan_code]);
 
 	const handleOpenDisclaimerDialogClick = useCallback(() => {
 		setEnrollmentDisclaimerDialogProps(Object.assign({}, enrollmentDisclaimerDialogProps, { openDialog: true }));
@@ -156,23 +292,37 @@ const KemperCancerForm = (): JSX.Element => {
 	);
 
 	useEffect(() => {
+		console.log("UE3");
 		setTotalPremium(standardPremium + riderPremium);
 	}, [riderPremium, standardPremium]);
 
 	useEffect(() => {
+		console.log("UE2");
 		calculatePremium();
 	}, [calculatePremium, cancerPlanInputs.coverage, cancerPlanInputs.coverage_level]);
+
+	useEffect(() => {
+		console.log("UE1");
+		const dependentCoverage = getKemperCancerEligibleDependents(dependents);
+		console.log("dependentCoverage", dependentCoverage);
+		setEligibleDependents(Object.assign([], dependentCoverage.dependents));
+		setCancerPlanDetails((prevCancerPlanDetails: CancerPlanDetails) => {
+			return Object.assign({}, prevCancerPlanDetails, {
+				coverage: dependentCoverage.coverage
+			});
+		});
+	}, [dependents]);
 
 	return (
 		<>
 			<Suspense fallback={<div />}>
-				<CustomEnrollmentDisclaimerDialog
+				{/* <CustomEnrollmentDisclaimerDialog
 					enrollmentDisclaimerDialogProps={enrollmentDisclaimerDialogProps}
 					handleCloseDisclaimerDialog={handleCloseDisclaimerDialog}
 					handleEscapeCloseDisclaimerDialog={handleEscapeCloseDisclaimerDialog}
 					emailDisclaimer={emailDisclaimer}
 					setEmailDisclaimer={setEmailDisclaimer}
-				/>
+				/> */}
 			</Suspense>
 			<div className="kemper-cancer-form plan-form">
 				<div className="paper-form-container">
@@ -200,8 +350,13 @@ const KemperCancerForm = (): JSX.Element => {
 											name="coverage"
 											onChange={handleCoverageChange}
 										>
-											<MenuItem value={"Employee Only"}>{"Employee Only"}</MenuItem>
-											<MenuItem value={"Employee & Family"}>{"Employee & Family"}</MenuItem>
+											{cancerPlanDetails.coverage.map((coverage: string, index: number) => {
+												return (
+													<MenuItem value={coverage} key={index}>
+														{initCapitalize(coverage)}
+													</MenuItem>
+												);
+											})}
 										</Select>
 									</div>
 								</Grid>
@@ -303,12 +458,15 @@ const KemperCancerForm = (): JSX.Element => {
 							</Grid>
 						</Grid>
 						<div className="theme-plan-inner-section-margin-2" />
-						<LazyPlanActions waiveButtonCallback={() => null} activateButtonCallback={() => null} />
-						<div className="dialog-btn-container">
+						<LazyPlanActions
+							waiveButtonCallback={() => null}
+							activateButtonCallback={handleActivateButtonClick}
+						/>
+						{/* <div className="dialog-btn-container">
 							<Button className="dialog-btn" onClick={handleOpenDisclaimerDialogClick}>
 								Open Dialog
 							</Button>
-						</div>
+						</div> */}
 					</Paper>
 				</div>
 			</div>

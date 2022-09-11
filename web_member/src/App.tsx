@@ -13,15 +13,17 @@ import "./globalStyles/currentTheme.css";
 import "./globalStyles/paperForm.css";
 import Redirection from "./components/pages/auth/redirection/Redirection";
 import { EMPLOYEE } from "./constants/demo/employee";
+import { PAYCHECK } from "./constants/demo/paycheck";
 
 const App = (): JSX.Element => {
 	const { setTheme } = useContext(ThemeContext);
-	const { setMember } = useContext(AuthContext);
+	const { setMember, setPaycheck } = useContext(AuthContext);
 
 	useEffect(() => {
 		setMember(EMPLOYEE);
 		setTheme(THEME);
-	}, [setTheme, setMember]);
+		setPaycheck(PAYCHECK);
+	}, [setTheme, setMember, setPaycheck]);
 
 	return (
 		<div className="App">

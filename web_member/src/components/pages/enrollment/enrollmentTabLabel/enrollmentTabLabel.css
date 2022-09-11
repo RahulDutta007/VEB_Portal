@@ -1,0 +1,14 @@
+.enrollment-tab-level {
+	width: 100%;
+	margin-left: 16px;
+}
+
+.enrollment-tab-level .status-container {
+	position: absolute;
+	top: 50%;
+	right: 10%;
+}
+
+.enrollment-tab-level .status-icon {
+	font-size: 1.3rem;
+}

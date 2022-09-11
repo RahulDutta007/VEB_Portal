@@ -39,6 +39,9 @@ import KemperAccidentBranding from "./plans/kemper/accident/branding/Branding";
 import { DocRxBranding, KemperHIBranding } from "..";
 import BeazleyGLIBranding from "./plans/beazley/indemnity/branding/Branding";
 import FiveStarBranding from "./plans/fiveStar/familyProtection/branding/Branding";
+import EnrollmentTabLabel from "./enrollmentTabLabel/EnrollmentTabLabel";
+import { Member } from "../../../@types/member.types";
+import { DEPENDENTS } from "../../../constants/demo/employee";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -70,6 +73,7 @@ const Enrollment = (): JSX.Element => {
 	const [activeTab, setActiveTab] = useState<string>();
 	const { currentEnrollment, setCurrentEnrollment } = useContext(EnrollmentContext);
 	const [value, setValue] = useState<string>();
+	const [dependents, setDependents] = useState<Member[]>([]);
 	const [overallPremiums, setOverallPremiums] = useState<any[]>([]);
 	const [openEnrollments, setOpenEnrollments] = useState<OpenEnrollment[]>([]);
 	const [totalPremium, setTotalPremium] = useState<number>(0.0);
@@ -101,10 +105,9 @@ const Enrollment = (): JSX.Element => {
 	const renderPlan = useCallback(() => {
 		const step = urlSearchParams.get("step");
 		const stage = urlSearchParams.get("stage");
-		console.log("step", step);
 		switch (step) {
 			case "Cancer": {
-				return stage === "0" ? <KemperCancerBranding /> : <KemperCancerForm />;
+				return stage === "0" ? <KemperCancerBranding /> : <KemperCancerForm dependents={dependents} />;
 			}
 			case "Whole Life": {
 				return stage === "0" ? <KemperWholeLifeBranding /> : <KemperWholeLifeInsuranceForm />;
@@ -131,24 +134,31 @@ const Enrollment = (): JSX.Element => {
 				return stage === "0" ? <DocRxBranding /> : <DoctorAndRxForm />;
 			}
 		}
-	}, [urlSearchParams]);
+
+		debugger;
+	}, [dependents, urlSearchParams]);
 
 	const getOpenEnrollments = useCallback(() => {
 		const _openEnrollments = [
 			{
-				plan_name: "Cancer"
+				plan_name: "Cancer",
+				status: "ENROLLED"
 			},
 			{
-				plan_name: "Whole Life"
+				plan_name: "Whole Life",
+				status: "ENROLLED"
 			},
 			{
-				plan_name: "Short Term Disability"
+				plan_name: "Short Term Disability",
+				status: null
 			},
 			{
-				plan_name: "Critical Illness Group"
+				plan_name: "Critical Illness Group",
+				status: "WAIVED"
 			},
 			{
-				plan_name: "Hospital Indemnity"
+				plan_name: "Hospital Indemnity",
+				status: "ENROLLED"
 			},
 			{
 				plan_name: "Accident"
@@ -157,10 +167,12 @@ const Enrollment = (): JSX.Element => {
 				plan_name: "Beazley Indemnity"
 			},
 			{
-				plan_name: "Family Protection"
+				plan_name: "Family Protection",
+				status: "ENROLLED"
 			},
 			{
-				plan_name: "Doc and Rx"
+				plan_name: "Doc and Rx",
+				status: "WAIVED"
 			}
 		];
 		setOpenEnrollments(Object.assign([], _openEnrollments));
@@ -194,14 +206,23 @@ const Enrollment = (): JSX.Element => {
 		setOverallPremiums(Object.assign([], _overallPremiums));
 	}, []);
 
-	useEffect(() => {
-		getOpenEnrollments();
-		getOverallPremium();
-	}, [getOpenEnrollments, getOverallPremium]);
+	const getDependents = useCallback(() => {
+		const _dependents = DEPENDENTS;
+		setDependents(Object.assign([], _dependents));
+	}, []);
 
 	useEffect(() => {
+		debugger;
+		getOpenEnrollments();
+		getOverallPremium();
+		getDependents();
+	}, [getDependents, getOpenEnrollments, getOverallPremium]);
+
+	useEffect(() => {
+		debugger;
 		if (activeTab) {
 			navigate("?step=" + activeTab + "&stage=0");
+			console.log("step", activeTab);
 		}
 	}, [activeTab, navigate]);
 
@@ -248,7 +269,7 @@ const Enrollment = (): JSX.Element => {
 						onChange={handleChange}
 					>
 						{openEnrollments.map((openEnrollment: OpenEnrollment, index: number) => {
-							const { plan_name } = openEnrollment;
+							const { plan_name, status } = openEnrollment;
 							return (
 								<Tab
 									key={index}
@@ -258,7 +279,7 @@ const Enrollment = (): JSX.Element => {
 										color: activeTab == plan_name ? theme.primary_color : undefined
 									}}
 									value={plan_name}
-									label={plan_name}
+									label={<EnrollmentTabLabel planName={plan_name} status={status} carrier="Kemper" />}
 									{...a11yProps(0)}
 								/>
 							);

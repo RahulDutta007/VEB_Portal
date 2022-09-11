@@ -1,14 +1,21 @@
 import { type } from "os";
+import { PayFrequency } from "./paycheck.types";
 
 export type Coverage = ["Employee Only", "Employee & Spouse", "Employee & Dependent", "Employee & Family"];
 
+export type PaycheckFrequency = {
+	[key in PayFrequency]: number;
+};
+
 export type CancerPlanCoverageLevel = {
-	"High Plan": number;
-	"Low Plan": number;
+	"High Plan": PaycheckFrequency;
+	"Low Plan": PaycheckFrequency;
 };
 
 export type CancerPlanCoverage = {
 	"Employee Only": CancerPlanCoverageLevel;
+	"Employee & Spouse": CancerPlanCoverageLevel;
+	"Employee & Dependents": CancerPlanCoverageLevel;
 	"Employee & Family": CancerPlanCoverageLevel;
 };
 
@@ -18,7 +25,7 @@ export type CancerPlanPremiumAmount = {
 };
 
 export type CancerPlanDetails = {
-	coverage: ["Employee Only", "Employee & Family"];
+	coverage: string[];
 	coverage_level: ["High Plan", "Low Plan"];
 	premium_amount: CancerPlanPremiumAmount;
 };

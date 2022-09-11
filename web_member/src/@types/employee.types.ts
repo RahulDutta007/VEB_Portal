@@ -13,8 +13,8 @@ export type Employee = {
 	dependent_number: number | null; //This Id will be from WLT DB
 	employee_wlt_id: string | null;
 	dependent_wlt_id: string | null;
-	group_number: number | null;
-	location_number: number | null;
+	group_number: number;
+	location_number: number;
 	first_name: string;
 	middle_name: string | null;
 	last_name: string;
@@ -55,4 +55,10 @@ export type Employee = {
 	event_document: Record<string, unknown> | null;
 	date: string;
 	last_login_date: string;
+	location: {
+		location_name: string;
+	};
+	group: {
+		name: string;
+	};
 };

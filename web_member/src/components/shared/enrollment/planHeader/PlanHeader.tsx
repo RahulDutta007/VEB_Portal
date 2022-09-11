@@ -9,7 +9,6 @@ import "./planHeader.css";
 const PlanHeader = ({ planName, effectiveDate }: PlanHeaderProps): JSX.Element => {
 	const { theme } = useContext(ThemeContext);
 
-	console.log("theme", theme);
 	return (
 		<div className="plan-header">
 			<div className="header">{planName}</div>

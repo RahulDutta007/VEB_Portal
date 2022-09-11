@@ -7,7 +7,13 @@ const reducer = (state: Store, action: AuthAction): Store => {
 		case actions.SET_MEMBER: {
 			return {
 				...state,
-				member: action.payload
+				member: action.payload.member
+			};
+		}
+		case actions.SET_PAYCHECK: {
+			return {
+				...state,
+				paycheck: action.payload.paycheck
 			};
 		}
 		default:
