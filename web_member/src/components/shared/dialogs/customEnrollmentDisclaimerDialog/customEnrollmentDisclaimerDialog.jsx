@@ -1,7 +1,8 @@
 /* eslint-disable arrow-parens */
 /* eslint-disable react/prop-types */
-import { forwardRef, JSXElementConstructor, ReactElement, useCallback } from "react";
-import { CustomFilledInput } from "../../customInput";
+import { forwardRef, JSXElementConstructor, ReactElement, useCallback, useContext } from "react";
+import { CustomFilledInput, CustomInput } from "../../customInput";
+import { ThemeContext } from "../../../../contexts";
 
 import {
 	Dialog,
@@ -32,6 +33,7 @@ const CustomEnrollmentDisclaimerDialog = ({
 	emailDisclaimer,
 	setEmailDisclaimer
 }) => {
+	const { theme } = useContext(ThemeContext);
 	const { openDialog, title, content, importantTitle, importantContent, inputFields, actions } =
 		enrollmentDisclaimerDialogProps;
 
@@ -80,44 +82,36 @@ const CustomEnrollmentDisclaimerDialog = ({
 				</div>
 				<div className="discalimer-dialog-action-field-container">
 					<Grid container spacing={1}>
-						<Grid item xs={6} sm={6} md={9} lg={9} xl={9}>
+						<Grid item xs={6} sm={6} md={8} lg={8} xl={8}>
 							{inputFields.map((inputField, index) => {
-								const { name, value, placeHolder } = inputField;
+								const { name, value, placeholder } = inputField;
 								return (
-									<div key={index} className="form-field-container">
-										<input
-											className="form-field"
-											id="first-name-input"
-											value={emailDisclaimer}
-											name={name}
-											placeholder={placeHolder}
-											onChange={(event) => handleDisclaimerEmailChange(event)}
-											// onChange={(event) => handleTermReasonChange(event)}
-											variant="outlined"
-										/>
-									</div>
+									<TextField
+										// id="first-name-input"
+										// className="form-field"
+										name={name}
+										value={emailDisclaimer}
+										onChange={(event) => handleDisclaimerEmailChange(event)}
+										variant="outlined"
+										key={index}
+										placeholder={placeholder}
+										style={{ width: "100%", padding: 0, cursor: "pointer" }}
+									/>
 								);
 							})}
 						</Grid>
-						<Grid item xs={6} sm={6} md={3} lg={3} xl={3} className="disclaimer-action-btn-container">
+						<Grid item xs={6} sm={6} md={4} lg={4} xl={4}>
 							{actions.map((action, index) => {
 								const { label, callback } = action;
 								return (
 									<Button
 										variant="contained"
-										key={index}
+										style={{
+											backgroundColor: theme.button.background_color,
+											color: theme.button.color
+										}}
 										onClick={callback}
-										// style={{
-										// 	backgroundColor: "rgb(224, 40, 38)",
-										// 	letterSpacing: "1px",
-										// 	fontSize: "0.5rem",
-										// 	fontWeight: "bold",
-
-										// 	color: "#ffff",
-										// 	marginRight: 10,
-										// 	marginTop: 2,
-										// 	marginLeft: 10
-										// }}
+										key={index}
 										className="enroll-disclaimer-action-btn"
 									>
 										{label}

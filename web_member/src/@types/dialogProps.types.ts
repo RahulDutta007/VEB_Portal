@@ -6,7 +6,7 @@ export type Action = {
 export type InputField = {
 	name: string;
 	value: string;
-	placeHolder: string;
+	placeholder: string;
 };
 
 export type DialogProps = {
