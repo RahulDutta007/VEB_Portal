@@ -4,7 +4,7 @@ import { Select } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { COVERAGE } from "../../../../../../../constants/coverage";
-import { ThemeContext } from "../../../../../../../contexts";
+import { AuthContext, EnrollmentContext, ThemeContext } from "../../../../../../../contexts";
 import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
 import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
@@ -13,8 +13,19 @@ import { useState } from "react";
 import { useCallback } from "react";
 
 import "./hospitalIndemnityForm.css";
+import {
+	HospitalIndemnityPlanCoverage,
+	HospitalIndemnityPlanCoverageLevel,
+	HospitalIndemnityPlanDetails,
+	PaycheckFrequency
+} from "../../../../../../../@types/plan.types";
+import initCapitalize from "../../../../../../../utils/commonFunctions/initCapitalize";
+import { PlanFormProps } from "../../../../../../../@types/components/enrollment.types";
+import { getKemperCancerEligibleDependents } from "../../../../../../../utils/commonFunctions/eligibleDependents";
+import { Member } from "../../../../../../../@types/member.types";
+import { dollarize } from "../../../../../../../utils/commonFunctions/dollarize";
 
-const KemperHospitalIndemnityForm = (): JSX.Element => {
+const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [plan, setPlan] = useState({
 		plan_name: "Accident",
@@ -22,43 +33,86 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 		start_date: "01/01/2023",
 		end_date: "01/01/2024"
 	});
-	const [premium_plan, setPremiumPlan] = useState({
-		employee: [
-			{
-				name: "plan 1",
-				premium_amount: 1.05
-			},
-			{
-				name: "plan 2",
-				premium_amount: 1.57
-			},
-			{
-				name: "plan 3",
-				premium_amount: 2.09
-			},
-			{
-				name: "plan 4",
-				premium_amount: 3.14
+
+	const [hospitalIndemnityPlanDetails, setHospitalIndemnityPlanDetails] = useState<HospitalIndemnityPlanDetails>({
+		coverage: [],
+		coverage_level: ["Plan 1", "Plan 2", "Plan 3", "Plan 4"],
+		premium_amount: {
+			standard_premium: {
+				"Employee Only": {
+					"Plan 1": {
+						WEEKLY: 7.47,
+						MONTHLY: 7.47
+					},
+					"Plan 2": {
+						WEEKLY: 9.47,
+						MONTHLY: 9.47
+					},
+					"Plan 3": {
+						WEEKLY: 11.47,
+						MONTHLY: 11.47
+					},
+					"Plan 4": {
+						WEEKLY: 13.47,
+						MONTHLY: 13.47
+					}
+				},
+				"Employee & Dependents": {
+					"Plan 1": {
+						WEEKLY: 7.47,
+						MONTHLY: 7.47
+					},
+					"Plan 2": {
+						WEEKLY: 9.47,
+						MONTHLY: 9.47
+					},
+					"Plan 3": {
+						WEEKLY: 11.47,
+						MONTHLY: 11.47
+					},
+					"Plan 4": {
+						WEEKLY: 13.47,
+						MONTHLY: 13.47
+					}
+				},
+				"Employee & Spouse": {
+					"Plan 1": {
+						WEEKLY: 7.47,
+						MONTHLY: 7.47
+					},
+					"Plan 2": {
+						WEEKLY: 9.47,
+						MONTHLY: 9.47
+					},
+					"Plan 3": {
+						WEEKLY: 11.47,
+						MONTHLY: 11.47
+					},
+					"Plan 4": {
+						WEEKLY: 13.47,
+						MONTHLY: 13.47
+					}
+				},
+				"Employee & Family": {
+					"Plan 1": {
+						WEEKLY: 7.47,
+						MONTHLY: 7.47
+					},
+					"Plan 2": {
+						WEEKLY: 9.47,
+						MONTHLY: 9.47
+					},
+					"Plan 3": {
+						WEEKLY: 11.47,
+						MONTHLY: 11.47
+					},
+					"Plan 4": {
+						WEEKLY: 13.47,
+						MONTHLY: 13.47
+					}
+				}
 			}
-		],
-		employee_and_family: [
-			{
-				name: "plan 1",
-				premium_amount: 1.05
-			},
-			{
-				name: "plan 2",
-				premium_amount: 1.57
-			},
-			{
-				name: "plan 3",
-				premium_amount: 2.09
-			},
-			{
-				name: "plan 4",
-				premium_amount: 3.14
-			}
-		]
+		}
 	});
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
@@ -66,10 +120,28 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 	const [coverage_for, setCoverageFor] = useState("");
 	const [coverage_level, setCoverageLevel] = useState("");
 	const [premium_amount, setPremiumAmount] = useState(0);
+	const [eligibleDependents, setEligibleDependents] = useState<Member[]>([]);
+
+	//new Changes
+	const [hospitalIndemnityPlanInputs, setHospitalIndemnityPlanInputs] = useState<{
+		coverage: null | string;
+		coverage_level: null | string;
+	}>({
+		coverage: null,
+		coverage_level: null
+	});
+	const [standardPremium, setStandardPremium] = useState(0);
+	const { paycheck, member } = useContext(AuthContext);
+	const { setCurrentEnrollment } = useContext(EnrollmentContext);
+	//end new changes
 
 	const handleCoverageForChange = (event: React.FormEvent<HTMLSelectElement>) => {
-		const { value } = event.target as HTMLSelectElement;
-		setCoverageFor(value);
+		const { name, value } = event.target as HTMLSelectElement;
+		setHospitalIndemnityPlanInputs(
+			Object.assign({}, hospitalIndemnityPlanInputs, {
+				[name]: value
+			})
+		);
 	};
 
 	const handleCoverageLevelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -90,19 +162,50 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 		[prevWritingNumber]
 	);
 
-	const calculatePremium = () => {
-		if (coverage_for && coverage_level) {
-			const coverageFor = coverage_for === "Employee Only" ? "employee" : "employee_and_family";
-			const calculatePremiumAmount = premium_plan[coverageFor]?.find(
-				(plan) => plan.name.toLowerCase() === coverage_level.toLowerCase()
+	const calculatePremium = useCallback(() => {
+		const { coverage, coverage_level } = hospitalIndemnityPlanInputs;
+		if (coverage && coverage_level && paycheck) {
+			const newStandardPremium =
+				hospitalIndemnityPlanDetails.premium_amount.standard_premium[
+					coverage as keyof HospitalIndemnityPlanCoverage
+				][coverage_level as keyof HospitalIndemnityPlanCoverageLevel][
+					paycheck.pay_frequency as keyof PaycheckFrequency
+				];
+			setStandardPremium(newStandardPremium);
+			console.log("newStandardPremium", newStandardPremium);
+			setCurrentEnrollment(
+				Object.assign(
+					{},
+					{
+						plan_name: "Hospital Indemnity",
+						status: "Current",
+						premium_amount: Number(newStandardPremium.toFixed(2))
+					}
+				)
 			);
-			setPremiumAmount(calculatePremiumAmount?.premium_amount ? calculatePremiumAmount?.premium_amount : 0);
 		}
-	};
+	}, [hospitalIndemnityPlanDetails.premium_amount.standard_premium, hospitalIndemnityPlanInputs, paycheck]);
 
 	useEffect(() => {
 		calculatePremium();
-	}, [coverage_for, coverage_level]);
+	}, [calculatePremium, hospitalIndemnityPlanInputs.coverage, hospitalIndemnityPlanDetails.coverage_level]);
+
+	useEffect(() => {
+		console.log("HI3");
+		setStandardPremium(standardPremium);
+	}, [standardPremium]);
+
+	useEffect(() => {
+		console.log("UE1");
+		const dependentCoverage = getKemperCancerEligibleDependents(dependents);
+		console.log("dependentCoverage", dependentCoverage);
+		setEligibleDependents(Object.assign([], dependentCoverage.dependents));
+		setHospitalIndemnityPlanDetails((prevHospitalIndemnityPlanDetails: HospitalIndemnityPlanDetails) => {
+			return Object.assign({}, prevHospitalIndemnityPlanDetails, {
+				coverage: dependentCoverage.coverage
+			});
+		});
+	}, [dependents]);
 
 	const { plan_name, plan_code, start_date, end_date } = plan;
 
@@ -135,13 +238,13 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
-										name="contact_label"
+										name="coverage"
 										onChange={(event: any) => handleCoverageForChange(event)}
 									>
 										{COVERAGE.map((option: string, index: number) => {
 											return (
 												<MenuItem value={option} key={index}>
-													{option}
+													{initCapitalize(option)}
 												</MenuItem>
 											);
 										})}
@@ -154,22 +257,20 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
-										name="contact_label"
-										onChange={(event: any) => handleCoverageLevelChange(event)}
+										name="coverage_level"
+										onChange={(event: any) => handleCoverageForChange(event)}
 									>
-										<MenuItem value={"plan 1"}>PLAN 1</MenuItem>
-										<MenuItem value={"plan 2"}>PLAN 2</MenuItem>
-										<MenuItem value={"plan 3"}>PLAN 3</MenuItem>
-										<MenuItem value={"plan 4"}>PLAN 4</MenuItem>
+										<MenuItem value={"Plan 1"}>PLAN 1</MenuItem>
+										<MenuItem value={"Plan 2"}>PLAN 2</MenuItem>
+										<MenuItem value={"Plan 3"}>PLAN 3</MenuItem>
+										<MenuItem value={"Plan 4"}>PLAN 4</MenuItem>
 									</Select>
 								</div>
 							</Grid>
 							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
-									<div className="show-premium">
-										{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}
-									</div>
+									<div className="show-premium">{dollarize(standardPremium)}</div>
 								</div>
 							</Grid>
 						</Grid>
@@ -183,9 +284,7 @@ const KemperHospitalIndemnityForm = (): JSX.Element => {
 									style={{ color: theme.primary_color }}
 								>
 									Total Premium:{" "}
-									<span className="show-premium margin-adjust">
-										{premium_amount == 0 ? "$0.00" : `$${premium_amount.toFixed(2)}`}
-									</span>
+									<span className="show-premium margin-adjust">{dollarize(standardPremium)}</span>
 								</div>
 							</div>
 						</Grid>

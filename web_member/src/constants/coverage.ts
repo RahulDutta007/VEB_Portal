@@ -1,3 +1,3 @@
-const coverage = ["Employee Only", "Employee and Spouse", "Employee and Dependent", "Employee and Family"];
+const coverage = ["Employee Only", "Employee & Spouse", "Employee & Dependents", "Employee & Family"];
 
 export const COVERAGE = coverage;

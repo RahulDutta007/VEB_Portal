@@ -1,7 +1,7 @@
 import { Button, MenuItem, SelectChangeEvent } from "@mui/material";
 import { Select } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
-import React, { useContext, useEffect } from "react";
+import React, { Suspense, useContext, useEffect } from "react";
 import { COVERAGE } from "../../../../../../../constants/coverage";
 import { INSUARANCEPRIMIER } from "../../../../../../../constants/insuarancePremier";
 import { AGERANGE } from "../../../../../../../constants/ageRange";
@@ -152,144 +152,153 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 	]);
 
 	return (
-		<div className="kemper-cancer-form plan-form">
-			<div className="paper-form-container">
-				<Paper className="theme-border-radius paper-container" elevation={1}>
-					<PlanHeader planName="Kemper Group Critical Illness Insurance Policy" effectiveDate="01/22/2022" />
-					<div className="plan-content">
-						<div className="theme-plan-section-margin" />
-						<div className="header-container">
-							<div className="theme-plan-header">Standard Benefits</div>
-							<div
-								className="theme-plan-sub-header plan-text"
-								style={{ borderLeftColor: theme.primary_color }}
-							>
-								In addition to yourself, who would you like to cover under this plan?
+		<Suspense fallback={<div />}>
+			<div className="kemper-cancer-form plan-form">
+				<div className="paper-form-container">
+					<Paper className="theme-border-radius paper-container" elevation={1}>
+						<PlanHeader
+							planName="Kemper Group Critical Illness Insurance Policy"
+							effectiveDate="01/22/2022"
+						/>
+						<div className="plan-content">
+							<div className="theme-plan-section-margin" />
+							<div className="header-container">
+								<div className="theme-plan-header">Standard Benefits</div>
+								<div
+									className="theme-plan-sub-header plan-text"
+									style={{ borderLeftColor: theme.primary_color }}
+								>
+									In addition to yourself, who would you like to cover under this plan?
+								</div>
 							</div>
-						</div>
-						<Grid className="grid-container" container columnSpacing={2}>
-							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
-								<div className="details-form-row">
-									<div className="details-form-label  required">Coverage Level</div>
-									<Select
-										input={<CustomSelectInput />}
-										style={{ width: "100%" }}
-										name="coverage_level"
-										onChange={handlePlanInputChange}
-									>
-										{criticalIllnessPlanDetails.coverage_level.map(
-											(coverage_level: string, index: number) => {
-												return (
-													<MenuItem value={coverage_level} key={index}>
-														{coverage_level}
-													</MenuItem>
-												);
-											}
-										)}
-									</Select>
-								</div>
-							</Grid>
-							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
-								<div className="details-form-row">
-									<div className="details-form-label  required">Coverage For</div>
-									<Select
-										input={<CustomSelectInput />}
-										style={{ width: "100%" }}
-										name="coverage"
-										onChange={handlePlanInputChange}
-									>
-										{criticalIllnessPlanDetails.coverage.map((coverage: string, index: number) => {
-											return (
-												<MenuItem value={coverage} key={index}>
-													{coverage}
-												</MenuItem>
-											);
-										})}
-									</Select>
-								</div>
-							</Grid>
-							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
-								<div className="details-form-row">
-									<div className="details-form-label  required">Benefit Amount</div>
-									<Select
-										input={<CustomSelectInput />}
-										style={{ width: "100%" }}
-										name="benefit_amount"
-										onChange={handlePlanInputChange}
-									>
-										{criticalIllnessPlanDetails.benefit_amount.map(
-											(amount: number, index: number) => {
-												return (
-													<MenuItem key={index} value={amount}>
-														{dollarize(amount)}
-													</MenuItem>
-												);
-											}
-										)}
-									</Select>
-								</div>
-							</Grid>
-							<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
-								<div className="details-form-row">
-									<div className="details-form-label required align-center">Premium</div>
-									<div className="show-premium">{dollarize(standerdPremium)}</div>
-								</div>
-							</Grid>
-						</Grid>
-						<div className="theme-plan-inner-section-margin" />
-						<Grid container className="theme-plan-inner-section-margin">
-							<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-								<div className="details-form-row">
-									<div
-										className="details-form-label theme-plan-total-premium align-right"
-										style={{ color: theme.primary_color }}
-									>
-										Total Premium:{" "}
-										<span className="show-premium margin-adjust">{dollarize(standerdPremium)}</span>
+							<Grid className="grid-container" container columnSpacing={2}>
+								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+									<div className="details-form-row">
+										<div className="details-form-label  required">Coverage Level</div>
+										<Select
+											input={<CustomSelectInput />}
+											style={{ width: "100%" }}
+											name="coverage_level"
+											onChange={handlePlanInputChange}
+										>
+											{criticalIllnessPlanDetails.coverage_level.map(
+												(coverage_level: string, index: number) => {
+													return (
+														<MenuItem value={coverage_level} key={index}>
+															{coverage_level}
+														</MenuItem>
+													);
+												}
+											)}
+										</Select>
 									</div>
+								</Grid>
+								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+									<div className="details-form-row">
+										<div className="details-form-label  required">Coverage For</div>
+										<Select
+											input={<CustomSelectInput />}
+											style={{ width: "100%" }}
+											name="coverage"
+											onChange={handlePlanInputChange}
+										>
+											{criticalIllnessPlanDetails.coverage.map(
+												(coverage: string, index: number) => {
+													return (
+														<MenuItem value={coverage} key={index}>
+															{coverage}
+														</MenuItem>
+													);
+												}
+											)}
+										</Select>
+									</div>
+								</Grid>
+								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+									<div className="details-form-row">
+										<div className="details-form-label  required">Benefit Amount</div>
+										<Select
+											input={<CustomSelectInput />}
+											style={{ width: "100%" }}
+											name="benefit_amount"
+											onChange={handlePlanInputChange}
+										>
+											{criticalIllnessPlanDetails.benefit_amount.map(
+												(amount: number, index: number) => {
+													return (
+														<MenuItem key={index} value={amount}>
+															{dollarize(amount)}
+														</MenuItem>
+													);
+												}
+											)}
+										</Select>
+									</div>
+								</Grid>
+								<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="amount-middle">
+									<div className="details-form-row">
+										<div className="details-form-label required align-center">Premium</div>
+										<div className="show-premium">{dollarize(standerdPremium)}</div>
+									</div>
+								</Grid>
+							</Grid>
+							<div className="theme-plan-inner-section-margin" />
+							<Grid container className="theme-plan-inner-section-margin">
+								<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+									<div className="details-form-row">
+										<div
+											className="details-form-label theme-plan-total-premium align-right"
+											style={{ color: theme.primary_color }}
+										>
+											Total Premium:{" "}
+											<span className="show-premium margin-adjust">
+												{dollarize(standerdPremium)}
+											</span>
+										</div>
+									</div>
+								</Grid>
+							</Grid>
+						</div>
+						<div className="theme-plan-option-content">
+							<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
+							<p className="theme-plan-checkbox-label">
+								<strong>Are you actively at work 20 or more hours per week?</strong>
+							</p>
+						</div>
+						<div className="theme-plan-inner-section-margin-2" />
+						<Grid container>
+							<Grid item xl={4} lg={4} md={4} sm={10} xs={10} columnSpacing={2}>
+								<div className="details-form-row">
+									<div className="details-form-label required">Writing Number</div>
+									<Grid container>
+										<Grid item xl={9}>
+											<CustomInput value={writingNumber} onChange={handleWritingNumberChange} />
+										</Grid>
+										{showWritingNumberValidateButton ? (
+											<Grid item xl={3}>
+												<div className="writing-number-validate-container">
+													<Button
+														style={{
+															backgroundColor: theme.button.background_color,
+															color: theme.button.color,
+															opacity: 0.8
+														}}
+													>
+														Validate
+													</Button>
+												</div>
+											</Grid>
+										) : null}
+									</Grid>
 								</div>
 							</Grid>
 						</Grid>
-					</div>
-					<div className="theme-plan-option-content">
-						<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
-						<p className="theme-plan-checkbox-label">
-							<strong>Are you actively at work 20 or more hours per week?</strong>
-						</p>
-					</div>
-					<div className="theme-plan-inner-section-margin-2" />
-					<Grid container>
-						<Grid item xl={4} lg={4} md={4} sm={10} xs={10} columnSpacing={2}>
-							<div className="details-form-row">
-								<div className="details-form-label required">Writing Number</div>
-								<Grid container>
-									<Grid item xl={9}>
-										<CustomInput value={writingNumber} onChange={handleWritingNumberChange} />
-									</Grid>
-									{showWritingNumberValidateButton ? (
-										<Grid item xl={3}>
-											<div className="writing-number-validate-container">
-												<Button
-													style={{
-														backgroundColor: theme.button.background_color,
-														color: theme.button.color,
-														opacity: 0.8
-													}}
-												>
-													Validate
-												</Button>
-											</div>
-										</Grid>
-									) : null}
-								</Grid>
-							</div>
-						</Grid>
-					</Grid>
-					<div className="theme-plan-inner-section-margin-2" />
-					<LazyPlanActions waiveButtonCallback={() => null} activateButtonCallback={() => null} />
-				</Paper>
+						<div className="theme-plan-inner-section-margin-2" />
+						<LazyPlanActions waiveButtonCallback={() => null} activateButtonCallback={() => null} />
+					</Paper>
+				</div>
 			</div>
-		</div>
+		</Suspense>
 	);
 };
 

@@ -152,7 +152,7 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 				{
 					name: "Email Discalimer",
 					value: emailDisclaimer,
-					placeHolder: "Enter Email"
+					placeholder: "Enter Email"
 				}
 			],
 			actions: [
@@ -314,16 +314,14 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 	}, [dependents]);
 
 	return (
-		<>
-			<Suspense fallback={<div />}>
-				{/* <CustomEnrollmentDisclaimerDialog
-					enrollmentDisclaimerDialogProps={enrollmentDisclaimerDialogProps}
-					handleCloseDisclaimerDialog={handleCloseDisclaimerDialog}
-					handleEscapeCloseDisclaimerDialog={handleEscapeCloseDisclaimerDialog}
-					emailDisclaimer={emailDisclaimer}
-					setEmailDisclaimer={setEmailDisclaimer}
-				/> */}
-			</Suspense>
+		<Suspense fallback={<div />}>
+			{/* <CustomEnrollmentDisclaimerDialog
+				enrollmentDisclaimerDialogProps={enrollmentDisclaimerDialogProps}
+				handleCloseDisclaimerDialog={handleCloseDisclaimerDialog}
+				handleEscapeCloseDisclaimerDialog={handleEscapeCloseDisclaimerDialog}
+				emailDisclaimer={emailDisclaimer}
+				setEmailDisclaimer={setEmailDisclaimer}
+			/> */}
 			<div className="kemper-cancer-form plan-form">
 				<div className="paper-form-container">
 					<Paper className="theme-border-radius paper-container" elevation={1}>
@@ -470,7 +468,7 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 					</Paper>
 				</div>
 			</div>
-		</>
+		</Suspense>
 	);
 };
 

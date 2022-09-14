@@ -58,3 +58,27 @@ export type CriticalIllnessPlanDetails = {
 	benefit_amount: [10000.0, 20000.0, 30000.0];
 	premium_amount: CriticalIllnessPlanPremiumAmount;
 };
+
+export type HospitalIndemnityPlanDetails = {
+	coverage: string[];
+	coverage_level: ["Plan 1", "Plan 2", "Plan 3", "Plan 4"];
+	premium_amount: HospitalIndemnityPremiumAmount;
+};
+
+export type HospitalIndemnityPremiumAmount = {
+	standard_premium: HospitalIndemnityPlanCoverage;
+};
+
+export type HospitalIndemnityPlanCoverageLevel = {
+	"Plan 1": PaycheckFrequency;
+	"Plan 2": PaycheckFrequency;
+	"Plan 3": PaycheckFrequency;
+	"Plan 4": PaycheckFrequency;
+};
+
+export type HospitalIndemnityPlanCoverage = {
+	"Employee Only": HospitalIndemnityPlanCoverageLevel;
+	"Employee & Spouse": HospitalIndemnityPlanCoverageLevel;
+	"Employee & Dependents": HospitalIndemnityPlanCoverageLevel;
+	"Employee & Family": HospitalIndemnityPlanCoverageLevel;
+};

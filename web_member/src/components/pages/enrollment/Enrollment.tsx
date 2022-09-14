@@ -122,7 +122,7 @@ const Enrollment = (): JSX.Element => {
 				return stage === "0" ? <KemperAccidentBranding /> : <KemperAccidentForm />;
 			}
 			case "Hospital Indemnity": {
-				return stage === "0" ? <KemperHIBranding /> : <KemperHospitalIndemnityForm />;
+				return stage === "0" ? <KemperHIBranding /> : <KemperHospitalIndemnityForm dependents={dependents} />;
 			}
 			case "Beazley Indemnity": {
 				return stage === "0" ? <BeazleyGLIBranding /> : <BeazleyIndemnityForm />;
@@ -135,7 +135,7 @@ const Enrollment = (): JSX.Element => {
 			}
 		}
 
-		debugger;
+		// debugger;
 	}, [dependents, urlSearchParams]);
 
 	const getOpenEnrollments = useCallback(() => {
