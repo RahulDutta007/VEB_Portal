@@ -3,13 +3,20 @@ import { Member } from "../../@types/member.types";
 
 export const getCoveredDependents = (
 	coverage: string,
-	eligibleDependents: Member[]
+	eligibleDependents: Member[],
+	member: Member
 ): {
 	enrollmentStandardDetails: EnrollmentStandardDetails[];
 	dep_SSNs: string[];
 } => {
 	const enrollmentStandardDetails: EnrollmentStandardDetails[] = [];
 	const dep_SSNs: string[] = [];
+	enrollmentStandardDetails.push({
+		member_object_id: member._id,
+		member_SSN: member.SSN,
+		premium_amount: 0,
+		coverage_code: "Employee Only"
+	});
 
 	if (coverage === "Employee & Spouse") {
 		console.log("coverage1", coverage);

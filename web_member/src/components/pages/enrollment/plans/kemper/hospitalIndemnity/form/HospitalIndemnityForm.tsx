@@ -24,14 +24,19 @@ import { PlanFormProps } from "../../../../../../../@types/components/enrollment
 import { getKemperCancerEligibleDependents } from "../../../../../../../utils/commonFunctions/eligibleDependents";
 import { Member } from "../../../../../../../@types/member.types";
 import { dollarize } from "../../../../../../../utils/commonFunctions/dollarize";
+import {
+	Enrollment,
+	EnrollmentCommonDetails,
+	EnrollmentStandardDetails
+} from "../../../../../../../@types/enrollment.types";
+import { getCoveredDependents } from "../../../../../../../utils/commonFunctions/coveredDependents";
 
 const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [plan, setPlan] = useState({
-		plan_name: "Accident",
-		plan_code: "plan001",
-		start_date: "01/01/2023",
-		end_date: "01/01/2024"
+		_id: "123zxkbnkabb3w2123",
+		plan_name: "Hospital Idemnity",
+		plan_code: "HI"
 	});
 
 	const [hospitalIndemnityPlanDetails, setHospitalIndemnityPlanDetails] = useState<HospitalIndemnityPlanDetails>({
@@ -162,6 +167,47 @@ const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element
 		[prevWritingNumber]
 	);
 
+	const handleActivateButtonCallback = useCallback(() => {
+		if (member && hospitalIndemnityPlanInputs.coverage) {
+			console.log("hospitalrPlanInputs", hospitalIndemnityPlanInputs);
+			const enrollmentCommonDetails: EnrollmentCommonDetails = {
+				agent_id: null,
+				location_number: member.location_number,
+				location_name: member.location.location_name,
+				group_number: member.group_number,
+				group_name: member.group.name,
+				plan_object_id: plan._id,
+				plan_code: plan.plan_code,
+				enrollment_status: "APPROVED",
+				insured_object_id: member._id,
+				insured_SSN: member.SSN,
+				unenrolled_reason: null,
+				waive_reason: null,
+				termination_reason: null,
+				enrollment_date: "01/23/22",
+				effective_date: "01/23/22",
+				termination_date: null,
+				open_enrollment_id: "0xqwe123123"
+			};
+			console.log("enrollmentCommonDetails", enrollmentCommonDetails);
+			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [];
+			console.log("eligible xxxx", eligibleDependents);
+			const coveredDependents = getCoveredDependents(
+				hospitalIndemnityPlanInputs.coverage,
+				eligibleDependents,
+				member
+			);
+			console.log("coveredDependents", coveredDependents);
+			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
+			const enrollment: Enrollment = {
+				standard_details: coveredDependents.enrollmentStandardDetails,
+				common_details: enrollmentCommonDetails,
+				dep_SSNs: member_SSNs
+			};
+			console.log("enrollment", enrollment);
+		}
+	}, [eligibleDependents, hospitalIndemnityPlanInputs, member, plan._id, plan.plan_code]);
+
 	const calculatePremium = useCallback(() => {
 		const { coverage, coverage_level } = hospitalIndemnityPlanInputs;
 		if (coverage && coverage_level && paycheck) {
@@ -207,7 +253,7 @@ const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element
 		});
 	}, [dependents]);
 
-	const { plan_name, plan_code, start_date, end_date } = plan;
+	const { _id, plan_name, plan_code } = plan;
 
 	return (
 		<div className="kemper-cancer-form plan-form">
@@ -215,7 +261,7 @@ const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element
 				<Paper className="theme-border-radius paper-container" elevation={1}>
 					<PlanHeader
 						planName="Kemper Group Hospital Indemnity Insurance Policy"
-						effectiveDate={start_date}
+						effectiveDate={"start_date"}
 					/>
 					<div className="plan-content">
 						<div className="theme-plan-section-margin" />
@@ -324,7 +370,10 @@ const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element
 						</Grid>
 					</Grid>
 					<div className="theme-plan-inner-section-margin-2" />
-					<LazyPlanActions waiveButtonCallback={() => null} activateButtonCallback={() => null} />
+					<LazyPlanActions
+						waiveButtonCallback={() => null}
+						activateButtonCallback={handleActivateButtonCallback}
+					/>
 				</Paper>
 			</div>
 		</div>

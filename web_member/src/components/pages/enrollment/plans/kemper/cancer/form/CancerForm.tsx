@@ -259,13 +259,13 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 			console.log("enrollmentCommonDetails", enrollmentCommonDetails);
 			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [];
 			console.log("eligible xxxx", eligibleDependents);
-			const coveredDependents = getCoveredDependents(cancerPlanInputs.coverage, eligibleDependents);
+			const coveredDependents = getCoveredDependents(cancerPlanInputs.coverage, eligibleDependents, member);
 			console.log("coveredDependents", coveredDependents);
-			const dep_SSNs = coveredDependents.dep_SSNs;
+			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
 			const enrollment: Enrollment = {
 				standard_details: coveredDependents.enrollmentStandardDetails,
 				common_details: enrollmentCommonDetails,
-				dep_SSNs
+				dep_SSNs: member_SSNs
 			};
 			console.log("enrollment", enrollment);
 		}
