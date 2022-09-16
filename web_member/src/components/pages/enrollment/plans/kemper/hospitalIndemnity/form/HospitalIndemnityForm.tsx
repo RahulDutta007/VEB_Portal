@@ -168,7 +168,7 @@ const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element
 	);
 
 	const handleActivateButtonCallback = useCallback(() => {
-		if (member && hospitalIndemnityPlanInputs.coverage) {
+		if (member && hospitalIndemnityPlanInputs.coverage && hospitalIndemnityPlanInputs.coverage_level) {
 			console.log("hospitalrPlanInputs", hospitalIndemnityPlanInputs);
 			const enrollmentCommonDetails: EnrollmentCommonDetails = {
 				agent_id: null,
@@ -195,7 +195,8 @@ const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element
 			const coveredDependents = getCoveredDependents(
 				hospitalIndemnityPlanInputs.coverage,
 				eligibleDependents,
-				member
+				member,
+				standardPremium
 			);
 			console.log("coveredDependents", coveredDependents);
 			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
@@ -206,7 +207,7 @@ const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element
 			};
 			console.log("enrollment", enrollment);
 		}
-	}, [eligibleDependents, hospitalIndemnityPlanInputs, member, plan._id, plan.plan_code]);
+	}, [eligibleDependents, hospitalIndemnityPlanInputs, member, plan._id, plan.plan_code, standardPremium]);
 
 	const calculatePremium = useCallback(() => {
 		const { coverage, coverage_level } = hospitalIndemnityPlanInputs;

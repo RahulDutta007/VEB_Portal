@@ -4,7 +4,8 @@ import { Member } from "../../@types/member.types";
 export const getCoveredDependents = (
 	coverage: string,
 	eligibleDependents: Member[],
-	member: Member
+	member: Member,
+	premium_amount = 0
 ): {
 	enrollmentStandardDetails: EnrollmentStandardDetails[];
 	dep_SSNs: string[];
@@ -14,7 +15,7 @@ export const getCoveredDependents = (
 	enrollmentStandardDetails.push({
 		member_object_id: member._id,
 		member_SSN: member.SSN,
-		premium_amount: 0,
+		premium_amount,
 		coverage_code: "Employee Only"
 	});
 
