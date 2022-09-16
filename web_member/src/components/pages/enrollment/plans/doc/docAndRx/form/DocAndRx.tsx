@@ -4,7 +4,7 @@ import { Select } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { COVERAGE } from "../../../../../../../constants/coverage";
-import { ThemeContext } from "../../../../../../../contexts";
+import { AuthContext, ThemeContext } from "../../../../../../../contexts";
 import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
 import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
@@ -19,6 +19,13 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
 import "./docAndRx.css";
+import {
+	Enrollment,
+	EnrollmentCommonDetails,
+	EnrollmentStandardDetails
+} from "../../../../../../../@types/enrollment.types";
+import { getCoveredDependents } from "../../../../../../../utils/commonFunctions/coveredDependents";
+import { Member } from "../../../../../../../@types/member.types";
 
 const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
 	({ theme }) => ({
@@ -53,6 +60,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 const DoctorAndRxForm = (): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [plan, setPlan] = useState({
+		_id: "004",
 		plan_name: "Doctor & Rx",
 		plan_code: "plan001",
 		start_date: "01/01/2023",
@@ -64,6 +72,8 @@ const DoctorAndRxForm = (): JSX.Element => {
 	const { theme } = useContext(ThemeContext);
 	const [coverage_for, setCoverageFor] = useState("");
 	const [premium_amount, setPremiumAmount] = useState(0);
+	const { paycheck, member } = useContext(AuthContext);
+	const [eligibleDependents, setEligibleDependents] = useState<Member[]>([]);
 
 	const handleChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
 		setExpanded(newExpanded ? panel : false);
@@ -73,6 +83,42 @@ const DoctorAndRxForm = (): JSX.Element => {
 		const { value } = event.target as HTMLSelectElement;
 		setCoverageFor(value);
 	};
+
+	const handleActivateButtonCallback = useCallback(() => {
+		if (member && coverage_for) {
+			const enrollmentCommonDetails: EnrollmentCommonDetails = {
+				agent_id: null,
+				location_number: member.location_number,
+				location_name: member.location.location_name,
+				group_number: member.group_number,
+				group_name: member.group.name,
+				plan_object_id: plan._id,
+				plan_code: plan.plan_code,
+				enrollment_status: "APPROVED",
+				insured_object_id: member._id,
+				insured_SSN: member.SSN,
+				unenrolled_reason: null,
+				waive_reason: null,
+				termination_reason: null,
+				enrollment_date: "01/23/22",
+				effective_date: "01/23/22",
+				termination_date: null,
+				open_enrollment_id: "0xqwe123123"
+			};
+			console.log("enrollmentCommonDetails", enrollmentCommonDetails);
+			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [];
+			console.log("eligible xxxx", eligibleDependents);
+			const coveredDependents = getCoveredDependents(coverage_for, eligibleDependents, member, premium_amount);
+			console.log("coveredDependents", coveredDependents);
+			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
+			const enrollment: Enrollment = {
+				standard_details: coveredDependents.enrollmentStandardDetails,
+				common_details: enrollmentCommonDetails,
+				dep_SSNs: member_SSNs
+			};
+			console.log("enrollment", enrollment);
+		}
+	}, [coverage_for, eligibleDependents, member, plan._id, plan.plan_code, premium_amount]);
 
 	const handleWritingNumberChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,7 +240,10 @@ const DoctorAndRxForm = (): JSX.Element => {
 						</Grid>
 					</Grid>
 					<div className="theme-plan-inner-section-margin-2" />
-					<LazyPlanActions waiveButtonCallback={() => null} activateButtonCallback={() => null} />
+					<LazyPlanActions
+						waiveButtonCallback={() => null}
+						activateButtonCallback={handleActivateButtonCallback}
+					/>
 				</Paper>
 			</div>
 		</div>
