@@ -257,19 +257,26 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 				open_enrollment_id: "0xqwe123123"
 			};
 			console.log("enrollmentCommonDetails", enrollmentCommonDetails);
-			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [];
+			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [
+				{
+					member_object_id: member._id,
+					member_SSN: member.SSN,
+					premium_amount: riderPremium + standardPremium,
+					coverage_code: cancerPlanInputs.coverage
+				}
+			];
 			console.log("eligible xxxx", eligibleDependents);
 			const coveredDependents = getCoveredDependents(cancerPlanInputs.coverage, eligibleDependents, member);
 			console.log("coveredDependents", coveredDependents);
 			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
 			const enrollment: Enrollment = {
-				standard_details: coveredDependents.enrollmentStandardDetails,
+				standard_details: enrollmentStandardDetails.concat(coveredDependents.enrollmentStandardDetails),
 				common_details: enrollmentCommonDetails,
 				dep_SSNs: member_SSNs
 			};
 			console.log("enrollment", enrollment);
 		}
-	}, [cancerPlanInputs, eligibleDependents, member, plan._id, plan.plan_code]);
+	}, [cancerPlanInputs, eligibleDependents, member, plan._id, plan.plan_code, riderPremium, standardPremium]);
 
 	const handleOpenDisclaimerDialogClick = useCallback(() => {
 		setEnrollmentDisclaimerDialogProps(Object.assign({}, enrollmentDisclaimerDialogProps, { openDialog: true }));
