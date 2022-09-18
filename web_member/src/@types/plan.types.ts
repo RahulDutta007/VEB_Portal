@@ -82,3 +82,49 @@ export type HospitalIndemnityPlanCoverage = {
 	"Employee & Dependents": HospitalIndemnityPlanCoverageLevel;
 	"Employee & Family": HospitalIndemnityPlanCoverageLevel;
 };
+
+export type AccidentPlanDetails = {
+	coverage: string[];
+	coverage_level: ["Edge Enhanced", "Edge Premier"];
+	premium_amount: AccidentPremiumAmount;
+};
+
+export type AccidentPremiumAmount = {
+	standard_premium: AccidentPlanCoverage;
+};
+
+export type AccidentPlanCoverage = {
+	"Employee Only": AccidentPlanCoverageLevel;
+	"Employee & Spouse": AccidentPlanCoverageLevel;
+	"Employee & Dependents": AccidentPlanCoverageLevel;
+	"Employee & Family": AccidentPlanCoverageLevel;
+};
+
+export type AccidentPlanCoverageLevel = {
+	"Edge Enhanced": PaycheckFrequency;
+	"Edge Premier": PaycheckFrequency;
+};
+
+export type AccidentRiderPlanDetails = {
+	rider_type: ["Rider Accident Only", "Rider Accident Only"];
+	monthly_benefit: [600, 900, 1200, 1800];
+	standard_premium: AccidentRiderPlanCoverage;
+};
+
+export type AccidentRiderPlanCoverage = {
+	"Rider Accident Only": PaycheckArrayFrequency;
+	"Rider Accident And Sickness": PaycheckArrayFrequency;
+};
+
+export type PaycheckArrayFrequency = {
+	[key in PayFrequency]: AccidentPremiumBenefit[];
+};
+
+export type AccidentPremiumBenefit = {
+	coverageAmount: number;
+	premiumAmount: number;
+};
+
+export type AccidentDocAndRxPlanDetails = {
+	standard_premium: PaycheckFrequency;
+};

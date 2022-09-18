@@ -122,7 +122,6 @@ const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
 	const { theme } = useContext(ThemeContext);
-	const [coverage_for, setCoverageFor] = useState("");
 	const [coverage_level, setCoverageLevel] = useState("");
 	const [premium_amount, setPremiumAmount] = useState(0);
 	const [eligibleDependents, setEligibleDependents] = useState<Member[]>([]);
@@ -147,11 +146,6 @@ const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element
 				[name]: value
 			})
 		);
-	};
-
-	const handleCoverageLevelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const { value } = event.target as HTMLSelectElement;
-		setCoverageLevel(value);
 	};
 
 	const handleWritingNumberChange = useCallback(
@@ -190,24 +184,26 @@ const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element
 				open_enrollment_id: "0xqwe123123"
 			};
 			console.log("enrollmentCommonDetails", enrollmentCommonDetails);
-			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [];
+			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [
+				{
+					member_object_id: member._id,
+					member_SSN: member.SSN,
+					premium_amount: premium_amount,
+					coverage_code: hospitalIndemnityPlanInputs.coverage
+				}
+			];
 			console.log("eligible xxxx", eligibleDependents);
-			const coveredDependents = getCoveredDependents(
-				hospitalIndemnityPlanInputs.coverage,
-				eligibleDependents,
-				member,
-				standardPremium
-			);
+			const coveredDependents = getCoveredDependents(hospitalIndemnityPlanInputs.coverage, eligibleDependents);
 			console.log("coveredDependents", coveredDependents);
 			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
 			const enrollment: Enrollment = {
-				standard_details: coveredDependents.enrollmentStandardDetails,
+				standard_details: enrollmentStandardDetails.concat(coveredDependents.enrollmentStandardDetails),
 				common_details: enrollmentCommonDetails,
 				dep_SSNs: member_SSNs
 			};
 			console.log("enrollment", enrollment);
 		}
-	}, [eligibleDependents, hospitalIndemnityPlanInputs, member, plan._id, plan.plan_code, standardPremium]);
+	}, [eligibleDependents, hospitalIndemnityPlanInputs, member, plan._id, plan.plan_code, premium_amount]);
 
 	const calculatePremium = useCallback(() => {
 		const { coverage, coverage_level } = hospitalIndemnityPlanInputs;

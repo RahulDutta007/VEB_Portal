@@ -1,9 +1,9 @@
-import { Button, MenuItem } from "@mui/material";
+import { Button, MenuItem, SelectChangeEvent } from "@mui/material";
 import { Select } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { COVERAGE } from "../../../../../../../constants/coverage";
-import { ThemeContext } from "../../../../../../../contexts";
+import { AuthContext, ThemeContext } from "../../../../../../../contexts";
 import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
 import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
@@ -12,62 +12,183 @@ import { useState } from "react";
 import { useCallback } from "react";
 
 import "./accidentForm.css";
+import {
+	AccidentDocAndRxPlanDetails,
+	AccidentPlanCoverage,
+	AccidentPlanCoverageLevel,
+	AccidentPlanDetails,
+	AccidentRiderPlanCoverage,
+	AccidentRiderPlanDetails,
+	PaycheckFrequency
+} from "../../../../../../../@types/plan.types";
+import { PayFrequency } from "../../../../../../../@types/paycheck.types";
+import { getKemperCancerEligibleDependents } from "../../../../../../../utils/commonFunctions/eligibleDependents";
+import { PlanFormProps } from "../../../../../../../@types/components/enrollment.types";
+import { Member } from "../../../../../../../@types/member.types";
+import { Enrollment } from "../../../../../../../@types/enrollment.types";
+import { EnrollmentCommonDetails, EnrollmentStandardDetails } from "../../../../../../../@types/enrollment.types";
+import { getCoveredDependents } from "../../../../../../../utils/commonFunctions/coveredDependents";
 
-const KemperAccidentForm = (): JSX.Element => {
+const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [plan, setPlan] = useState({
+		_id: "123zxkbnkabb3w2123",
 		plan_name: "Accident",
 		plan_code: "plan001",
 		start_date: "01/01/2023",
 		end_date: "01/01/2024"
 	});
-	const [premium_plan, setPremiumPlan] = useState({
-		edge_enhanced: {
-			employee: 3.82,
-			employee_and_family: 8.08
-		},
-		edge_premier: {
-			employee: 6.07,
-			employee_and_family: 12.8
-		},
-		rider_doc_Rx: 1.16,
-		rider_accidentOnly: [
-			{
-				coverage_amount: 600,
-				premium_amount: 1.33
-			},
-			{
-				coverage_amount: 900,
-				premium_amount: 2.0
-			},
-			{
-				coverage_amount: 1200,
-				premium_amount: 2.67
-			},
-			{
-				coverage_amount: 1800,
-				premium_amount: 4.0
-			}
-		],
-		rider_accident_and_sickness: [
-			{
-				coverage_amount: 600,
-				premium_amount: 5.86
-			},
-			{
-				coverage_amount: 900,
-				premium_amount: 8.79
-			},
-			{
-				coverage_amount: 1200,
-				premium_amount: 11.72
-			},
-			{
-				coverage_amount: 1800,
-				premium_amount: 17.59
-			}
-		]
+	const [eligibleDependents, setEligibleDependents] = useState<Member[]>([]);
+	const { paycheck, member } = useContext(AuthContext);
+	const [docAndRx, setDocAndRx] = useState<AccidentDocAndRxPlanDetails>({
+		standard_premium: {
+			WEEKLY: 1.16,
+			MONTHLY: 1.16
+		}
 	});
+	const [riderPlanDetails, setRiderPlanDetails] = useState<AccidentRiderPlanDetails>({
+		rider_type: ["Rider Accident Only", "Rider Accident Only"],
+		monthly_benefit: [600, 900, 1200, 1800],
+		standard_premium: {
+			"Rider Accident Only": {
+				WEEKLY: [
+					{
+						coverageAmount: 600,
+						premiumAmount: 1.33
+					}
+				],
+				MONTHLY: [
+					{
+						coverageAmount: 600,
+						premiumAmount: 1.33
+					}
+				]
+			},
+			"Rider Accident And Sickness": {
+				WEEKLY: [
+					{
+						coverageAmount: 600,
+						premiumAmount: 5.86
+					}
+				],
+				MONTHLY: [
+					{
+						coverageAmount: 600,
+						premiumAmount: 5.86
+					}
+				]
+			}
+		}
+	});
+	const [accidentPlanDetails, setAccidentPlanDetails] = useState<AccidentPlanDetails>({
+		coverage: [],
+		coverage_level: ["Edge Enhanced", "Edge Premier"],
+		premium_amount: {
+			standard_premium: {
+				"Employee Only": {
+					"Edge Enhanced": {
+						WEEKLY: 7.47,
+						MONTHLY: 7.47
+					},
+					"Edge Premier": {
+						WEEKLY: 9.47,
+						MONTHLY: 9.47
+					}
+				},
+				"Employee & Dependents": {
+					"Edge Enhanced": {
+						WEEKLY: 7.47,
+						MONTHLY: 7.47
+					},
+					"Edge Premier": {
+						WEEKLY: 9.47,
+						MONTHLY: 9.47
+					}
+				},
+				"Employee & Spouse": {
+					"Edge Enhanced": {
+						WEEKLY: 7.47,
+						MONTHLY: 7.47
+					},
+					"Edge Premier": {
+						WEEKLY: 9.47,
+						MONTHLY: 9.47
+					}
+				},
+				"Employee & Family": {
+					"Edge Enhanced": {
+						WEEKLY: 7.47,
+						MONTHLY: 7.47
+					},
+					"Edge Premier": {
+						WEEKLY: 9.47,
+						MONTHLY: 9.47
+					}
+				}
+			}
+		}
+	});
+	const [accidentPlanInputs, setAccidentPlanInputs] = useState<{
+		coverage: null | string;
+		coverage_level: null | string;
+		rider_type: null | string;
+		monthly_benefit: null | string;
+		doc_and_rx: number;
+	}>({
+		coverage: null,
+		coverage_level: null,
+		rider_type: null,
+		monthly_benefit: null,
+		doc_and_rx: 0
+	});
+
+	// const [premium_plan, setPremiumPlan] = useState({
+	// 	edge_enhanced: {
+	// 		employee: 3.82,
+	// 		employee_and_family: 8.08
+	// 	},
+	// 	edge_premier: {
+	// 		employee: 6.07,
+	// 		employee_and_family: 12.8
+	// 	},
+	// 	rider_doc_Rx: 1.16,
+	// 	rider_accidentOnly: [
+	// 		{
+	// 			coverage_amount: 600,
+	// 			premium_amount: 1.33
+	// 		},
+	// 		{
+	// 			coverage_amount: 900,
+	// 			premium_amount: 2.0
+	// 		},
+	// 		{
+	// 			coverage_amount: 1200,
+	// 			premium_amount: 2.67
+	// 		},
+	// 		{
+	// 			coverage_amount: 1800,
+	// 			premium_amount: 4.0
+	// 		}
+	// 	],
+	// 	rider_accident_and_sickness: [
+	// 		{
+	// 			coverage_amount: 600,
+	// 			premium_amount: 5.86
+	// 		},
+	// 		{
+	// 			coverage_amount: 900,
+	// 			premium_amount: 8.79
+	// 		},
+	// 		{
+	// 			coverage_amount: 1200,
+	// 			premium_amount: 11.72
+	// 		},
+	// 		{
+	// 			coverage_amount: 1800,
+	// 			premium_amount: 17.59
+	// 		}
+	// 	]
+	// });
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
 	const { theme } = useContext(ThemeContext);
@@ -75,28 +196,18 @@ const KemperAccidentForm = (): JSX.Element => {
 	const [plan_type, setPlanType] = useState("");
 	const [premium_amount, setPremiumAmount] = useState(0);
 	const [rider_premium_amount, setRiderPremiumAmount] = useState(0);
+	const [doc_premium_amount, setDocPremiumAmount] = useState(0);
 	const [total_premium_amount, setTotalPremiumAmount] = useState(0);
 	const [rider_type, setRiderType] = useState("none");
 	const [rider_benefit_amount, setRiderBenefitAmount] = useState(0);
 
-	const handleCoverageChange = (event: React.FormEvent<HTMLSelectElement>) => {
-		const { value } = event.target as HTMLSelectElement;
-		setCoverageFor(value);
-	};
-
-	const handlePlanChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const { value } = event.target as HTMLSelectElement;
-		setPlanType(value);
-	};
-
-	const handleRiderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const { value } = event.target as HTMLSelectElement;
-		setRiderType(value);
-	};
-
-	const handleRiderBenefitAmountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const { value } = event.target as HTMLSelectElement;
-		setRiderBenefitAmount(parseInt(value));
+	const handleAccidentFormChange = (event: SelectChangeEvent) => {
+		const { name, value } = event.target as HTMLSelectElement;
+		setAccidentPlanInputs(
+			Object.assign({}, accidentPlanInputs, {
+				[name]: value
+			})
+		);
 	};
 
 	const handleWritingNumberChange = useCallback(
@@ -112,55 +223,121 @@ const KemperAccidentForm = (): JSX.Element => {
 		[prevWritingNumber]
 	);
 
-	const calculatePremium = () => {
-		const rider_doc_amount = premium_plan.rider_doc_Rx;
-		if (plan_type && coverage_for) {
-			const planType = plan_type === "Edge Enhanced" ? "edge_enhanced" : "edge_premier";
-			const coverageFor = coverage_for === "Employee Only" ? "employee" : "employee_and_family";
-			const calculatePremiumAmount = premium_plan[planType][coverageFor];
-			setPremiumAmount(calculatePremiumAmount);
-			setTotalPremiumAmount(calculatePremiumAmount + rider_doc_amount);
-			if (rider_type === "accident") {
-				if (rider_benefit_amount !== 0) {
-					const riderBenefit = premium_plan.rider_accidentOnly.find(
-						// eslint-disable-next-line arrow-parens
-						(benefit) => benefit.coverage_amount === rider_benefit_amount
-					);
-					const riderAmount =
-						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) +
-						calculatePremiumAmount +
-						rider_doc_amount;
-					setRiderPremiumAmount(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0);
-					setTotalPremiumAmount(riderAmount);
-				} else {
-					setRiderPremiumAmount(0);
+	const handleActivateButtonCallback = useCallback(() => {
+		if (
+			member &&
+			accidentPlanInputs.coverage &&
+			accidentPlanInputs.coverage_level &&
+			accidentPlanInputs.rider_type &&
+			accidentPlanInputs.monthly_benefit
+		) {
+			console.log("cancerPlanInputs", accidentPlanInputs);
+			const enrollmentCommonDetails: EnrollmentCommonDetails = {
+				agent_id: null,
+				location_number: member.location_number,
+				location_name: member.location.location_name,
+				group_number: member.group_number,
+				group_name: member.group.name,
+				plan_object_id: plan._id,
+				plan_code: plan.plan_code,
+				enrollment_status: "APPROVED",
+				insured_object_id: member._id,
+				insured_SSN: member.SSN,
+				unenrolled_reason: null,
+				waive_reason: null,
+				termination_reason: null,
+				enrollment_date: "01/23/22",
+				effective_date: "01/23/22",
+				termination_date: null,
+				open_enrollment_id: "0xqwe123123"
+			};
+			console.log("enrollmentCommonDetails", enrollmentCommonDetails);
+			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [
+				{
+					member_object_id: member._id,
+					member_SSN: member.SSN,
+					premium_amount: premium_amount + rider_premium_amount + doc_premium_amount,
+					coverage_code: "Employee Only"
 				}
-			} else if (rider_type === "accident_sickness") {
-				if (rider_benefit_amount !== 0) {
-					const riderBenefit = premium_plan.rider_accident_and_sickness.find(
-						// eslint-disable-next-line arrow-parens
-						(benefit) => benefit.coverage_amount === rider_benefit_amount
-					);
-					const riderAmount =
-						(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0) +
-						calculatePremiumAmount +
-						rider_doc_amount;
-					setRiderPremiumAmount(riderBenefit?.premium_amount ? riderBenefit?.premium_amount : 0);
-					setTotalPremiumAmount(riderAmount);
-				} else {
-					setRiderPremiumAmount(0);
-				}
-			} else {
-				setRiderPremiumAmount(0);
-			}
+			];
+			console.log("eligible xxxx", eligibleDependents);
+			const coveredDependents = getCoveredDependents(accidentPlanInputs.coverage, eligibleDependents);
+			console.log("coveredDependents", coveredDependents);
+			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
+			const enrollment: Enrollment = {
+				standard_details: enrollmentStandardDetails.concat(coveredDependents.enrollmentStandardDetails),
+				common_details: enrollmentCommonDetails,
+				dep_SSNs: member_SSNs
+			};
+			console.log("enrollment", enrollment);
 		}
-	};
+	}, [
+		accidentPlanInputs,
+		doc_premium_amount,
+		eligibleDependents,
+		member,
+		plan._id,
+		plan.plan_code,
+		premium_amount,
+		rider_premium_amount
+	]);
+
+	const calculatePremium = useCallback(() => {
+		const { coverage, coverage_level, rider_type, monthly_benefit } = accidentPlanInputs;
+		if (coverage && coverage_level && paycheck) {
+			const calculatePremiumAmount =
+				accidentPlanDetails.premium_amount.standard_premium[coverage as keyof AccidentPlanCoverage][
+					coverage_level as keyof AccidentPlanCoverageLevel
+				][paycheck.pay_frequency as keyof PaycheckFrequency];
+			setPremiumAmount(calculatePremiumAmount);
+			setDocPremiumAmount(docAndRx.standard_premium[paycheck.pay_frequency as keyof PaycheckFrequency]);
+			setTotalPremiumAmount(calculatePremiumAmount + doc_premium_amount + rider_premium_amount);
+		}
+		if (rider_type && monthly_benefit && paycheck) {
+			const riderPremiumAmountArray =
+				riderPlanDetails.standard_premium[rider_type as keyof AccidentRiderPlanCoverage][
+					paycheck.pay_frequency as keyof PaycheckFrequency
+				];
+			const riderPremiumAmountDetails = riderPremiumAmountArray.find(
+				(amount: any) => amount.coverageAmount === parseInt(monthly_benefit)
+			);
+			const riderPremiumAmount =
+				riderPremiumAmountDetails !== undefined ? riderPremiumAmountDetails.premiumAmount : 0;
+			setRiderPremiumAmount(riderPremiumAmount);
+			// setTotalPremiumAmount(calculatePremiumAmount + rider_doc_amount);
+		}
+	}, [
+		accidentPlanDetails.premium_amount.standard_premium,
+		accidentPlanInputs,
+		docAndRx.standard_premium,
+		doc_premium_amount,
+		paycheck,
+		riderPlanDetails.standard_premium,
+		rider_premium_amount
+	]);
 
 	useEffect(() => {
 		calculatePremium();
-	}, [coverage_for, plan_type, rider_benefit_amount, rider_type]);
+	}, [calculatePremium, coverage_for, plan_type, rider_benefit_amount, rider_type]);
 
-	const { plan_name, plan_code, start_date, end_date } = plan;
+	useEffect(() => {
+		console.log("UE3");
+		setTotalPremiumAmount(rider_premium_amount + premium_amount + doc_premium_amount);
+	}, [rider_premium_amount, premium_amount, doc_premium_amount]);
+
+	useEffect(() => {
+		console.log("UE1");
+		const dependentCoverage = getKemperCancerEligibleDependents(dependents);
+		console.log("dependentCoverage", dependentCoverage);
+		setEligibleDependents(Object.assign([], dependentCoverage.dependents));
+		setAccidentPlanDetails((prevCancerPlanDetails: AccidentPlanDetails) => {
+			return Object.assign({}, prevCancerPlanDetails, {
+				coverage: dependentCoverage.coverage
+			});
+		});
+	}, [dependents]);
+
+	const { start_date } = plan;
 
 	return (
 		<div className="kemper-cancer-form plan-form">
@@ -186,8 +363,8 @@ const KemperAccidentForm = (): JSX.Element => {
 										<Select
 											input={<CustomSelectInput />}
 											style={{ width: "100%" }}
-											name="contact_label"
-											onChange={(event: any) => handleCoverageChange(event)}
+											name="coverage"
+											onChange={(event: SelectChangeEvent) => handleAccidentFormChange(event)}
 										>
 											{COVERAGE.map((option: string, index: number) => {
 												return (
@@ -205,8 +382,8 @@ const KemperAccidentForm = (): JSX.Element => {
 										<Select
 											input={<CustomSelectInput />}
 											style={{ width: "100%" }}
-											name="contact_label"
-											onChange={(event: any) => handlePlanChange(event)}
+											name="coverage_level"
+											onChange={(event: SelectChangeEvent) => handleAccidentFormChange(event)}
 										>
 											<MenuItem value={"Edge Enhanced"}>Edge Enhanced</MenuItem>
 											<MenuItem value={"Edge Premier"}>Edge Premier</MenuItem>
@@ -243,12 +420,14 @@ const KemperAccidentForm = (): JSX.Element => {
 										<Select
 											input={<CustomSelectInput />}
 											style={{ width: "100%" }}
-											name="contact_label"
-											onChange={(event: any) => handleRiderChange(event)}
+											name="rider_type"
+											onChange={(event: SelectChangeEvent) => handleAccidentFormChange(event)}
 										>
 											<MenuItem value={"no_rider"} className="empty-option"></MenuItem>
-											<MenuItem value={"accident"}>Accident Only</MenuItem>
-											<MenuItem value={"accident_sickness"}>Accident and Sickness</MenuItem>
+											<MenuItem value={"Rider Accident Only"}>Accident Only</MenuItem>
+											<MenuItem value={"Rider Accident And Sickness"}>
+												Accident and Sickness
+											</MenuItem>
 										</Select>
 									</div>
 								</Grid>
@@ -258,8 +437,8 @@ const KemperAccidentForm = (): JSX.Element => {
 										<Select
 											input={<CustomSelectInput />}
 											style={{ width: "100%" }}
-											name="contact_label"
-											onChange={(event: any) => handleRiderBenefitAmountChange(event)}
+											name="monthly_benefit"
+											onChange={(event: SelectChangeEvent) => handleAccidentFormChange(event)}
 										>
 											<MenuItem value={0} className="empty-option"></MenuItem>
 											<MenuItem value={600}>$600</MenuItem>
@@ -296,7 +475,7 @@ const KemperAccidentForm = (): JSX.Element => {
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
 										<div className="show-premium">
-											{coverage_for && plan_type ? `$${premium_plan.rider_doc_Rx}` : "$0.00"}
+											{doc_premium_amount == 0 ? "$0.00" : `$${doc_premium_amount.toFixed(2)}`}
 										</div>
 									</div>
 								</Grid>
@@ -355,7 +534,10 @@ const KemperAccidentForm = (): JSX.Element => {
 						</Grid>
 					</Grid>
 					<div className="theme-plan-inner-section-margin-2" />
-					<LazyPlanActions waiveButtonCallback={() => null} activateButtonCallback={() => null} />
+					<LazyPlanActions
+						waiveButtonCallback={() => null}
+						activateButtonCallback={handleActivateButtonCallback}
+					/>
 				</Paper>
 			</div>
 		</div>

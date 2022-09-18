@@ -105,20 +105,27 @@ const DoctorAndRxForm = (): JSX.Element => {
 				termination_date: null,
 				open_enrollment_id: "0xqwe123123"
 			};
+			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [
+				{
+					member_object_id: member._id,
+					member_SSN: member.SSN,
+					premium_amount: premium_amount,
+					coverage_code: coverage_for
+				}
+			];
 			console.log("enrollmentCommonDetails", enrollmentCommonDetails);
-			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [];
 			console.log("eligible xxxx", eligibleDependents);
-			const coveredDependents = getCoveredDependents(coverage_for, eligibleDependents, member, premium_amount);
+			const coveredDependents = getCoveredDependents(coverage_for, eligibleDependents);
 			console.log("coveredDependents", coveredDependents);
 			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
 			const enrollment: Enrollment = {
-				standard_details: coveredDependents.enrollmentStandardDetails,
+				standard_details: enrollmentStandardDetails.concat(coveredDependents.enrollmentStandardDetails),
 				common_details: enrollmentCommonDetails,
 				dep_SSNs: member_SSNs
 			};
 			console.log("enrollment", enrollment);
 		}
-	}, [coverage_for, eligibleDependents, member, plan._id, plan.plan_code, premium_amount]);
+	}, [coverage_for, eligibleDependents, member, plan._id, plan.plan_code]);
 
 	const handleWritingNumberChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {

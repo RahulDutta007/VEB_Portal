@@ -266,7 +266,7 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 				}
 			];
 			console.log("eligible xxxx", eligibleDependents);
-			const coveredDependents = getCoveredDependents(cancerPlanInputs.coverage, eligibleDependents, member);
+			const coveredDependents = getCoveredDependents(cancerPlanInputs.coverage, eligibleDependents);
 			console.log("coveredDependents", coveredDependents);
 			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
 			const enrollment: Enrollment = {
