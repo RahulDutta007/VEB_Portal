@@ -173,7 +173,7 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 						</div>
 						<div className="theme-plan-inner-section-margin-2" />
 						<Grid className="grid-container" container columnSpacing={2}>
-							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+							<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label  required">Coverage For</div>
 									<Select
@@ -192,7 +192,7 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 									</Select>
 								</div>
 							</Grid>
-							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+							<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label  required">Coverage Level</div>
 									<Select
@@ -207,7 +207,7 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 									</Select>
 								</div>
 							</Grid>
-							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+							<Grid item xl={2} lg={2} md={2} sm={2} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
 									<div className="show-premium">
@@ -230,14 +230,14 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 								Clinic Card
 							</div>
 							<Grid className="grid-container" container columnSpacing={2}>
-								<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className="margin-adjust-33">
+								<Grid item xl={10} lg={10} md={10} sm={10} xs={6} className="margin-adjust-33">
 									<input
 										type="checkbox"
 										onChange={(event: any) => handleClinicCardChange(event)}
 									></input>
 									<label className="details-form-label required">Clinic Card</label>
 								</Grid>
-								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+								<Grid item xl={2} lg={2} md={2} sm={2} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
 										<div className="show-premium">
@@ -276,7 +276,7 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 					</div>
 					<div className="theme-plan-inner-section-margin-2" />
 					<Grid container>
-						<Grid item xl={4} lg={4} md={4} sm={10} xs={10} columnSpacing={2}>
+						<Grid item xl={4} lg={4} md={4} sm={4} xs={10} columnSpacing={2}>
 							<div className="details-form-row">
 								<div className="details-form-label required">Writing Number</div>
 								<Grid container>

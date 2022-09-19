@@ -357,7 +357,7 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 								In addition to yourself, who would you like to cover under this plan?
 							</div>
 							<Grid className="grid-container" container columnSpacing={2}>
-								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+								<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label  required">Coverage For</div>
 										<Select
@@ -376,7 +376,7 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 										</Select>
 									</div>
 								</Grid>
-								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+								<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label  required">Coverage Level</div>
 										<Select
@@ -390,7 +390,7 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 										</Select>
 									</div>
 								</Grid>
-								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+								<Grid item xl={2} lg={2} md={2} sm={2} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
 										<div className="show-premium">
@@ -414,7 +414,7 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 								Disability income rider rates
 							</div>
 							<Grid className="grid-container" container columnSpacing={2}>
-								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+								<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label  required">Disability income rider type</div>
 										<Select
@@ -431,7 +431,7 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 										</Select>
 									</div>
 								</Grid>
-								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+								<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label  required">Monthly disability benefit</div>
 										<Select
@@ -448,7 +448,7 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 										</Select>
 									</div>
 								</Grid>
-								<Grid item xl={2} lg={2} md={2} sm={6} xs={6} className="">
+								<Grid item xl={2} lg={2} md={2} sm={2} xs={6} className="">
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
 										<div className="show-premium">
@@ -468,10 +468,10 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 								Doctor & Rx
 							</div>
 							<Grid className="grid-container" container columnSpacing={2}>
-								<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className="margin-adjust-33">
+								<Grid item xl={10} lg={10} md={10} sm={10} xs={6} className="margin-adjust-33">
 									<label className="details-form-label required">Doctor & RX</label>
 								</Grid>
-								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+								<Grid item xl={2} lg={2} md={2} sm={2} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
 										<div className="show-premium">

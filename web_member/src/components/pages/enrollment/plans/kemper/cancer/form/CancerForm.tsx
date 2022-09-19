@@ -346,7 +346,7 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 							</div>
 							<div className="theme-plan-inner-section-margin-2" />
 							<Grid className="grid-container" container columnSpacing={2}>
-								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+								<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label  required">Coverage For</div>
 										<Select
@@ -365,7 +365,7 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 										</Select>
 									</div>
 								</Grid>
-								<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
+								<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label  required">Coverage Level</div>
 										<Select
@@ -379,7 +379,7 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 										</Select>
 									</div>
 								</Grid>
-								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+								<Grid item xl={2} lg={2} md={2} sm={2} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
 										<div className="show-premium">{dollarize(standardPremium)}</div>
@@ -400,12 +400,12 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 									In addition to yourself, who would you like to cover under this plan?
 								</div>
 								<Grid className="grid-container" container columnSpacing={2}>
-									<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className="margin-adjust-33">
+									<Grid item xl={10} lg={10} md={10} sm={10} xs={6} className="margin-adjust-33">
 										<label className="details-form-label required">
 											Intensive Care Unit - Rider Premium
 										</label>
 									</Grid>
-									<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
+									<Grid item xl={2} lg={2} md={2} sm={2} xs={6}>
 										<div className="details-form-row">
 											<div className="details-form-label required align-center">Premium</div>
 											<div className="show-premium">{dollarize(riderPremium)}</div>
