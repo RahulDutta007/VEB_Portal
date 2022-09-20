@@ -6,6 +6,15 @@ export type ContactLabel = "BUSINESS" | "HOME" | "MAIL" | "MOBILE" | "OTHER" | n
 
 export type UploadType = "MANUAL" | "BULK" | "MIGRATED";
 
+export type Relationship = "SPOUSE" | "CHILD" | "DOMESTIC PARTNER" | "GRAND CHILD" | "STEP CHILD" | null;
+export enum RelationshipEnum {
+	"SPOUSE",
+	"CHILD",
+	"DOMESTIC PARTNER",
+	"GRAND CHILD",
+	"STEP CHILD"
+}
+
 export type Employee = {
 	_id: string;
 	member_id: string | null; // This Id is mapped with Group HR (Group Specific)
@@ -28,7 +37,7 @@ export type Employee = {
 	gender: Gender;
 	dependent_type: string | null;
 	marital_status: MaritalStatus;
-	relationship: string | null;
+	relationship: Relationship;
 	upload_type: UploadType;
 	address_line_1: string | null;
 	address_line_2: string | null;

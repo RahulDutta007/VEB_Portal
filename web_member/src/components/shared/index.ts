@@ -14,3 +14,4 @@ export const LazyCustomSelectInput = lazy(() => import("./customInput/CustomSele
 export const LazyCustomFilledInput = lazy(() => import("./customInput/CustomFilledInput"));
 
 export { default as PlanBranding } from "./planBranding/PlanBranding";
+export const LazyCustomFormDialog = lazy(() => import("./dialogs/customFormDialog/CustomFormDialog"));

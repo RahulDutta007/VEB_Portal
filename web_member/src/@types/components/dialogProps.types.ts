@@ -52,3 +52,26 @@ export type CustomImageUploadDialog = {
 export type CustomImageUploadDialogProps = {
 	dialogProps: CustomImageUploadDialog;
 };
+
+export type CustomFormTextfields = {
+	label?: string;
+	placeholder?: string;
+	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	value: any;
+};
+
+export type Action = {
+	label: string;
+	callback: () => void;
+};
+
+export type CustomFormDialogType = {
+	openDialog: boolean;
+	title: string;
+	textfields: CustomFormTextfields[];
+	actions: Action[];
+};
+
+export type CustomFormDialogProps = {
+	customFormDialogProps: CustomFormDialogType;
+};

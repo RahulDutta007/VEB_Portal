@@ -2,6 +2,9 @@ import express from "express";
 import verifyToken from "../../../../middlewares/auth/verifyToken.middleware";
 import { getGroupOwnerByAuth, getGroupOwnerById, getGroupOwnerCount, getGroupOwners, getPaginatedGroupOwners } from "../../controllers/user/get.user.groupOwner.controller";
 import {
+	getEmployeeAndDependents,
+	getMember,
+	getMemberByAuth,
 	getMemberCount,
 	getMembersByAssignedGroups
 } from "../../controllers/user/get.user.member.controller";
@@ -19,5 +22,8 @@ router
 router.route("/members/count").get(verifyToken, getMemberCount);
 router.route("/group-owners/paginated/:role");
 router.route("/group-owners/count/:role");
+router.route("/auth-member").get(verifyToken, getMemberByAuth);
+router.route("/member").get(verifyToken, getMember);
+router.route("/employee-dependents").get(verifyToken, getEmployeeAndDependents);
 
 module.exports = router;

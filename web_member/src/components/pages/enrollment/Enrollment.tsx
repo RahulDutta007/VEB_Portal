@@ -107,7 +107,7 @@ const Enrollment = (): JSX.Element => {
 		const stage = urlSearchParams.get("stage");
 		switch (step) {
 			case "Cancer": {
-				return stage === "0" ? <KemperCancerBranding /> : <KemperCancerForm dependents={dependents} />;
+				return stage === "0" ? <KemperCancerBranding /> : <KemperCancerForm />;
 			}
 			case "Whole Life": {
 				return stage === "0" ? <KemperWholeLifeBranding /> : <KemperWholeLifeInsuranceForm />;
@@ -212,14 +212,12 @@ const Enrollment = (): JSX.Element => {
 	}, []);
 
 	useEffect(() => {
-		debugger;
 		getOpenEnrollments();
 		getOverallPremium();
 		getDependents();
 	}, [getDependents, getOpenEnrollments, getOverallPremium]);
 
 	useEffect(() => {
-		debugger;
 		if (activeTab) {
 			navigate("?step=" + activeTab + "&stage=0");
 			console.log("step", activeTab);

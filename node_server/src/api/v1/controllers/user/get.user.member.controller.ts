@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import { FilterQuery } from "mongoose";
+import { IMemberSchema } from "../../../../@types/interface/memberSchema.interface";
 import MESSAGE from "../../../../constants/message";
 import memberModel from "../../../../models/member/member.model";
 import service from "../../../../services";
@@ -7,7 +9,7 @@ import service from "../../../../services";
 export const getMembersByAssignedGroups = async (req: Request, res: Response) => {
 	try {
 		const groupNumbers = [220];
-		const filter = { group_number: { $in: groupNumbers } };
+		const filter: FilterQuery<IMemberSchema> = { group_number: { $in: groupNumbers }, role: "EMPLOYEE" };
 		console.log(filter);
 		const paginationResult = await service.pagination.getPaginatedDocuments(
 			memberModel,
@@ -40,7 +42,7 @@ export const getMembersByAssignedGroups = async (req: Request, res: Response) =>
 
 export const getMemberCount = async (req: Request, res: Response) => {
 	try {
-		const filter = { group_number: 220 }; 
+		const filter = { group_number: 220 };
 		const memberCount = await memberModel.estimatedDocumentCount(filter);
 		return res.status(StatusCodes.OK).json({
 			message: MESSAGE.get.succ,
@@ -53,3 +55,59 @@ export const getMemberCount = async (req: Request, res: Response) => {
 		});
 	}
 };
+
+export const getMemberByAuth = async (req: Request, res: Response) => {
+	try {
+		const { _id } = req.user;
+		const member = await memberModel.findById(_id).populate("group").populate("location");
+		return res.status(StatusCodes.OK).json({
+			message: MESSAGE.get.succ,
+			result: member
+		});
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({
+			message: MESSAGE.get.fail,
+			result: null
+		});
+	}
+}
+
+export const getMember = async (req: Request, res: Response) => {
+	try {
+		const member = await memberModel.find(req.query).populate("group").populate("location");
+		return res.status(StatusCodes.OK).json({
+			message: MESSAGE.get.succ,
+			result: member
+		});
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({
+			message: MESSAGE.get.fail,
+			result: null
+		});
+	}
+}
+
+export const getEmployeeAndDependents = async (req: Request, res: Response) => {
+	try {
+		const { SSN } = req.user;
+		console.log("req.user", req.user);
+		const employeeFilter: FilterQuery<IMemberSchema> = { SSN };
+
+		const dependentFilter: FilterQuery<IMemberSchema> = { employee_SSN: SSN, role: "DEPENDENT" };
+		const employeeInstance = await memberModel.findOne(employeeFilter).populate("group").populate("location");
+		const dependentInstances = await memberModel.find(dependentFilter);
+
+		return res.status(StatusCodes.OK).json({
+			message: MESSAGE.get.succ,
+			result: {
+				employee: employeeInstance,
+				dependents: dependentInstances
+			}
+		});
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({
+			message: MESSAGE.get.fail,
+			result: null
+		});
+	}
+}

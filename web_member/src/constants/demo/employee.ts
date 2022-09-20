@@ -1,3 +1,4 @@
+import { RelationshipEnum } from "../../@types/employee.types";
 import { Member } from "../../@types/member.types";
 
 const employee: Member = {
@@ -82,7 +83,7 @@ const dependents: Member[] = [
 		is_registered: true,
 		last_login_date: "1648765791876",
 		SSN: "148975486",
-		date_of_birth: "1988-08-01T00:00:00.000Z",
+		date_of_birth: "1998-08-01T00:00:00.000Z",
 		gender: "FEMALE",
 		marital_status: "SINGLE",
 		email: "digelecx@gmail.com",
@@ -138,7 +139,7 @@ const dependents: Member[] = [
 		is_registered: true,
 		last_login_date: "1648765791876",
 		SSN: "148975485",
-		date_of_birth: "1988-08-01T00:00:00.000Z",
+		date_of_birth: "1998-08-01T00:00:00.000Z",
 		gender: "FEMALE",
 		marital_status: "SINGLE",
 		email: "digelecx@gmail.com",
@@ -148,7 +149,7 @@ const dependents: Member[] = [
 		event_date: "null",
 		event_document: null,
 		event_name: null,
-		relationship: "STEPCHILD",
+		relationship: "GRAND CHILD",
 		dependent_wlt_id: null,
 		role: "DEPENDENT",
 		dependent_number: 0,
@@ -194,7 +195,7 @@ const dependents: Member[] = [
 		is_registered: true,
 		last_login_date: "1648765791876",
 		SSN: "148975484",
-		date_of_birth: "1988-08-01T00:00:00.000Z",
+		date_of_birth: "1998-08-01T00:00:00.000Z",
 		gender: "FEMALE",
 		marital_status: "SINGLE",
 		email: "digelecx@gmail.com",
@@ -204,7 +205,7 @@ const dependents: Member[] = [
 		event_date: "null",
 		event_document: null,
 		event_name: null,
-		relationship: "GODSON",
+		relationship: "STEP CHILD",
 		dependent_wlt_id: null,
 		role: "DEPENDENT",
 		dependent_number: 0,

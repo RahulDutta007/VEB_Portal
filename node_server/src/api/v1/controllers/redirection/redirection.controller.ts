@@ -9,13 +9,13 @@ export const redirectUser = async (req: Request, res: Response) => {
     try {
         const { _id } = req.query;
         const memberInstance = await memberModel.findById(_id);
-        if(memberInstance === null || memberInstance === undefined) {
+        if (memberInstance === null || memberInstance === undefined) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 message: MESSAGE.get.fail
             });
         }
-        const { email, role, first_name, last_name, user_name } = memberInstance;
-        const jwtPayload = {_id, email, role, first_name, last_name, user_name};
+        const { email, role, first_name, last_name, user_name, SSN } = memberInstance;
+        const jwtPayload = { _id, email, role, first_name, last_name, user_name, SSN };
         const token: string = await service.auth.generateJWT(jwtPayload);
         return res.status(StatusCodes.OK).json({
             message: MESSAGE.get.succ,
