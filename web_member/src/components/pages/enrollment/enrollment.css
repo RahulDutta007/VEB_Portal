@@ -43,6 +43,7 @@
 	-ms-transform: translateY(-50%);
 	transform: translateY(-50%);
 	background: #ffffff;
+	z-index: 999999;
 }
 
 .form-container {
@@ -202,3 +203,64 @@
 	font-family: cursive !important;
 	font-size: 1.4rem;
 }
+
+.open-plan-list {
+	display: none;
+}
+.close-plan-list{
+	display: none;
+}
+
+/* =============== IPAD ================= */
+
+@media only screen and (device-width: 768px) {
+	.tabs-cotainer{
+		left: -500px;
+	}
+	.form-container{
+		margin-left: 30px !important;
+	}
+	.open-plan-list {
+		position: fixed;
+		height: 100px;
+		background-color:#e02826;
+		color: #ffffff;
+		left: 0;
+		padding: 10px;
+		font-size: 16px;
+		font-weight: 700;
+		text-align: center;
+		transform: rotate(180deg);
+		writing-mode: vertical-lr;
+		text-orientation: mixed;
+		cursor: pointer;
+		top: 320px;
+	}
+	.close-plan-list{
+		position: fixed;
+		width: 100px;
+		background-color: #e02826;
+		color: #ffffff;
+		left: 35px;
+		padding: 10px;
+		font-size: 16px;
+		font-weight: 700;
+		text-align: center;
+		top: 271px;
+		z-index: 9999;
+		border-top-left-radius: 10px;
+    	border-top-right-radius: 10px;
+	}
+	.show-plan{
+		left: 0px;
+	}
+	.show-list{
+		display: block;
+	}
+	.hide-list{
+		display: none;
+	}
+	.align-right {
+		margin-right: -24px;
+	}
+  }

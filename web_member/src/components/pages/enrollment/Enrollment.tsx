@@ -82,6 +82,7 @@ const Enrollment = (): JSX.Element => {
 	const urlSearchParams: URLSearchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
 	const height = screen.height;
 	const [showOverallPremium, setShowOverallPremium] = useState(true);
+	const [togglePlan, setTogglePlan] = useState(false);
 	const navigate = useNavigate();
 	const speedDialActions = [
 		// eslint-disable-next-line prettier/prettier
@@ -96,6 +97,10 @@ const Enrollment = (): JSX.Element => {
 	const handleOpen = () => setSpeedDialOpen(true);
 
 	const handleClose = () => setSpeedDialOpen(false);
+
+	const handleToggle = () => {
+		setTogglePlan(!togglePlan);
+	};
 
 	const handleChange = (event: React.SyntheticEvent<Element, Event>, newValue: string) => {
 		setActiveTab(newValue);
@@ -242,9 +247,21 @@ const Enrollment = (): JSX.Element => {
 						marginLeft: "-2rem"
 					}}
 				>
+					<div
+						className={!togglePlan ? "open-plan-list show-list" : "open-plan-list hide-list"}
+						onClick={handleToggle}
+					>
+						Show Plans
+					</div>
+					<div
+						className={!togglePlan ? "close-plan-list hide-list" : "close-plan-list show-list"}
+						onClick={handleToggle}
+					>
+						Hide Plans
+					</div>
 					<Tabs
 						orientation="vertical"
-						className="tabs-cotainer"
+						className={!togglePlan ? "tabs-cotainer" : "tabs-cotainer show-plan"}
 						// variant="scrollable"
 						//variant="fullWidth"
 						style={{
@@ -277,6 +294,7 @@ const Enrollment = (): JSX.Element => {
 										color: activeTab == plan_name ? theme.primary_color : undefined
 									}}
 									value={plan_name}
+									onClick={handleToggle}
 									label={<EnrollmentTabLabel planName={plan_name} status={status} carrier="Kemper" />}
 									{...a11yProps(0)}
 								/>
