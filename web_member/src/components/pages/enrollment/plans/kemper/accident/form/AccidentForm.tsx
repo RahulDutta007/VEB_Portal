@@ -28,24 +28,31 @@ import { Member } from "../../../../../../../@types/member.types";
 import { Enrollment } from "../../../../../../../@types/enrollment.types";
 import { EnrollmentCommonDetails, EnrollmentStandardDetails } from "../../../../../../../@types/enrollment.types";
 import { getCoveredDependents } from "../../../../../../../utils/commonFunctions/coveredDependents";
+import { generateCancerKemperActivateEnrollmentPayload } from "../../../../../../../utils/commonFunctions/enrollment";
 
 const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
-	const [plan, setPlan] = useState({
+	const [accidentPlan, setPlan] = useState({
 		_id: "123zxkbnkabb3w2123",
 		plan_name: "Accident",
 		plan_code: "plan001",
 		start_date: "01/01/2023",
 		end_date: "01/01/2024"
 	});
+	const [intensiveCareUnitPlan, setIntensiveCareUnitPlan] = useState({
+		_id: "123zxkbnkabb3w2123",
+		plan_name: "Accident - Intensive Care Unit",
+		plan_code: "ICU"
+	});
 	const [eligibleDependents, setEligibleDependents] = useState<Member[]>([]);
-	const { paycheck, member } = useContext(AuthContext);
+	const { paycheck, member, groupOwner } = useContext(AuthContext);
 	const [docAndRx, setDocAndRx] = useState<AccidentDocAndRxPlanDetails>({
 		standard_premium: {
 			WEEKLY: 1.16,
 			MONTHLY: 1.16
 		}
 	});
+	const [hasSelectedRider, setHasSelectedRider] = useState(false);
 	const [riderPlanDetails, setRiderPlanDetails] = useState<AccidentRiderPlanDetails>({
 		rider_type: ["Rider Accident Only", "Rider Accident Only"],
 		monthly_benefit: [600, 900, 1200, 1800],
@@ -210,6 +217,19 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 		);
 	};
 
+	const handleSelectedRiderCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { checked } = event.target;
+		setHasSelectedRider(checked);
+		if (!checked) {
+			setAccidentPlanInputs(
+				Object.assign({}, accidentPlanInputs, {
+					rider_type: null,
+					monthly_benefit: null
+				})
+			);
+		}
+	};
+
 	const handleWritingNumberChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			const { value } = event.target as HTMLInputElement;
@@ -232,66 +252,49 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 			accidentPlanInputs.monthly_benefit
 		) {
 			console.log("cancerPlanInputs", accidentPlanInputs);
-			const enrollmentCommonDetails: EnrollmentCommonDetails = {
-				agent_id: null,
-				location_number: member.location_number,
-				location_name: member.location.location_name,
-				group_number: member.group_number,
-				group_name: member.group.name,
-				plan_object_id: plan._id,
-				plan_code: plan.plan_code,
-				enrollment_status: "APPROVED",
-				insured_object_id: member._id,
-				insured_SSN: member.SSN,
-				unenrolled_reason: null,
-				waive_reason: null,
-				termination_reason: null,
-				enrollment_date: "01/23/22",
-				effective_date: "01/23/22",
-				termination_date: null,
-				open_enrollment_id: "0xqwe123123"
-			};
-			console.log("enrollmentCommonDetails", enrollmentCommonDetails);
-			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [
-				{
-					member_object_id: member._id,
-					member_SSN: member.SSN,
-					premium_amount: premium_amount + rider_premium_amount + doc_premium_amount,
-					coverage_code: "Employee Only"
-				}
+			const enrollments: { plan: any; premiumAmount: number }[] = [
+				{ plan: accidentPlan, premiumAmount: premium_amount }
 			];
-			console.log("eligible xxxx", eligibleDependents);
-			const coveredDependents = getCoveredDependents(accidentPlanInputs.coverage, eligibleDependents);
-			console.log("coveredDependents", coveredDependents);
-			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
-			const enrollment: Enrollment = {
-				standard_details: enrollmentStandardDetails.concat(coveredDependents.enrollmentStandardDetails),
-				common_details: enrollmentCommonDetails,
-				dep_SSNs: member_SSNs
-			};
-			console.log("enrollment", enrollment);
+			if (hasSelectedRider) {
+				enrollments.push({ plan: intensiveCareUnitPlan, premiumAmount: rider_premium_amount });
+			}
+			enrollments.forEach(({ plan, premiumAmount }: any, index: number) => {
+				const enrollment: Enrollment = generateCancerKemperActivateEnrollmentPayload(
+					plan,
+					groupOwner,
+					member,
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					accidentPlanInputs.coverage!,
+					premiumAmount,
+					eligibleDependents
+				);
+				console.log("enrollment", index, enrollment);
+			});
 		}
 	}, [
-		accidentPlanInputs,
-		doc_premium_amount,
-		eligibleDependents,
 		member,
-		plan._id,
-		plan.plan_code,
+		accidentPlanInputs,
+		accidentPlan,
 		premium_amount,
-		rider_premium_amount
+		hasSelectedRider,
+		intensiveCareUnitPlan,
+		rider_premium_amount,
+		groupOwner,
+		eligibleDependents
 	]);
 
 	const calculatePremium = useCallback(() => {
 		const { coverage, coverage_level, rider_type, monthly_benefit } = accidentPlanInputs;
+		let calculatePremiumAmount = 0;
+		let riderPremiumAmount = 0;
 		if (coverage && coverage_level && paycheck) {
-			const calculatePremiumAmount =
+			calculatePremiumAmount =
 				accidentPlanDetails.premium_amount.standard_premium[coverage as keyof AccidentPlanCoverage][
 					coverage_level as keyof AccidentPlanCoverageLevel
 				][paycheck.pay_frequency as keyof PaycheckFrequency];
 			setPremiumAmount(calculatePremiumAmount);
 			setDocPremiumAmount(docAndRx.standard_premium[paycheck.pay_frequency as keyof PaycheckFrequency]);
-			setTotalPremiumAmount(calculatePremiumAmount + doc_premium_amount + rider_premium_amount);
+			setTotalPremiumAmount(calculatePremiumAmount + doc_premium_amount + riderPremiumAmount);
 		}
 		if (rider_type && monthly_benefit && paycheck) {
 			const riderPremiumAmountArray =
@@ -301,10 +304,9 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 			const riderPremiumAmountDetails = riderPremiumAmountArray.find(
 				(amount: any) => amount.coverageAmount === parseInt(monthly_benefit)
 			);
-			const riderPremiumAmount =
-				riderPremiumAmountDetails !== undefined ? riderPremiumAmountDetails.premiumAmount : 0;
+			riderPremiumAmount = riderPremiumAmountDetails !== undefined ? riderPremiumAmountDetails.premiumAmount : 0;
 			setRiderPremiumAmount(riderPremiumAmount);
-			// setTotalPremiumAmount(calculatePremiumAmount + rider_doc_amount);
+			setTotalPremiumAmount(calculatePremiumAmount + riderPremiumAmount + doc_premium_amount);
 		}
 	}, [
 		accidentPlanDetails.premium_amount.standard_premium,
@@ -312,8 +314,7 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 		docAndRx.standard_premium,
 		doc_premium_amount,
 		paycheck,
-		riderPlanDetails.standard_premium,
-		rider_premium_amount
+		riderPlanDetails.standard_premium
 	]);
 
 	useEffect(() => {
@@ -337,7 +338,7 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 		});
 	}, [dependents]);
 
-	const { start_date } = plan;
+	const { start_date } = accidentPlan;
 
 	return (
 		<div className="kemper-cancer-form plan-form">
@@ -401,65 +402,86 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 							</Grid>
 						</div>
 					</div>
+					<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className="margin-adjust-33">
+						<Checkbox
+							checked={hasSelectedRider}
+							value={hasSelectedRider}
+							style={{ paddingLeft: 0 }}
+							onChange={handleSelectedRiderCheckboxChange}
+						/>
+						<label className="details-form-label required">Intensive Care Unit - Rider Premium</label>
+					</Grid>
 					<div className="plan-content">
 						<div className="theme-plan-section-margin" />
-						<div className="header-container header-container-new">
-							<div className="theme-plan-header">Rider Benefits</div>
-						</div>
-						<div>
-							<div
-								className="theme-plan-sub-header plan-text"
-								style={{ borderLeftColor: theme.primary_color }}
-							>
-								Disability income rider rates
-							</div>
-							<Grid className="grid-container" container columnSpacing={2}>
-								<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
-									<div className="details-form-row">
-										<div className="details-form-label  required">Disability income rider type</div>
-										<Select
-											input={<CustomSelectInput />}
-											style={{ width: "100%" }}
-											name="rider_type"
-											onChange={(event: SelectChangeEvent) => handleAccidentFormChange(event)}
-										>
-											<MenuItem value={"no_rider"} className="empty-option"></MenuItem>
-											<MenuItem value={"Rider Accident Only"}>Accident Only</MenuItem>
-											<MenuItem value={"Rider Accident And Sickness"}>
-												Accident and Sickness
-											</MenuItem>
-										</Select>
+						{hasSelectedRider ? (
+							<>
+								<div className="header-container header-container-new">
+									<div className="theme-plan-header">Rider Benefits</div>
+								</div>
+								<div>
+									<div
+										className="theme-plan-sub-header plan-text"
+										style={{ borderLeftColor: theme.primary_color }}
+									>
+										Disability income rider rates
 									</div>
-								</Grid>
-								<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
-									<div className="details-form-row">
-										<div className="details-form-label  required">Monthly disability benefit</div>
-										<Select
-											input={<CustomSelectInput />}
-											style={{ width: "100%" }}
-											name="monthly_benefit"
-											onChange={(event: SelectChangeEvent) => handleAccidentFormChange(event)}
-										>
-											<MenuItem value={0} className="empty-option"></MenuItem>
-											<MenuItem value={600}>$600</MenuItem>
-											<MenuItem value={900}>$900</MenuItem>
-											<MenuItem value={1200}>$1200</MenuItem>
-											<MenuItem value={1800}>$1800</MenuItem>
-										</Select>
-									</div>
-								</Grid>
-								<Grid item xl={2} lg={2} md={2} sm={2} xs={6} className="">
-									<div className="details-form-row">
-										<div className="details-form-label required align-center">Premium</div>
-										<div className="show-premium">
-											{rider_premium_amount == 0
-												? "$0.00"
-												: `$${rider_premium_amount.toFixed(2)}`}
-										</div>
-									</div>
-								</Grid>
-							</Grid>
-						</div>
+									<Grid className="grid-container" container columnSpacing={2}>
+										<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
+											<div className="details-form-row">
+												<div className="details-form-label  required">
+													Disability income rider type
+												</div>
+												<Select
+													input={<CustomSelectInput />}
+													style={{ width: "100%" }}
+													name="rider_type"
+													onChange={(event: SelectChangeEvent) =>
+														handleAccidentFormChange(event)
+													}
+												>
+													<MenuItem value={"no_rider"} className="empty-option"></MenuItem>
+													<MenuItem value={"Rider Accident Only"}>Accident Only</MenuItem>
+													<MenuItem value={"Rider Accident And Sickness"}>
+														Accident and Sickness
+													</MenuItem>
+												</Select>
+											</div>
+										</Grid>
+										<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
+											<div className="details-form-row">
+												<div className="details-form-label  required">
+													Monthly disability benefit
+												</div>
+												<Select
+													input={<CustomSelectInput />}
+													style={{ width: "100%" }}
+													name="monthly_benefit"
+													onChange={(event: SelectChangeEvent) =>
+														handleAccidentFormChange(event)
+													}
+												>
+													<MenuItem value={0} className="empty-option"></MenuItem>
+													<MenuItem value={600}>$600</MenuItem>
+													<MenuItem value={900}>$900</MenuItem>
+													<MenuItem value={1200}>$1200</MenuItem>
+													<MenuItem value={1800}>$1800</MenuItem>
+												</Select>
+											</div>
+										</Grid>
+										<Grid item xl={2} lg={2} md={2} sm={2} xs={6} className="">
+											<div className="details-form-row">
+												<div className="details-form-label required align-center">Premium</div>
+												<div className="show-premium">
+													{rider_premium_amount == 0
+														? "$0.00"
+														: `$${rider_premium_amount.toFixed(2)}`}
+												</div>
+											</div>
+										</Grid>
+									</Grid>
+								</div>
+							</>
+						) : null}
 						<div>
 							<div
 								className="theme-plan-sub-header plan-text"
