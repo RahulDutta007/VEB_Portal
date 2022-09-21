@@ -82,6 +82,37 @@ export type HospitalIndemnityPlanCoverage = {
 	"Employee & Dependents": HospitalIndemnityPlanCoverageLevel;
 	"Employee & Family": HospitalIndemnityPlanCoverageLevel;
 };
+//Beazley
+export type BeazleyPlanDetails = {
+	coverage: string[];
+	coverage_level: ["Plan 2", "Plan 3", "Plan 4 with RX"];
+	premium_amount: BeazleyPremiumAmount;
+};
+
+export type BeazleyPremiumAmount = {
+	standard_premium: BeazleyStanderdPlanCoverage;
+	rider_premium: BeazleyRiderPlanCoverage;
+};
+
+export type BeazleyStanderdPlanCoverage = {
+	"Employee Only": BeazleyPlanCoverageLevel;
+	"Employee & Spouse": BeazleyPlanCoverageLevel;
+	"Employee & Dependents": BeazleyPlanCoverageLevel;
+	"Employee & Family": BeazleyPlanCoverageLevel;
+};
+
+export type BeazleyRiderPlanCoverage = {
+	"Employee Only": PaycheckFrequency;
+	"Employee & Spouse": PaycheckFrequency;
+	"Employee & Dependents": PaycheckFrequency;
+	"Employee & Family": PaycheckFrequency;
+};
+
+export type BeazleyPlanCoverageLevel = {
+	"Plan 2": PaycheckFrequency;
+	"Plan 3": PaycheckFrequency;
+	"Plan 4 with RX": PaycheckFrequency;
+};
 
 export type AccidentPlanDetails = {
 	coverage: string[];

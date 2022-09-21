@@ -227,7 +227,12 @@ const KemperHospitalIndemnityForm = ({ dependents }: PlanFormProps): JSX.Element
 				)
 			);
 		}
-	}, [hospitalIndemnityPlanDetails.premium_amount.standard_premium, hospitalIndemnityPlanInputs, paycheck]);
+	}, [
+		hospitalIndemnityPlanDetails.premium_amount.standard_premium,
+		hospitalIndemnityPlanInputs,
+		paycheck,
+		setCurrentEnrollment
+	]);
 
 	useEffect(() => {
 		calculatePremium();

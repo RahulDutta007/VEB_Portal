@@ -3,7 +3,7 @@ import { Select } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { COVERAGE } from "../../../../../../../constants/coverage";
-import { AuthContext, ThemeContext } from "../../../../../../../contexts";
+import { AuthContext, EnrollmentContext, ThemeContext } from "../../../../../../../contexts";
 import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
 import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
@@ -207,6 +207,7 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 	const [total_premium_amount, setTotalPremiumAmount] = useState(0);
 	const [rider_type, setRiderType] = useState("none");
 	const [rider_benefit_amount, setRiderBenefitAmount] = useState(0);
+	const { setCurrentEnrollment } = useContext(EnrollmentContext);
 
 	const handleAccidentFormChange = (event: SelectChangeEvent) => {
 		const { name, value } = event.target as HTMLSelectElement;
@@ -295,18 +296,31 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 			setPremiumAmount(calculatePremiumAmount);
 			setDocPremiumAmount(docAndRx.standard_premium[paycheck.pay_frequency as keyof PaycheckFrequency]);
 			setTotalPremiumAmount(calculatePremiumAmount + doc_premium_amount + riderPremiumAmount);
-		}
-		if (rider_type && monthly_benefit && paycheck) {
-			const riderPremiumAmountArray =
-				riderPlanDetails.standard_premium[rider_type as keyof AccidentRiderPlanCoverage][
-					paycheck.pay_frequency as keyof PaycheckFrequency
-				];
-			const riderPremiumAmountDetails = riderPremiumAmountArray.find(
-				(amount: any) => amount.coverageAmount === parseInt(monthly_benefit)
+			if (rider_type && monthly_benefit && paycheck) {
+				const riderPremiumAmountArray =
+					riderPlanDetails.standard_premium[rider_type as keyof AccidentRiderPlanCoverage][
+						paycheck.pay_frequency as keyof PaycheckFrequency
+					];
+				const riderPremiumAmountDetails = riderPremiumAmountArray.find(
+					(amount: any) => amount.coverageAmount === parseInt(monthly_benefit)
+				);
+				riderPremiumAmount =
+					riderPremiumAmountDetails !== undefined ? riderPremiumAmountDetails.premiumAmount : 0;
+				setRiderPremiumAmount(riderPremiumAmount);
+				setTotalPremiumAmount(calculatePremiumAmount + riderPremiumAmount + doc_premium_amount);
+			}
+			setCurrentEnrollment(
+				Object.assign(
+					{},
+					{
+						plan_name: "Accident",
+						status: "Current",
+						premium_amount: Number(
+							(calculatePremiumAmount + riderPremiumAmount + doc_premium_amount).toFixed(2)
+						)
+					}
+				)
 			);
-			riderPremiumAmount = riderPremiumAmountDetails !== undefined ? riderPremiumAmountDetails.premiumAmount : 0;
-			setRiderPremiumAmount(riderPremiumAmount);
-			setTotalPremiumAmount(calculatePremiumAmount + riderPremiumAmount + doc_premium_amount);
 		}
 	}, [
 		accidentPlanDetails.premium_amount.standard_premium,
@@ -314,7 +328,8 @@ const KemperAccidentForm = ({ dependents }: PlanFormProps): JSX.Element => {
 		docAndRx.standard_premium,
 		doc_premium_amount,
 		paycheck,
-		riderPlanDetails.standard_premium
+		riderPlanDetails.standard_premium,
+		setCurrentEnrollment
 	]);
 
 	useEffect(() => {
