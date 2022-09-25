@@ -30,6 +30,27 @@ export type CancerPlanDetails = {
 	premium_amount: CancerPlanPremiumAmount;
 };
 
+export type VisionPlanCoverageLevel = {
+	"Monthly": PaycheckFrequency;
+	"Weekly": PaycheckFrequency;
+};
+
+export type VisionPlanCoverage = {
+	"Employee Only": VisionPlanCoverageLevel;
+	"Employee & Dependents": VisionPlanCoverageLevel;
+	"Employee & Family": VisionPlanCoverageLevel;
+};
+
+export type VisionPlanPremiumAmount = {
+	standard_premium: VisionPlanCoverage;
+};
+
+export type VisionPlanDetails = {
+	coverage: string[];
+	coverage_level: ["Monthly", "Weekly"];
+	premium_amount: VisionPlanPremiumAmount;
+};
+
 export type CriticalIllnessCoverageLevel = {
 	"With Cancer": number | null;
 	"Without Cancer": number | null;

@@ -251,7 +251,6 @@
 		margin-bottom: 10px;
 	}
 	.close-plan-list{
-		position: fixed;
 		width: 100px;
 		background-color: #e02826;
 		color: #ffffff;
@@ -260,14 +259,18 @@
 		font-size: 16px;
 		font-weight: 700;
 		text-align: center;
-		top: 271px;
+		margin-left: 40px;
 		z-index: 9999;
 		border-top-left-radius: 10px;
-    	border-top-right-radius: 10px;
+		border-top-right-radius: 10px;
 	}
 	.show-plan{
 		left: 0px;
 		top: 309px;
+		width: 215px;
+		position: absolute;
+		background-color: #ffff;
+		z-index: 999999;
 	}
 	.show-list{
 		display: block;
