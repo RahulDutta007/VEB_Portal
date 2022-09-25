@@ -33,19 +33,29 @@ import {
 	EnrollmentStandardDetails
 } from "../../../../../../../@types/enrollment.types";
 import { getCoveredDependents } from "../../../../../../../utils/commonFunctions/coveredDependents";
+import { getCurrentDate, getFirstOfNextMonth } from "../../../../../../../utils/commonFunctions/date";
+import {
+	generateActivateEnrollmentPayload,
+	generateCancerKemperActivateEnrollmentPayload
+} from "../../../../../../../utils/commonFunctions/enrollment";
 
-const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
+const KemperCancerForm = (): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
 	const [emailDisclaimer, setEmailDisclaimer] = useState("");
-	const { paycheck, member } = useContext(AuthContext);
+	const { paycheck, member, dependents, groupOwner } = useContext(AuthContext);
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
 	const [eligibleDependents, setEligibleDependents] = useState<Member[]>([]);
 	const { theme } = useContext(ThemeContext);
-	const [plan, setPlan] = useState({
+	const [cancerPlan, setCancerPlan] = useState({
 		_id: "123zxkbnkabb3w2123",
 		plan_name: "Kemper Cancer",
 		plan_code: "KC"
+	});
+	const [intensiveCareUnitPlan, setIntensiveCareUnitPlan] = useState({
+		_id: "123zxkbnkabb3w2123",
+		plan_name: "Cancer - Intensive Care Unit",
+		plan_code: "ICU"
 	});
 	const [cancerPlanDetails, setCancerPlanDetails] = useState<CancerPlanDetails>({
 		coverage: [],
@@ -173,6 +183,7 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 		coverage: null,
 		coverage_level: null
 	});
+	const [hasSelectedRider, setHasSelectedRider] = useState(false);
 	const [standardPremium, setStandardPremium] = useState(0);
 	const [riderPremium, setRiderPremium] = useState(0);
 	const [totalPremium, setTotalPremium] = useState(0);
@@ -208,10 +219,13 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 					coverage_level as keyof CancerPlanCoverageLevel
 				][paycheck.pay_frequency as keyof PaycheckFrequency];
 			setStandardPremium(newStandardPremium);
-			const newRiderPremium =
-				cancerPlanDetails.premium_amount.rider_premium[coverage as keyof CancerPlanCoverage][
-					coverage_level as keyof CancerPlanCoverageLevel
-				][paycheck.pay_frequency as keyof PaycheckFrequency];
+			let newRiderPremium = 0;
+			if (hasSelectedRider) {
+				newRiderPremium =
+					cancerPlanDetails.premium_amount.rider_premium[coverage as keyof CancerPlanCoverage][
+						coverage_level as keyof CancerPlanCoverageLevel
+					][paycheck.pay_frequency as keyof PaycheckFrequency];
+			}
 			setRiderPremium(newRiderPremium);
 			console.log("newRiderPremium", newRiderPremium);
 			console.log("newStandardPremium", newStandardPremium);
@@ -230,6 +244,7 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 		cancerPlanDetails.premium_amount.rider_premium,
 		cancerPlanDetails.premium_amount.standard_premium,
 		cancerPlanInputs,
+		hasSelectedRider,
 		paycheck,
 		setCurrentEnrollment
 	]);
@@ -237,46 +252,36 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 	const handleActivateButtonClick = useCallback(() => {
 		if (member && cancerPlanInputs.coverage) {
 			console.log("cancerPlanInputs", cancerPlanInputs);
-			const enrollmentCommonDetails: EnrollmentCommonDetails = {
-				agent_id: null,
-				location_number: member.location_number,
-				location_name: member.location.location_name,
-				group_number: member.group_number,
-				group_name: member.group.name,
-				plan_object_id: plan._id,
-				plan_code: plan.plan_code,
-				enrollment_status: "APPROVED",
-				insured_object_id: member._id,
-				insured_SSN: member.SSN,
-				unenrolled_reason: null,
-				waive_reason: null,
-				termination_reason: null,
-				enrollment_date: "01/23/22",
-				effective_date: "01/23/22",
-				termination_date: null,
-				open_enrollment_id: "0xqwe123123"
-			};
-			console.log("enrollmentCommonDetails", enrollmentCommonDetails);
-			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [
-				{
-					member_object_id: member._id,
-					member_SSN: member.SSN,
-					premium_amount: riderPremium + standardPremium,
-					coverage_code: cancerPlanInputs.coverage
-				}
+			const enrollments: { plan: any; premiumAmount: number }[] = [
+				{ plan: cancerPlan, premiumAmount: standardPremium }
 			];
-			console.log("eligible xxxx", eligibleDependents);
-			const coveredDependents = getCoveredDependents(cancerPlanInputs.coverage, eligibleDependents);
-			console.log("coveredDependents", coveredDependents);
-			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
-			const enrollment: Enrollment = {
-				standard_details: enrollmentStandardDetails.concat(coveredDependents.enrollmentStandardDetails),
-				common_details: enrollmentCommonDetails,
-				dep_SSNs: member_SSNs
-			};
-			console.log("enrollment", enrollment);
+			if (hasSelectedRider) {
+				enrollments.push({ plan: intensiveCareUnitPlan, premiumAmount: riderPremium });
+			}
+			enrollments.forEach(({ plan, premiumAmount }: any, index: number) => {
+				const enrollment: Enrollment = generateCancerKemperActivateEnrollmentPayload(
+					plan,
+					groupOwner,
+					member,
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					cancerPlanInputs.coverage!,
+					premiumAmount,
+					eligibleDependents
+				);
+				console.log("enrollment", index, enrollment);
+			});
 		}
-	}, [cancerPlanInputs, eligibleDependents, member, plan._id, plan.plan_code, riderPremium, standardPremium]);
+	}, [
+		cancerPlan,
+		cancerPlanInputs,
+		eligibleDependents,
+		groupOwner,
+		hasSelectedRider,
+		intensiveCareUnitPlan,
+		member,
+		riderPremium,
+		standardPremium
+	]);
 
 	const handleOpenDisclaimerDialogClick = useCallback(() => {
 		setEnrollmentDisclaimerDialogProps(Object.assign({}, enrollmentDisclaimerDialogProps, { openDialog: true }));
@@ -285,6 +290,11 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 	const handleCloseDisclaimerDialog = useCallback(() => {
 		setEnrollmentDisclaimerDialogProps(Object.assign({}, enrollmentDisclaimerDialogProps, { openDialog: false }));
 	}, [enrollmentDisclaimerDialogProps]);
+
+	const handleSelectedRiderCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { checked } = event.target;
+		setHasSelectedRider(checked);
+	};
 
 	const handleEscapeCloseDisclaimerDialog = useCallback(
 		(event: React.KeyboardEvent<HTMLInputElement | HTMLDivElement>) => {
@@ -310,16 +320,18 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 
 	useEffect(() => {
 		console.log("UE1");
-		const dependentCoverage = getKemperCancerEligibleDependents(dependents);
-		console.log("dependentCoverage", dependentCoverage);
-		setEligibleDependents(Object.assign([], dependentCoverage.dependents));
-		setCancerPlanDetails((prevCancerPlanDetails: CancerPlanDetails) => {
-			return Object.assign({}, prevCancerPlanDetails, {
-				coverage: dependentCoverage.coverage
+		if (dependents) {
+			const dependentCoverage = getKemperCancerEligibleDependents(dependents);
+			console.log("dependentCoverage", dependentCoverage);
+			setEligibleDependents(Object.assign([], dependentCoverage.dependents));
+			setCancerPlanDetails((prevCancerPlanDetails: CancerPlanDetails) => {
+				return Object.assign({}, prevCancerPlanDetails, {
+					coverage: dependentCoverage.coverage
+				});
 			});
-		});
+		}
 	}, [dependents]);
-
+	console.log("Has Selected", hasSelectedRider);
 	return (
 		<Suspense fallback={<div />}>
 			{/* <CustomEnrollmentDisclaimerDialog
@@ -400,7 +412,13 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 									In addition to yourself, who would you like to cover under this plan?
 								</div>
 								<Grid className="grid-container" container columnSpacing={2}>
-									<Grid item xl={10} lg={10} md={10} sm={10} xs={6} className="margin-adjust-33">
+									<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className="margin-adjust-33">
+										<Checkbox
+											checked={hasSelectedRider}
+											value={hasSelectedRider}
+											style={{ paddingLeft: 0 }}
+											onChange={handleSelectedRiderCheckboxChange}
+										/>
 										<label className="details-form-label required">
 											Intensive Care Unit - Rider Premium
 										</label>
@@ -429,7 +447,12 @@ const KemperCancerForm = ({ dependents }: PlanFormProps): JSX.Element => {
 							</Grid>
 						</Grid>
 						<div className="theme-plan-option-content">
-							<Checkbox defaultChecked style={{ paddingLeft: 0 }} />
+							<Checkbox
+								checked={hasSelectedRider}
+								value={hasSelectedRider}
+								style={{ paddingLeft: 0 }}
+								onChange={handleSelectedRiderCheckboxChange}
+							/>
 							<p className="theme-plan-checkbox-label">
 								<strong>Are you actively at work 20 or more hours per week?</strong>
 							</p>

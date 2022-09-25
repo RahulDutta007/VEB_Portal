@@ -1,9 +1,9 @@
-import { Button, MenuItem } from "@mui/material";
+import { Button, MenuItem, SelectChangeEvent } from "@mui/material";
 import { Select } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { COVERAGE } from "../../../../../../../constants/coverage";
-import { ThemeContext } from "../../../../../../../contexts";
+import { AuthContext, EnrollmentContext, ThemeContext } from "../../../../../../../contexts";
 import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
 import CustomInput from "../../../../../../shared/customInput/CustomInput";
 import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
@@ -11,6 +11,17 @@ import { Checkbox } from "@mui/material";
 import { useState } from "react";
 import { useCallback } from "react";
 import "./indemnityForm.css";
+import {
+	BeazleyPlanCoverageLevel,
+	BeazleyPlanDetails,
+	BeazleyRiderPlanCoverage,
+	BeazleyStanderdPlanCoverage,
+	PaycheckFrequency
+} from "../../../../../../../@types/plan.types";
+import { Member } from "../../../../../../../@types/member.types";
+import { getKemperCancerEligibleDependents } from "../../../../../../../utils/commonFunctions/eligibleDependents";
+import { generateCancerKemperActivateEnrollmentPayload } from "../../../../../../../utils/commonFunctions/enrollment";
+import { Enrollment } from "../../../../../../../@types/enrollment.types";
 
 const BeazleyIndemnityForm = (): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
@@ -20,96 +31,132 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 		start_date: "01/01/2023",
 		end_date: "01/01/2024"
 	});
-	const [premium_plan, setPremiumPlan] = useState<any>({
-		clinic_card: {
-			employee: 9.23,
-			employee_and_spouse: 13.85,
-			employee_and_children: 13.85,
-			employee_and_family: 13.85
-		},
-		coverage_for: {
-			employee: [
-				{
-					name: "plan 2",
-					premium_amount: 10.38
+	const [riderBenefitPlan, setRiderBenefitPlan] = useState({
+		_id: "123zxkbnkabb3w2123",
+		plan_name: "Beazley - Intensive Care Unit",
+		plan_code: "ICU"
+	});
+	const [beazleyPlanInputs, setBeazleyPlanInputs] = useState<{
+		coverage: null | string;
+		coverage_level: null | string;
+		isRiderAdded: boolean;
+	}>({
+		coverage: null,
+		coverage_level: null,
+		isRiderAdded: false
+	});
+	const [beazleyPlan, setBeazleyPlan] = useState<BeazleyPlanDetails>({
+		coverage: [],
+		coverage_level: ["Plan 2", "Plan 3", "Plan 4 with RX"],
+		premium_amount: {
+			standard_premium: {
+				"Employee Only": {
+					"Plan 2": {
+						WEEKLY: 10.38,
+						MONTHLY: 10.38
+					},
+					"Plan 3": {
+						WEEKLY: 14.31,
+						MONTHLY: 14.31
+					},
+					"Plan 4 with RX": {
+						WEEKLY: 35.35,
+						MONTHLY: 35.35
+					}
 				},
-				{
-					name: "plan 3",
-					premium_amount: 14.31
+				"Employee & Spouse": {
+					"Plan 2": {
+						WEEKLY: 10.38,
+						MONTHLY: 10.38
+					},
+					"Plan 3": {
+						WEEKLY: 14.31,
+						MONTHLY: 14.31
+					},
+					"Plan 4 with RX": {
+						WEEKLY: 35.35,
+						MONTHLY: 35.35
+					}
 				},
-				{
-					name: "plan 4 with RX",
-					premium_amount: 33.35
+				"Employee & Dependents": {
+					"Plan 2": {
+						WEEKLY: 10.38,
+						MONTHLY: 10.38
+					},
+					"Plan 3": {
+						WEEKLY: 14.31,
+						MONTHLY: 14.31
+					},
+					"Plan 4 with RX": {
+						WEEKLY: 35.35,
+						MONTHLY: 35.35
+					}
+				},
+				"Employee & Family": {
+					"Plan 2": {
+						WEEKLY: 10.38,
+						MONTHLY: 10.38
+					},
+					"Plan 3": {
+						WEEKLY: 14.31,
+						MONTHLY: 14.31
+					},
+					"Plan 4 with RX": {
+						WEEKLY: 35.35,
+						MONTHLY: 35.35
+					}
 				}
-			],
-			employee_and_spouse: [
-				{
-					name: "plan 2",
-					premium_amount: 20.77
+			},
+			rider_premium: {
+				"Employee Only": {
+					WEEKLY: 9.23,
+					MONTHLY: 9.23
 				},
-				{
-					name: "plan 3",
-					premium_amount: 28.62
+				"Employee & Spouse": {
+					WEEKLY: 13.85,
+					MONTHLY: 13.85
 				},
-				{
-					name: "plan 4 with Rx",
-					premium_amount: 64.91
+				"Employee & Dependents": {
+					WEEKLY: 13.85,
+					MONTHLY: 13.85
+				},
+				"Employee & Family": {
+					WEEKLY: 13.85,
+					MONTHLY: 13.85
 				}
-			],
-			employee_and_children: [
-				{
-					name: "plan 2",
-					premium_amount: 16.62
-				},
-				{
-					name: "plan 3",
-					premium_amount: 22.89
-				},
-				{
-					name: "plan 4 with RX",
-					premium_amount: 52.29
-				}
-			],
-			employee_and_family: [
-				{
-					name: "plan 2",
-					premium_amount: 27.0
-				},
-				{
-					name: "plan 3",
-					premium_amount: 37.2
-				},
-				{
-					name: "plan 4 with Rx",
-					premium_amount: 83.84
-				}
-			]
+			}
 		}
 	});
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
 	const { theme } = useContext(ThemeContext);
-	const [coverage_for, setCoverageFor] = useState("");
-	const [coverage_level, setCoverageLevel] = useState("");
-	const [clinic_card, setClinicCard] = useState(false);
 	const [clinic_card_amount, setClinicCardAmount] = useState(0);
 	const [premium_amount, setPremiumAmount] = useState(0);
 	const [total_premium_amount, setTotalPremiumAmount] = useState(0);
+	const { paycheck, member, dependents, groupOwner } = useContext(AuthContext);
+	const [eligibleDependents, setEligibleDependents] = useState<Member[]>([]);
+	const { setCurrentEnrollment } = useContext(EnrollmentContext);
 
-	const handleCoverageForChange = (event: React.FormEvent<HTMLSelectElement>) => {
-		const { value } = event.target as HTMLSelectElement;
-		setCoverageFor(value);
+	const handleBeazleyInputChange = (event: SelectChangeEvent) => {
+		const { name, value } = event.target as HTMLSelectElement;
+		setBeazleyPlanInputs(
+			Object.assign({}, beazleyPlanInputs, {
+				[name]: value
+			})
+		);
 	};
 
-	const handleCoverageLevelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const { value } = event.target as HTMLSelectElement;
-		setCoverageLevel(value);
-	};
-
-	const handleClinicCardChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { checked } = event.target as HTMLInputElement;
-		setClinicCard(checked);
-	};
+	const handleClinicCardChange = useCallback(
+		(event: SelectChangeEvent) => {
+			const { checked } = event.target as HTMLInputElement;
+			setBeazleyPlanInputs(
+				Object.assign({}, beazleyPlanInputs, {
+					isRiderAdded: checked
+				})
+			);
+		},
+		[beazleyPlanInputs]
+	);
 
 	const handleWritingNumberChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,31 +171,95 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 		[prevWritingNumber]
 	);
 
-	const calculatePremium = () => {
-		if (coverage_for && coverage_level) {
-			let coverageFor = "";
-			if (coverage_for === "Employee Only") coverageFor = "employee";
-			else if (coverage_for === "Employee and Spouse") coverageFor = "employee_and_spouse";
-			else if (coverage_for === "Employee and Dependent") coverageFor = "employee_and_children";
-			else coverageFor = "employee_and_family";
-			const calculatePremiumAmount = premium_plan.coverage_for[coverageFor]?.find(
-				(plan: { name: string }) => plan.name.toLowerCase() === coverage_level.toLowerCase()
-			)?.premium_amount;
-			setPremiumAmount(calculatePremiumAmount);
-			setTotalPremiumAmount(calculatePremiumAmount);
-			if (clinic_card) {
-				const riderAmount = premium_plan.clinic_card[coverageFor];
-				setClinicCardAmount(riderAmount);
-				setTotalPremiumAmount(calculatePremiumAmount + riderAmount);
+	const handleActivateButtonClick = useCallback(() => {
+		if (member && beazleyPlanInputs.coverage) {
+			console.log("beazleyPlanInputs", beazleyPlanInputs);
+			const enrollments: { plan: any; premiumAmount: number }[] = [
+				{ plan: beazleyPlan, premiumAmount: premium_amount }
+			];
+			if (beazleyPlanInputs.isRiderAdded) {
+				enrollments.push({ plan: riderBenefitPlan, premiumAmount: clinic_card_amount });
 			}
+			enrollments.forEach(({ plan, premiumAmount }: any, index: number) => {
+				const enrollment: Enrollment = generateCancerKemperActivateEnrollmentPayload(
+					plan,
+					groupOwner,
+					member,
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					beazleyPlanInputs.coverage!,
+					premiumAmount,
+					eligibleDependents
+				);
+				console.log("enrollment", index, enrollment);
+			});
 		}
-	};
+	}, [
+		beazleyPlan,
+		beazleyPlanInputs,
+		clinic_card_amount,
+		eligibleDependents,
+		groupOwner,
+		member,
+		premium_amount,
+		riderBenefitPlan
+	]);
+
+	const calculatePremium = useCallback(() => {
+		const { coverage, coverage_level, isRiderAdded } = beazleyPlanInputs;
+		let standeredPremiumAmount = 0;
+		let riderPremiumAmount = 0;
+		if (coverage && coverage_level && paycheck) {
+			standeredPremiumAmount =
+				beazleyPlan.premium_amount.standard_premium[coverage as keyof BeazleyStanderdPlanCoverage][
+					coverage_level as keyof BeazleyPlanCoverageLevel
+				][paycheck.pay_frequency as keyof PaycheckFrequency];
+			setPremiumAmount(standeredPremiumAmount);
+			if (coverage && isRiderAdded && paycheck) {
+				riderPremiumAmount =
+					beazleyPlan.premium_amount.rider_premium[coverage as keyof BeazleyRiderPlanCoverage][
+						paycheck.pay_frequency as keyof PaycheckFrequency
+					];
+				setClinicCardAmount(riderPremiumAmount);
+			}
+			setTotalPremiumAmount(standeredPremiumAmount + riderPremiumAmount);
+			setCurrentEnrollment(
+				Object.assign(
+					{},
+					{
+						plan_name: "Beazley Indementy",
+						status: "Current",
+						premium_amount: Number((standeredPremiumAmount + riderPremiumAmount).toFixed(2))
+					}
+				)
+			);
+		}
+	}, [
+		beazleyPlan.premium_amount.rider_premium,
+		beazleyPlan.premium_amount.standard_premium,
+		beazleyPlanInputs,
+		paycheck,
+		setCurrentEnrollment
+	]);
 
 	useEffect(() => {
 		calculatePremium();
-	}, [coverage_for, coverage_level, clinic_card]);
+	}, [calculatePremium]);
 
-	const { plan_name, plan_code, start_date, end_date } = plan;
+	useEffect(() => {
+		console.log("UE1");
+		if (dependents) {
+			const dependentCoverage = getKemperCancerEligibleDependents(dependents);
+			console.log("dependentCoverage", dependentCoverage);
+			setEligibleDependents(Object.assign([], dependentCoverage.dependents));
+			setBeazleyPlan((prevBeazleyPlanDetails: BeazleyPlanDetails) => {
+				return Object.assign({}, prevBeazleyPlanDetails, {
+					coverage: dependentCoverage.coverage
+				});
+			});
+		}
+	}, [dependents]);
+
+	const { start_date } = plan;
 
 	return (
 		<div className="kemper-cancer-form plan-form">
@@ -173,16 +284,16 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 						</div>
 						<div className="theme-plan-inner-section-margin-2" />
 						<Grid className="grid-container" container columnSpacing={2}>
-							<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label  required">Coverage For</div>
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
-										name="contact_label"
-										onChange={(event: any) => handleCoverageForChange(event)}
+										name="coverage"
+										onChange={(event: SelectChangeEvent) => handleBeazleyInputChange(event)}
 									>
-										{COVERAGE.map((option: string, index: number) => {
+										{beazleyPlan.coverage.map((option: string, index: number) => {
 											return (
 												<MenuItem value={option} key={index}>
 													{option}
@@ -192,22 +303,22 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 									</Select>
 								</div>
 							</Grid>
-							<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
+							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label  required">Coverage Level</div>
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
-										name="contact_label"
-										onChange={(event: any) => handleCoverageLevelChange(event)}
+										name="coverage_level"
+										onChange={(event: SelectChangeEvent) => handleBeazleyInputChange(event)}
 									>
-										<MenuItem value={"plan 2"}>PLAN 2</MenuItem>
-										<MenuItem value={"plan 3"}>PLAN 3</MenuItem>
-										<MenuItem value={"plan 4 with rx"}>PLAN 4 WITH RX</MenuItem>
+										<MenuItem value={"Plan 2"}>PLAN 2</MenuItem>
+										<MenuItem value={"Plan 3"}>PLAN 3</MenuItem>
+										<MenuItem value={"Plan 4 with RX"}>PLAN 4 WITH RX</MenuItem>
 									</Select>
 								</div>
 							</Grid>
-							<Grid item xl={2} lg={2} md={2} sm={2} xs={6}>
+							<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 								<div className="details-form-row">
 									<div className="details-form-label required align-center">Premium</div>
 									<div className="show-premium">
@@ -230,18 +341,21 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 								Clinic Card
 							</div>
 							<Grid className="grid-container" container columnSpacing={2}>
-								<Grid item xl={10} lg={10} md={10} sm={10} xs={6} className="margin-adjust-33">
+								<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className="margin-adjust-33">
 									<input
 										type="checkbox"
-										onChange={(event: any) => handleClinicCardChange(event)}
+										name="isRiderAdded"
+										onChange={(event: SelectChangeEvent) => handleClinicCardChange(event)}
 									></input>
 									<label className="details-form-label required">Clinic Card</label>
 								</Grid>
-								<Grid item xl={2} lg={2} md={2} sm={2} xs={6}>
+								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
 									<div className="details-form-row">
 										<div className="details-form-label required align-center">Premium</div>
 										<div className="show-premium">
-											{coverage_for && coverage_level && clinic_card
+											{beazleyPlanInputs.coverage &&
+											beazleyPlanInputs.coverage_level &&
+											beazleyPlanInputs.isRiderAdded
 												? `$${clinic_card_amount}`
 												: "$0.00"}
 										</div>
@@ -276,7 +390,7 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 					</div>
 					<div className="theme-plan-inner-section-margin-2" />
 					<Grid container>
-						<Grid item xl={4} lg={4} md={4} sm={4} xs={10} columnSpacing={2}>
+						<Grid item xl={4} lg={4} md={4} sm={10} xs={10} columnSpacing={2}>
 							<div className="details-form-row">
 								<div className="details-form-label required">Writing Number</div>
 								<Grid container>
@@ -303,7 +417,10 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 						</Grid>
 					</Grid>
 					<div className="theme-plan-inner-section-margin-2" />
-					<LazyPlanActions waiveButtonCallback={() => null} activateButtonCallback={() => null} />
+					<LazyPlanActions
+						waiveButtonCallback={() => null}
+						activateButtonCallback={handleActivateButtonClick}
+					/>
 				</Paper>
 			</div>
 		</div>

@@ -16,6 +16,18 @@ const reducer = (state: Store, action: AuthAction): Store => {
 				paycheck: action.payload.paycheck
 			};
 		}
+		case actions.SET_GROUP_OWNER: {
+			return {
+				...state,
+				groupOwner: action.payload.groupOwner
+			};
+		}
+		case actions.SET_DEPENDENTS: {
+			return {
+				...state,
+				dependents: action.payload.dependents
+			};
+		}
 		default:
 			throw new Error("Unexpected action: Auth Context");
 	}

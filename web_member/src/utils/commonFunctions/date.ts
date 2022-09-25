@@ -5,4 +5,15 @@ const dateConverterUSA = (value: string): string => {
 	return convertedDate;
 };
 
+export const getCurrentDate = (): string =>
+	new Date().getFullYear() + "-" + new Date().getMonth() + "-" + new Date().getDay();
+
+export const getFirstOfNextMonth = (): string => {
+	const date = new Date();
+	const newDate = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+	console.log("newdate", newDate);
+	const formattedDate = newDate.getFullYear() + "-" + newDate.getMonth() + "-" + newDate.getDay();
+	return formattedDate;
+};
+
 export default dateConverterUSA;

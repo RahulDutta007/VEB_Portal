@@ -8,7 +8,7 @@ import { ObjectId } from "mongoose";
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		
+
 		if (!req.headers.authorization) {
 			return res.status(StatusCodes.UNAUTHORIZED).json({
 				message: MESSAGE.custom("Access denied. No token provided")
@@ -29,7 +29,8 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 		}
 
 		const decoded = jwt.verify(token, process.env.JWT_KEY) as Record<string, unknown>;
-		if (!(decoded.role === ROLES.enroller_admin || decoded.role === ROLES.admin || decoded.role === ROLES.agent)) {
+		console.log("decoded", decoded.role === "EMPLOYEE");
+		if (!(decoded.role === ROLES.enroller_admin || decoded.role === ROLES.admin || decoded.role === ROLES.agent || decoded.role === "EMPLOYEE")) {
 			return res.status(StatusCodes.UNAUTHORIZED).json({
 				message: MESSAGE.custom("Access denied. Invalid Token!"),
 				token: req.header("token")

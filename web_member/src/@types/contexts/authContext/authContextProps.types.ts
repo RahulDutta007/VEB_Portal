@@ -1,3 +1,4 @@
+import { GroupOwner } from "../../groupOwner.types";
 import { Member } from "../../member.types";
 import { Paycheck } from "../../paycheck.types";
 
@@ -6,4 +7,8 @@ export type AuthContextProps = {
 	setMember: (member: Member) => void;
 	paycheck: Paycheck | null;
 	setPaycheck: (paycheck: Paycheck) => void;
+	groupOwner: GroupOwner | null;
+	setGroupOwner: (groupOwner: GroupOwner) => void;
+	dependents: Member[] | null;
+	setDependents: (dependents: Member[]) => void;
 };
