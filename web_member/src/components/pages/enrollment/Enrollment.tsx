@@ -24,6 +24,7 @@ import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import Slide from "@mui/material/Slide";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -253,56 +254,115 @@ const Enrollment = (): JSX.Element => {
 						className={!togglePlan ? "open-plan-list show-list" : "open-plan-list hide-list"}
 						onClick={handleToggle}
 					>
+						<KeyboardArrowRightIcon className="arrow-icon" style={{ color: theme.button.color }} />
 						Show Plans
 					</div>
-					<div
-						className={!togglePlan ? "close-plan-list hide-list" : "close-plan-list show-list"}
-						onClick={handleToggle}
-					>
-						Hide Plans
-					</div>
-					<Tabs
-						orientation="vertical"
-						className={!togglePlan ? "tabs-cotainer" : "tabs-cotainer show-plan"}
-						// variant="scrollable"
-						//variant="fullWidth"
-						style={{
-							// boxShadow:
-							//"rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset",
-							boxShadow: "rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px",
-							borderTopLeftRadius: 20,
-							borderTopRightRadius: 20,
-							borderBottomLeftRadius: 20,
-							borderBottomRightRadius: 20,
-							color: theme.primary_color
-						}}
-						TabIndicatorProps={{
-							style: {
-								color: theme.primary_color,
-								backgroundColor: theme.primary_color
-							}
-						}}
-						value={value}
-						onChange={handleChange}
-					>
-						{openEnrollments.map((openEnrollment: OpenEnrollment, index: number) => {
-							const { plan_name, status } = openEnrollment;
-							return (
-								<Tab
-									key={index}
-									className={activeTab == plan_name ? "active-tab" : "default-tab"}
-									style={{
-										height: (height - 500) / 6,
-										color: activeTab == plan_name ? theme.primary_color : undefined
-									}}
-									value={plan_name}
-									onClick={handleToggle}
-									label={<EnrollmentTabLabel planName={plan_name} status={status} carrier="Kemper" />}
-									{...a11yProps(0)}
-								/>
-							);
-						})}
-					</Tabs>
+					<Slide direction="right" in={togglePlan} mountOnEnter unmountOnExit>
+						<div
+							className={!togglePlan ? "close-plan-list hide-list" : "close-plan-list show-list"}
+							onClick={handleToggle}
+						>
+							Hide Plans
+						</div>
+					</Slide>
+					{togglePlan ? (
+						<Slide direction="right" in={togglePlan} mountOnEnter unmountOnExit>
+							<Tabs
+								orientation="vertical"
+								className={!togglePlan ? "tabs-cotainer" : "tabs-cotainer show-plan"}
+								// variant="scrollable"
+								//variant="fullWidth"
+								style={{
+									// boxShadow:
+									//"rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset",
+									boxShadow: "rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px",
+									borderTopLeftRadius: 20,
+									borderTopRightRadius: 20,
+									borderBottomLeftRadius: 20,
+									borderBottomRightRadius: 20,
+									color: theme.primary_color
+								}}
+								TabIndicatorProps={{
+									style: {
+										color: theme.primary_color,
+										backgroundColor: theme.primary_color
+									}
+								}}
+								value={value}
+								onChange={handleChange}
+							>
+								{openEnrollments.map((openEnrollment: OpenEnrollment, index: number) => {
+									const { plan_name, status } = openEnrollment;
+									return (
+										<Tab
+											key={index}
+											className={activeTab == plan_name ? "active-tab" : "default-tab"}
+											style={{
+												height: (height - 500) / 6,
+												color: activeTab == plan_name ? theme.primary_color : undefined
+											}}
+											value={plan_name}
+											onClick={handleToggle}
+											label={
+												<EnrollmentTabLabel
+													planName={plan_name}
+													status={status}
+													carrier="Kemper"
+												/>
+											}
+											{...a11yProps(0)}
+										/>
+									);
+								})}
+							</Tabs>
+						</Slide>
+					) : (
+						<Tabs
+							orientation="vertical"
+							className={!togglePlan ? "tabs-cotainer" : "tabs-cotainer show-plan"}
+							// variant="scrollable"
+							//variant="fullWidth"
+							style={{
+								// boxShadow:
+								//"rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset",
+								boxShadow: "rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px",
+								borderTopLeftRadius: 20,
+								borderTopRightRadius: 20,
+								borderBottomLeftRadius: 20,
+								borderBottomRightRadius: 20,
+								color: theme.primary_color
+							}}
+							TabIndicatorProps={{
+								style: {
+									color: theme.primary_color,
+									backgroundColor: theme.primary_color
+								}
+							}}
+							value={value}
+							onChange={handleChange}
+						>
+							{openEnrollments.map((openEnrollment: OpenEnrollment, index: number) => {
+								const { plan_name, status } = openEnrollment;
+								return (
+									<Tab
+										key={index}
+										className={activeTab == plan_name ? "active-tab" : "default-tab"}
+										style={{
+											height: (height - 500) / 6,
+											color: activeTab == plan_name ? theme.primary_color : undefined
+										}}
+										value={plan_name}
+										onClick={handleToggle}
+										label={
+											<EnrollmentTabLabel planName={plan_name} status={status} carrier="Kemper" />
+										}
+										{...a11yProps(0)}
+									/>
+								);
+							})}
+						</Tabs>
+					)}
+
 					<div className="form-container">{renderPlan()}</div>
 				</Box>
 				{showOverallPremium ? (

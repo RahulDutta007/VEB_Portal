@@ -65,7 +65,9 @@
 	transform: rotate(180deg);
 	text-orientation: mixed;
 	cursor: pointer;
-	height: 200px;
+	height: 182;
+	border-end-end-radius: 10px;
+    border-end-start-radius: 10px;
 }
 
 .draggable-premium-box .top-bar .header {
@@ -75,6 +77,7 @@
 	justify-content: space-evenly;
 	font-weight: bold;
 	margin-left: 2px;
+	padding-top: 20px;
 }
 
 .draggable-premium-box .top-bar .icon {
@@ -200,7 +203,7 @@
 	max-width: 99% !important;
 }
 .tooltip-speed-dial {
-	font-family: cursive !important;
+	font-family: cursive;
 	font-size: 1.4rem;
 }
 
@@ -213,28 +216,39 @@
 
 /* =============== IPAD ================= */
 
-@media only screen and (device-width: 768px) {
+@media only screen and (device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
 	.tabs-cotainer{
 		left: -500px;
 	}
 	.form-container{
 		margin-left: 30px !important;
 	}
+	.show-premium{
+		font-family: monospace;
+	}
+	.tooltip-speed-dial{
+		font-family: monospace !important;
+	}
 	.open-plan-list {
 		position: fixed;
-		height: 100px;
-		background-color:#e02826;
+		height: 135px;
+		background-color: #e02826;
 		color: #ffffff;
-		left: 0;
-		padding: 10px;
+		left: 0px;
+		padding: 6px;
 		font-size: 16px;
 		font-weight: 700;
 		text-align: center;
-		transform: rotate(180deg);
+		transform: rotate(360deg);
 		writing-mode: vertical-lr;
 		text-orientation: mixed;
 		cursor: pointer;
-		top: 320px;
+		top: 315px;
+		border-top-right-radius: 10px;
+		border-bottom-right-radius: 10px;
+	}
+	.arrow-icon {
+		margin-bottom: 10px;
 	}
 	.close-plan-list{
 		position: fixed;
@@ -253,6 +267,7 @@
 	}
 	.show-plan{
 		left: 0px;
+		top: 309px;
 	}
 	.show-list{
 		display: block;
