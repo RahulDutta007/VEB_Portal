@@ -46,6 +46,7 @@ import EnrollmentTabLabel from "./enrollmentTabLabel/EnrollmentTabLabel";
 import { Member } from "../../../@types/member.types";
 import { DEPENDENTS } from "../../../constants/demo/employee";
 import MacPlanForm from "./plans/macPlan/form/macPlan";
+import React from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	[`&.${tableCellClasses.head}`]: {
