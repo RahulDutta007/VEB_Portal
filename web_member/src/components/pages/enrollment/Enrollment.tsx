@@ -45,6 +45,7 @@ import FiveStarBranding from "./plans/fiveStar/familyProtection/branding/Brandin
 import EnrollmentTabLabel from "./enrollmentTabLabel/EnrollmentTabLabel";
 import { Member } from "../../../@types/member.types";
 import { DEPENDENTS } from "../../../constants/demo/employee";
+import MacPlanForm from "./plans/macPlan/form/macPlan";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -142,6 +143,9 @@ const Enrollment = (): JSX.Element => {
 			case "Doc and Rx": {
 				return stage === "0" ? <DocRxBranding /> : <DoctorAndRxForm />;
 			}
+			case "Mac": {
+				return stage === "0" ? <DocRxBranding /> : <MacPlanForm />;
+			}
 			case "Beam Vision": {
 				console.log(11111, stage);
 				return stage === "0" ? <BeamVisionBranding /> : <BeamVisionForm />;
@@ -190,6 +194,10 @@ const Enrollment = (): JSX.Element => {
 			{
 				plan_name: "Beam Vision",
 				status: null
+			},
+			{
+				plan_name: "Mac",
+				status: "WAIVED"
 			}
 		];
 		setOpenEnrollments(Object.assign([], _openEnrollments));

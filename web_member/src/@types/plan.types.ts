@@ -2,6 +2,39 @@ import { type } from "os";
 import { PayFrequency } from "./paycheck.types";
 
 export type Coverage = ["Employee Only", "Employee & Spouse", "Employee & Dependent", "Employee & Family"];
+export type STDEmployeeBenefitAmount =
+	| 1500
+	| 1450
+	| 1400
+	| 1350
+	| 1300
+	| 1250
+	| 1200
+	| 1150
+	| 1100
+	| 1050
+	| 1000
+	| 950
+	| 900
+	| 850
+	| 800
+	| 750
+	| 700
+	| 650
+	| 600
+	| 550
+	| 500
+	| 450
+	| 400
+	| 350
+	| 300
+	| 250
+	| 200
+	| 150
+	| 100;
+type AccidentBenefitAmounts = 600 | 900 | 1200 | 1800;
+type STDDependentBenefitAmount = 350 | 300 | 250 | 200 | 150 | 100;
+export type STDAgeGroup = "18-49" | "50-59" | "60-64";
 
 export type PaycheckFrequency = {
 	[key in PayFrequency]: number;
@@ -133,6 +166,60 @@ export type BeazleyPlanCoverageLevel = {
 	"Plan 2": PaycheckFrequency;
 	"Plan 3": PaycheckFrequency;
 	"Plan 4 with RX": PaycheckFrequency;
+};
+
+export type MacPlanDetails = {
+	coverage: string[];
+	benefit_amount: [3000, 1500, 5000];
+	premium_amount: MacCoverage;
+};
+
+export type MacCoverage = {
+	"Employee Only": MacBenefitAmount;
+	"Employee & Spouse": MacBenefitAmount;
+	"Employee & Dependents": MacBenefitAmount;
+	"Employee & Family": MacBenefitAmount;
+};
+
+export type MacBenefitAmount = {
+	1500: PaycheckFrequency;
+	3000: PaycheckFrequency;
+	5000: PaycheckFrequency;
+};
+
+export type ShortTermDisabilityPlanDetails = {
+	coverage: string[];
+	benefit: string[];
+	benefit_amount: ShortTermDisabilityPlanCoverage;
+};
+
+export type ShortTermDisabilityPlanCoverage = {
+	"Employee Only": ShortTermDisabilityCoverageLevel;
+	"Employee & Spouse": ShortTermDisabilityCoverageLevel;
+	"Employee & Dependents": ShortTermDisabilityCoverageLevel;
+	"Employee & Family": ShortTermDisabilityCoverageLevel;
+};
+
+export type ShortTermDisabilityCoverageLevel = {
+	"Non-Occupational(Elim Period accident: 0 Sickness: 7 Benefit Period: 6 Months)": PaycheckSTDArrayFrequency;
+	"Non-Occupational(Elim Period accident: 14 Sickness: 14 Benefit Period: 6 Months)": PaycheckSTDArrayFrequency;
+};
+
+export type PaycheckSTDArrayFrequency = {
+	[key in STDEmployeeBenefitAmount]: STDAgeGroups;
+};
+
+export type STDAgeGroups = {
+	[key in STDAgeGroup]: PaycheckFrequency;
+};
+
+export type ShortTermDisabilityDependentPlanDetails = {
+	[key in STDDependentBenefitAmount]: STDAgeGroups;
+};
+
+export type ShortTermDisabilityPremiumBenefit = {
+	amount: number;
+	premium_amount: number;
 };
 
 export type AccidentPlanDetails = {
