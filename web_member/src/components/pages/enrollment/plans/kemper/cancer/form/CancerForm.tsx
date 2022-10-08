@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useCallback } from "react";
 
 import "./cancerForm.css";
-import { CANCER_PLAN_DETAILS } from "../../../../../../../constants/plan";
+import { CANCER_PLAN_DETAILS, PLAN_NAME } from "../../../../../../../constants/plan";
 import { COVERAGE } from "../../../../../../../constants/coverage";
 import { dollarize } from "../../../../../../../utils/commonFunctions/dollarize";
 import {
@@ -20,7 +20,8 @@ import {
 	CancerPlanCoverageLevel,
 	CancerPlanDetails,
 	CancerPlanPremiumAmount,
-	PaycheckFrequency
+	PaycheckFrequency,
+	Plan
 } from "../../../../../../../@types/plan.types";
 import { CustomDisclaimerDialogPropsType } from "../../../../../../../@types/dialogProps.types";
 import { PlanFormProps } from "../../../../../../../@types/components/enrollment.types";
@@ -33,30 +34,26 @@ import {
 	EnrollmentStandardDetails
 } from "../../../../../../../@types/enrollment.types";
 import { getCoveredDependents } from "../../../../../../../utils/commonFunctions/coveredDependents";
-import { getCurrentDate, getFirstOfNextMonth } from "../../../../../../../utils/commonFunctions/date";
+import dateConverterUSA, { getCurrentDate, getFirstOfNextMonth } from "../../../../../../../utils/commonFunctions/date";
 import {
 	generateActivateEnrollmentPayload,
 	generateCancerKemperActivateEnrollmentPayload
 } from "../../../../../../../utils/commonFunctions/enrollment";
+import { PlansWithRiderQuery } from "../../../../../../../api/plan/plan";
+import { api } from "../../../../../../../api";
 
 const KemperCancerForm = (): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
 	const [emailDisclaimer, setEmailDisclaimer] = useState("");
+	const [hasReadTC, setHasReadTC] = useState(false);
+	const [isActivelyWorking, setIsActivelyWorking] = useState(false);
 	const { paycheck, member, dependents, groupOwner } = useContext(AuthContext);
 	const [showWritingNumberValidateButton, setShowWritingNumberValidateButton] = useState(false);
 	const [eligibleDependents, setEligibleDependents] = useState<Member[]>([]);
 	const { theme } = useContext(ThemeContext);
-	const [cancerPlan, setCancerPlan] = useState({
-		_id: "123zxkbnkabb3w2123",
-		plan_name: "Kemper Cancer",
-		plan_code: "KC"
-	});
-	const [intensiveCareUnitPlan, setIntensiveCareUnitPlan] = useState({
-		_id: "123zxkbnkabb3w2123",
-		plan_name: "Cancer - Intensive Care Unit",
-		plan_code: "ICU"
-	});
+	const [cancerPlan, setCancerPlan] = useState<Plan>();
+	const [intensiveCareUnitPlan, setIntensiveCareUnitPlan] = useState<Plan>();
 	const [cancerPlanDetails, setCancerPlanDetails] = useState<CancerPlanDetails>({
 		coverage: [],
 		coverage_level: ["High Plan", "Low Plan"],
@@ -189,6 +186,16 @@ const KemperCancerForm = (): JSX.Element => {
 	const [totalPremium, setTotalPremium] = useState(0);
 	const { setCurrentEnrollment } = useContext(EnrollmentContext);
 
+	const handleAgreedTCCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { checked } = event.target;
+		setHasReadTC(checked);
+	};
+
+	const handleIsActivelyWorkingCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { checked } = event.target;
+		setIsActivelyWorking(checked);
+	};
+
 	const handleWritingNumberChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			const { value } = event.target as HTMLInputElement;
@@ -249,16 +256,39 @@ const KemperCancerForm = (): JSX.Element => {
 		setCurrentEnrollment
 	]);
 
+	const handleValidation = useCallback((): boolean => {
+		const { coverage, coverage_level } = cancerPlanInputs;
+		if (coverage === null || coverage_level === null) {
+			alert("Please fill all required fields");
+			return false;
+		}
+		if (hasReadTC === false) {
+			alert("Please agree to the Disclaimer");
+			return false;
+		}
+		if (isActivelyWorking === false) {
+			alert("You must actively working 20 hours or more to enroll");
+			return false;
+		}
+		return true;
+	}, [cancerPlanInputs, hasReadTC, isActivelyWorking]);
+
 	const handleActivateButtonClick = useCallback(() => {
-		if (member && cancerPlanInputs.coverage) {
+		const isValid = handleValidation();
+		console.log("isValid", isValid);
+		console.log("cancerPlan", cancerPlan);
+		if (isValid === false) {
+			return;
+		}
+		if (member && cancerPlanInputs.coverage && cancerPlan && intensiveCareUnitPlan) {
 			console.log("cancerPlanInputs", cancerPlanInputs);
-			const enrollments: { plan: any; premiumAmount: number }[] = [
+			const enrollments: { plan: Plan; premiumAmount: number }[] = [
 				{ plan: cancerPlan, premiumAmount: standardPremium }
 			];
 			if (hasSelectedRider) {
 				enrollments.push({ plan: intensiveCareUnitPlan, premiumAmount: riderPremium });
 			}
-			enrollments.forEach(({ plan, premiumAmount }: any, index: number) => {
+			enrollments.forEach(({ plan, premiumAmount }: { plan: Plan; premiumAmount: number }, index: number) => {
 				const enrollment: Enrollment = generateCancerKemperActivateEnrollmentPayload(
 					plan,
 					groupOwner,
@@ -276,6 +306,7 @@ const KemperCancerForm = (): JSX.Element => {
 		cancerPlanInputs,
 		eligibleDependents,
 		groupOwner,
+		handleValidation,
 		hasSelectedRider,
 		intensiveCareUnitPlan,
 		member,
@@ -283,9 +314,14 @@ const KemperCancerForm = (): JSX.Element => {
 		standardPremium
 	]);
 
-	const handleOpenDisclaimerDialogClick = useCallback(() => {
-		setEnrollmentDisclaimerDialogProps(Object.assign({}, enrollmentDisclaimerDialogProps, { openDialog: true }));
-	}, [enrollmentDisclaimerDialogProps]);
+	const handleOpenDisclaimerDialogClick = useCallback(
+		(event: React.MouseEvent<HTMLSpanElement>) => {
+			setEnrollmentDisclaimerDialogProps(
+				Object.assign({}, enrollmentDisclaimerDialogProps, { openDialog: true })
+			);
+		},
+		[enrollmentDisclaimerDialogProps]
+	);
 
 	const handleCloseDisclaimerDialog = useCallback(() => {
 		setEnrollmentDisclaimerDialogProps(Object.assign({}, enrollmentDisclaimerDialogProps, { openDialog: false }));
@@ -308,6 +344,24 @@ const KemperCancerForm = (): JSX.Element => {
 		[enrollmentDisclaimerDialogProps]
 	);
 
+	const getPlansWithRiders = useCallback(async () => {
+		const plansWithRidersQuery: PlansWithRiderQuery = {
+			plan_name: PLAN_NAME.kemper.cancer.standard_cancer,
+			status: "ACTIVE"
+		};
+		const plans: Plan[] = await api.plan.getPlansWithRider(plansWithRidersQuery);
+		console.log("plans", plans);
+		plans.forEach((plan: Plan) => {
+			const { plan_name } = plan;
+			console.log("plan_name", plan_name);
+			if (plan_name === PLAN_NAME.kemper.cancer.standard_cancer) {
+				setCancerPlan(Object.assign({}, plan));
+			} else if (plan_name === PLAN_NAME.kemper.cancer.rider_cancer_intensive_care_unit) {
+				setIntensiveCareUnitPlan(Object.assign({}, plan));
+			}
+		});
+	}, []);
+
 	useEffect(() => {
 		console.log("UE3");
 		setTotalPremium(standardPremium + riderPremium);
@@ -320,6 +374,7 @@ const KemperCancerForm = (): JSX.Element => {
 
 	useEffect(() => {
 		console.log("UE1");
+		getPlansWithRiders();
 		if (dependents) {
 			const dependentCoverage = getKemperCancerEligibleDependents(dependents);
 			console.log("dependentCoverage", dependentCoverage);
@@ -330,21 +385,24 @@ const KemperCancerForm = (): JSX.Element => {
 				});
 			});
 		}
-	}, [dependents]);
-	console.log("Has Selected", hasSelectedRider);
+	}, [dependents, getPlansWithRiders]);
+
 	return (
 		<Suspense fallback={<div />}>
-			{/* <CustomEnrollmentDisclaimerDialog
+			<CustomEnrollmentDisclaimerDialog
 				enrollmentDisclaimerDialogProps={enrollmentDisclaimerDialogProps}
 				handleCloseDisclaimerDialog={handleCloseDisclaimerDialog}
 				handleEscapeCloseDisclaimerDialog={handleEscapeCloseDisclaimerDialog}
 				emailDisclaimer={emailDisclaimer}
 				setEmailDisclaimer={setEmailDisclaimer}
-			/> */}
+			/>
 			<div className="kemper-cancer-form plan-form">
 				<div className="paper-form-container">
 					<Paper className="theme-border-radius paper-container" elevation={1}>
-						<PlanHeader planName="Kemper Group Cancer Insurance Policy" effectiveDate="01/22/2022" />
+						<PlanHeader
+							planName="Kemper Group Cancer Insurance Policy"
+							effectiveDate={dateConverterUSA(getFirstOfNextMonth())}
+						/>
 						<div className="plan-content">
 							<div className="theme-plan-section-margin" />
 							<div className="header-container">
@@ -356,7 +414,7 @@ const KemperCancerForm = (): JSX.Element => {
 									In addition to yourself, who would you like to cover under this plan?
 								</div>
 							</div>
-							<div className="theme-plan-inner-section-margin-2" />
+							<div />
 							<Grid className="grid-container" container columnSpacing={2}>
 								<Grid item xl={5} lg={5} md={5} sm={5} xs={6}>
 									<div className="details-form-row">
@@ -448,13 +506,32 @@ const KemperCancerForm = (): JSX.Element => {
 						</Grid>
 						<div className="theme-plan-option-content">
 							<Checkbox
-								checked={hasSelectedRider}
-								value={hasSelectedRider}
+								checked={isActivelyWorking}
 								style={{ paddingLeft: 0 }}
-								onChange={handleSelectedRiderCheckboxChange}
+								onChange={handleIsActivelyWorkingCheckboxChange}
 							/>
 							<p className="theme-plan-checkbox-label">
 								<strong>Are you actively at work 20 or more hours per week?</strong>
+							</p>
+						</div>
+						<div className="theme-plan-inner-section-margin" />
+						<div className="theme-plan-option-content">
+							<Checkbox
+								checked={hasReadTC}
+								style={{ paddingLeft: 0 }}
+								onChange={handleAgreedTCCheckboxChange}
+							/>
+							<p className="theme-plan-checkbox-label">
+								<strong>
+									I have read the{" "}
+									<span
+										className="veb-plan-disclaimer"
+										style={{ color: theme.primary_color }}
+										onClick={handleOpenDisclaimerDialogClick}
+									>
+										Disclaimer
+									</span>
+								</strong>
 							</p>
 						</div>
 						<div className="theme-plan-inner-section-margin-2" />

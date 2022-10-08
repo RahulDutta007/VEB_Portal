@@ -28,7 +28,7 @@ const CustomFormDialog = ({ customFormDialogProps }: CustomFormDialogProps) => {
 					<div className="custom-dialog-title">{title}</div>
 				</DialogTitle>
 				<DialogContent>
-					{textfields.map((textfield, index) => {
+					{textfields?.map((textfield, index) => {
 						const { label, placeholder, onChange } = textfield;
 						return (
 							<CustomInput
@@ -41,7 +41,7 @@ const CustomFormDialog = ({ customFormDialogProps }: CustomFormDialogProps) => {
 					})}
 				</DialogContent>
 				<DialogActions>
-					{actions.map((action, index) => {
+					{actions?.map((action, index) => {
 						const { label, callback } = action;
 						return (
 							<Button

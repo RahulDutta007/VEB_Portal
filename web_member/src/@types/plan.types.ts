@@ -1,6 +1,18 @@
 import { type } from "os";
 import { PayFrequency } from "./paycheck.types";
 
+export type PlanStatus = "ACTIVE" | "EXPIRED";
+
+export type Plan = {
+	_id?: string;
+	plan_code: string;
+	plan_name: string;
+	start_date: string;
+	end_date: string;
+	has_end_date: boolean;
+	status?: PlanStatus;
+};
+
 export type Coverage = ["Employee Only", "Employee & Spouse", "Employee & Dependent", "Employee & Family"];
 
 export type PaycheckFrequency = {

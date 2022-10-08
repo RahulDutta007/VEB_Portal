@@ -14,5 +14,16 @@ export const cancerPlanDetails = {
 	}
 };
 
+const planName = {
+	kemper: {
+		cancer: {
+			standard_cancer: "Cancer",
+			rider_cancer_intensive_care_unit: "Intensive Care Unit"
+		}
+	}
+};
+
+export const PLAN_NAME = planName;
+
 export const COVERAGE = coverage;
 export const CANCER_PLAN_DETAILS = cancerPlanDetails;

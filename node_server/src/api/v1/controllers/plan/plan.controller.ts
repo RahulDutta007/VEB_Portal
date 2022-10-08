@@ -6,9 +6,11 @@ import { PLAN_STATUS } from "../../../../constants/planStatus";
 import MESSAGE from "../../../../constants/message";
 import service from "../../../../services";
 import PlanModel from "../../../../models/plan/plan.model";
-import { IPlan } from "../../../../@types/interface/plan.interface";
+import { IPlan, IPlanSchema } from "../../../../@types/interface/plan.interface";
 import { IObjectId } from "../../../../@types/objectId.interface";
-
+import { PLAN_NAME } from "../../../../constants/plan/plan";
+import { PlanStatus } from "../../../../@types/enum/plan.status.enum";
+import { FilterQuery } from "mongoose";
 // Plan creation
 export const PlanCreation = async (req: Request, res: Response) => {
     try {
@@ -16,7 +18,6 @@ export const PlanCreation = async (req: Request, res: Response) => {
         const planCreatorRole = req.user.role.toUpperCase(); // Extracting this role from the JWT
         let plan_start_date = null;
         let plan_end_date = null;
-        let created_date = null
 
         // Validate plan creator role
         if (![ROLES.admin, ROLES.enroller_admin, ROLES.agent].includes(planCreatorRole)) {
@@ -35,9 +36,8 @@ export const PlanCreation = async (req: Request, res: Response) => {
         }
 
         // converting into MongoDB format of start and end date, if given
-        if (start_date) {
-            plan_start_date = new Date(service.date.formateMongoDateService(start_date));
-        }
+
+        plan_start_date = new Date(service.date.formateMongoDateService(start_date));
 
         if (end_date) {
             plan_end_date = new Date(service.date.formateMongoDateService(end_date));
@@ -60,27 +60,34 @@ export const PlanCreation = async (req: Request, res: Response) => {
                 message: MESSAGE.custom(`Plan with code: ${plan_code} is already created and in active status`)
             });
         }
-
-        created_date = new Date(service.date.formateMongoDateService(moment().format("YYYY-MM-DD")));
-
         // Saving data to Database
-        const payload = {
-            ...req.body,
+
+        const plansPayload: IPlanSchema[] = [];
+        const planCommonPayloadDetails = {
             start_date: plan_start_date,
             end_date: plan_end_date,
-            status: PLAN_STATUS.active,
-            created: {
-                by: req.user.user_name,
-                on: created_date
-            }
-        };
+            status: PLAN_STATUS.active as PlanStatus,
+            created_by: req.user._id
+        }
 
-        const createdPlanInstance: IPlan & IObjectId = await service.query.insert(PlanModel, payload);
-        const plan_id: string = createdPlanInstance._id;
+        if (plan_name === PLAN_NAME.kemper.cancer.standard_cancer) {
+            plansPayload.push({
+                ...planCommonPayloadDetails,
+                plan_name: PLAN_NAME.kemper.cancer.standard_cancer,
+                plan_code
+            });
+            plansPayload.push({
+                ...planCommonPayloadDetails,
+                plan_name: PLAN_NAME.kemper.cancer.rider_cancer_intensive_care_unit,
+                plan_code: `R1-${plan_code}`
+            });
+        }
+
+        const planInstances: (IPlan & IObjectId)[] = await PlanModel.insertMany(plansPayload);
 
         return res.status(StatusCodes.OK).json({
             message: MESSAGE.post.succ,
-            result: createdPlanInstance
+            result: planInstances
         });
     } catch (err) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -108,6 +115,27 @@ export const GetAllPlan = async (req: Request, res: Response) => {
         }
     } catch (err) {
         return res.status(StatusCodes.BAD_REQUEST).json({
+            message: MESSAGE.get.fail,
+            err
+        });
+    }
+}
+
+export const getPlansWithRiders = async (req: Request, res: Response) => {
+    try {
+        const { plan_name } = req.query;
+        const planNameFilter: string[] = [`${plan_name}`];
+        if (plan_name === PLAN_NAME.kemper.cancer.standard_cancer) {
+            planNameFilter.push(PLAN_NAME.kemper.cancer.rider_cancer_intensive_care_unit);
+        }
+        const filterQuery: FilterQuery<IPlanSchema> = { ...req.query as FilterQuery<IPlanSchema>, plan_name: { $in: planNameFilter } };
+        const planInstances = await PlanModel.find(filterQuery);
+        return res.status(StatusCodes.OK).json({
+            message: MESSAGE.get.succ,
+            result: planInstances
+        });
+    } catch (err) {
+        return res.status(StatusCodes.OK).json({
             message: MESSAGE.get.fail,
             err
         });

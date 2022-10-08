@@ -5,3 +5,7 @@ export interface ICreated {
         on: Date;
     }
 }
+
+export interface ICreatedBy {
+    created_by: string;
+}

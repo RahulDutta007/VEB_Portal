@@ -1,8 +1,8 @@
 import { IObjectId } from "./objectId.interface";
-import { ICreated } from "../created.interface";
+import { ICreated, ICreatedBy } from "../created.interface";
 import { PlanStatus } from "../enum/plan.status.enum";
 
-export interface IPlanSchema {
+export interface IPlanSchema extends ICreatedBy {
     plan_name: string;
     plan_code: string;
     start_date: Date;

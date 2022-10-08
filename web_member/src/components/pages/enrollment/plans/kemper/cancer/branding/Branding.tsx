@@ -24,7 +24,7 @@ const KemperCancerBranding = () => {
 	const [waiveReason, setWaiveReason] = useState("");
 	const urlSearchParams: URLSearchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
 
-	const handleWaiveReason = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleWaiveReasonChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setWaiveReason(value);
 	};
@@ -40,62 +40,55 @@ const KemperCancerBranding = () => {
 		}
 	}, [cancerPlan, groupOwner, intensiveCareUnitPlan, member, waiveReason]);
 
-	const [customFormDialogProps, setCustomFormDialogProps] = useState<CustomFormDialogType>({
-		openDialog: false,
-		title: "Are you sure want to waive this enrollment?",
-		textfields: [
-			{
-				label: "Waive Reason",
-				onChange: handleWaiveReason,
-				value: waiveReason,
-				placeholder: "Enter your reason for waive"
-			}
-		],
-		actions: [
-			{
-				label: "Cancel",
-				callback: useCallback(
-					() => setCustomFormDialogProps(Object.assign({}, customFormDialogProps, { openDialog: false })),
-					[]
-				)
-			},
-			{
-				label: "Yes",
-				callback: () => {
-					setCustomFormDialogProps(
-						Object.assign({}, customFormDialogProps, {
-							openDialog: false
-						})
-					);
-					handleWaiveReasonButtonClick();
-				}
-			}
-		]
-	});
+	const [customFormDialogProps, setCustomFormDialogProps] = useState<CustomFormDialogType>();
 
 	const handleWaiveButtonClick = useCallback(() => {
 		setCustomFormDialogProps(
 			Object.assign({}, customFormDialogProps, {
-				openDialog: true
+				openDialog: true,
+				title: "Are you sure want to waive this enrollment?",
+				textfields: [
+					{
+						label: "Waive Reason",
+						onChange: handleWaiveReasonChange,
+						value: waiveReason,
+						placeholder: "Enter your reason for waive"
+					}
+				],
+				actions: [
+					{
+						label: "Cancel",
+						callback: () =>
+							setCustomFormDialogProps(Object.assign({}, customFormDialogProps, { openDialog: false }))
+					},
+					{
+						label: "Yes",
+						callback: () => {
+							setCustomFormDialogProps(
+								Object.assign({}, customFormDialogProps, {
+									openDialog: false
+								})
+							);
+							console.log("memberssss", member);
+							handleWaiveReasonButtonClick();
+						}
+					}
+				]
 			})
 		);
-	}, [customFormDialogProps]);
+	}, [customFormDialogProps, handleWaiveReasonButtonClick, member, waiveReason]);
 
 	const handleEnrollButtonClick = useCallback(() => {
 		const step = urlSearchParams.get("step");
 		navigate(`?step=${step}&stage=1`);
 	}, [navigate, urlSearchParams]);
 
-	useEffect(() => {
-		//console.log("member ue", member);
-	}, [member]);
-
-	//console.log("member", member);
+	console.log("custom", customFormDialogProps);
 
 	return (
 		<div className="paper-form-container">
 			<Suspense fallback={<div />}>
-				<LazyCustomFormDialog customFormDialogProps={customFormDialogProps} />
+				{customFormDialogProps ? <LazyCustomFormDialog customFormDialogProps={customFormDialogProps} /> : null}
 			</Suspense>
 			<Paper className="theme-border-radius paper-container" elevation={1}>
 				<PlanHeader planName="Kemper Group Cancer Insurance Policy" effectiveDate="01/22/2022" />

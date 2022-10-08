@@ -27,6 +27,7 @@ import "./createPlan.css";
 import { UIContext } from "../../../contexts";
 import { ADMIN_DASHBOARD_HEADER } from "../../../constants/caption/dashboardHeader";
 import { useNavigate } from "react-router-dom";
+import { PLAN_NAME } from "../../../constants/plan";
 
 const GreenCheckbox = withStyles({
 	root: {
@@ -246,15 +247,7 @@ const CreatePlan = () => {
 							placeholder: "Select Plan Name",
 							value: plan.plan_name,
 							type: "select",
-							options: [
-								"",
-								"Accident",
-								"Cancer",
-								"Short Term Disability",
-								"Hospital Indemnity",
-								"Critical Illness Group",
-								"Whole Life"
-							].filter((plan: string) => {
+							options: [PLAN_NAME.kemper.cancer.standard_cancer].filter((plan: string) => {
 								console.log("plan", plan);
 								return !activePlans.some((activePlan: Plan) => {
 									return activePlan.plan_name === plan;
