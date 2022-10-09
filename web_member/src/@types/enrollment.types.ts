@@ -28,6 +28,7 @@ export type EnrollmentStandardDetails = {
 	coverage_code: string;
 	member_SSN: string;
 	premium_amount: number | null;
+	benefit_amount?: number | null;
 };
 
 export type Enrollment = {

@@ -2,28 +2,28 @@ import { Button, MenuItem, SelectChangeEvent } from "@mui/material";
 import { Select } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
 import React, { useContext, useEffect } from "react";
-import { COVERAGE } from "../../../../../../../constants/coverage";
-import { AuthContext, EnrollmentContext, ThemeContext } from "../../../../../../../contexts";
-import { LazyPlanActions, PlanHeader } from "../../../../../../shared";
-import CustomInput from "../../../../../../shared/customInput/CustomInput";
-import CustomSelectInput from "../../../../../../shared/customInput/CustomSelectInput";
+import { AuthContext, EnrollmentContext, ThemeContext } from "../../../../../../contexts";
+import { LazyPlanActions, PlanHeader } from "../../../../../../components/shared";
+import CustomInput from "../../../../../../components/shared/customInput/CustomInput";
+import CustomSelectInput from "../../../../../../components/shared/customInput/CustomSelectInput";
 import { Checkbox } from "@mui/material";
 import { useState } from "react";
 import { useCallback } from "react";
-import "./indemnityForm.css";
+import "./macPlan.css";
 import {
 	BeazleyPlanCoverageLevel,
 	BeazleyPlanDetails,
 	BeazleyRiderPlanCoverage,
 	BeazleyStanderdPlanCoverage,
 	PaycheckFrequency
-} from "../../../../../../../@types/plan.types";
-import { Member } from "../../../../../../../@types/member.types";
-import { getKemperCancerEligibleDependents } from "../../../../../../../utils/commonFunctions/eligibleDependents";
-import { generateCancerKemperActivateEnrollmentPayload } from "../../../../../../../utils/commonFunctions/enrollment";
-import { Enrollment } from "../../../../../../../@types/enrollment.types";
+} from "../../../../../../@types/plan.types";
+import { MacBenefitAmount, MacPlanDetails, MacCoverage } from "../../../../../../@types/plan.types";
+import { Member } from "../../../../../../@types/member.types";
+import { Enrollment } from "../../../../../../@types/enrollment.types";
+import { generateCancerKemperActivateEnrollmentPayload } from "../../../../../../utils/commonFunctions/enrollment";
+import { getKemperCancerEligibleDependents } from "../../../../../../utils/commonFunctions/eligibleDependents";
 
-const BeazleyIndemnityForm = (): JSX.Element => {
+const MacPlanForm = (): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [plan, setPlan] = useState({
 		plan_name: "Beazley Group Limited Indemnity",
@@ -36,93 +36,73 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 		plan_name: "Beazley - Intensive Care Unit",
 		plan_code: "ICU"
 	});
-	const [beazleyPlanInputs, setBeazleyPlanInputs] = useState<{
+	const [macPlanInputs, setMacPlanInputs] = useState<{
 		coverage: null | string;
-		coverage_level: null | string;
-		isRiderAdded: boolean;
+		benefit_amount: null | number;
+		primium: number;
 	}>({
 		coverage: null,
-		coverage_level: null,
-		isRiderAdded: false
+		benefit_amount: null,
+		primium: 0
 	});
-	const [beazleyPlan, setBeazleyPlan] = useState<BeazleyPlanDetails>({
+	const [macPlan, setMacPlan] = useState<MacPlanDetails>({
 		coverage: [],
-		coverage_level: ["Plan 2", "Plan 3", "Plan 4 with RX"],
+		benefit_amount: [3000, 1500, 5000],
 		premium_amount: {
-			standard_premium: {
-				"Employee Only": {
-					"Plan 2": {
-						WEEKLY: 10.38,
-						MONTHLY: 10.38
-					},
-					"Plan 3": {
-						WEEKLY: 14.31,
-						MONTHLY: 14.31
-					},
-					"Plan 4 with RX": {
-						WEEKLY: 35.35,
-						MONTHLY: 35.35
-					}
+			"Employee Only": {
+				3000: {
+					WEEKLY: 49.99,
+					MONTHLY: 49.99
 				},
-				"Employee & Spouse": {
-					"Plan 2": {
-						WEEKLY: 10.38,
-						MONTHLY: 10.38
-					},
-					"Plan 3": {
-						WEEKLY: 14.31,
-						MONTHLY: 14.31
-					},
-					"Plan 4 with RX": {
-						WEEKLY: 35.35,
-						MONTHLY: 35.35
-					}
+				1500: {
+					WEEKLY: 42.99,
+					MONTHLY: 42.99
 				},
-				"Employee & Dependents": {
-					"Plan 2": {
-						WEEKLY: 10.38,
-						MONTHLY: 10.38
-					},
-					"Plan 3": {
-						WEEKLY: 14.31,
-						MONTHLY: 14.31
-					},
-					"Plan 4 with RX": {
-						WEEKLY: 35.35,
-						MONTHLY: 35.35
-					}
-				},
-				"Employee & Family": {
-					"Plan 2": {
-						WEEKLY: 10.38,
-						MONTHLY: 10.38
-					},
-					"Plan 3": {
-						WEEKLY: 14.31,
-						MONTHLY: 14.31
-					},
-					"Plan 4 with RX": {
-						WEEKLY: 35.35,
-						MONTHLY: 35.35
-					}
+				5000: {
+					WEEKLY: 59.99,
+					MONTHLY: 59.99
 				}
 			},
-			rider_premium: {
-				"Employee Only": {
-					WEEKLY: 9.23,
-					MONTHLY: 9.23
+			"Employee & Spouse": {
+				3000: {
+					WEEKLY: 49.99,
+					MONTHLY: 49.99
 				},
-				"Employee & Spouse": {
-					WEEKLY: 13.85,
-					MONTHLY: 13.85
+				1500: {
+					WEEKLY: 42.99,
+					MONTHLY: 42.99
 				},
-				"Employee & Dependents": {
-					WEEKLY: 13.85,
-					MONTHLY: 13.85
+				5000: {
+					WEEKLY: 59.99,
+					MONTHLY: 59.99
+				}
+			},
+			"Employee & Dependents": {
+				3000: {
+					WEEKLY: 49.99,
+					MONTHLY: 49.99
 				},
-				"Employee & Family": {
-					WEEKLY: 13.85,
-					MONTHLY: 13.85
+				1500: {
+					WEEKLY: 42.99,
+					MONTHLY: 42.99
+				},
+				5000: {
+					WEEKLY: 59.99,
+					MONTHLY: 59.99
+				}
+			},
+			"Employee & Family": {
+				3000: {
+					WEEKLY: 49.99,
+					MONTHLY: 49.99
+				},
+				1500: {
+					WEEKLY: 42.99,
+					MONTHLY: 42.99
+				},
+				5000: {
+					WEEKLY: 59.99,
+					MONTHLY: 59.99
 				}
 			}
 		}
@@ -137,10 +117,10 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 	const [eligibleDependents, setEligibleDependents] = useState<Member[]>([]);
 	const { setCurrentEnrollment } = useContext(EnrollmentContext);
 
-	const handleBeazleyInputChange = (event: SelectChangeEvent) => {
+	const handleMacPlanInputChange = (event: SelectChangeEvent) => {
 		const { name, value } = event.target as HTMLSelectElement;
-		setBeazleyPlanInputs(
-			Object.assign({}, beazleyPlanInputs, {
+		setMacPlanInputs(
+			Object.assign({}, macPlanInputs, {
 				[name]: value
 			})
 		);
@@ -149,13 +129,13 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 	const handleClinicCardChange = useCallback(
 		(event: SelectChangeEvent) => {
 			const { checked } = event.target as HTMLInputElement;
-			setBeazleyPlanInputs(
-				Object.assign({}, beazleyPlanInputs, {
+			setMacPlanInputs(
+				Object.assign({}, macPlanInputs, {
 					isRiderAdded: checked
 				})
 			);
 		},
-		[beazleyPlanInputs]
+		[macPlanInputs]
 	);
 
 	const handleWritingNumberChange = useCallback(
@@ -172,74 +152,48 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 	);
 
 	const handleActivateButtonClick = useCallback(() => {
-		if (member && beazleyPlanInputs.coverage) {
-			console.log("beazleyPlanInputs", beazleyPlanInputs);
+		if (member && macPlanInputs.coverage) {
+			console.log("macPlanInputs", macPlanInputs);
 			const enrollments: { plan: any; premiumAmount: number }[] = [
-				{ plan: beazleyPlan, premiumAmount: premium_amount }
+				{ plan: macPlan, premiumAmount: premium_amount }
 			];
-			if (beazleyPlanInputs.isRiderAdded) {
-				enrollments.push({ plan: riderBenefitPlan, premiumAmount: clinic_card_amount });
-			}
 			enrollments.forEach(({ plan, premiumAmount }: any, index: number) => {
 				const enrollment: Enrollment = generateCancerKemperActivateEnrollmentPayload(
 					plan,
 					groupOwner,
 					member,
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-					beazleyPlanInputs.coverage!,
+					macPlanInputs.coverage!,
 					premiumAmount,
 					eligibleDependents
 				);
 				console.log("enrollment", index, enrollment);
 			});
 		}
-	}, [
-		beazleyPlan,
-		beazleyPlanInputs,
-		clinic_card_amount,
-		eligibleDependents,
-		groupOwner,
-		member,
-		premium_amount,
-		riderBenefitPlan
-	]);
+	}, [eligibleDependents, groupOwner, macPlan, macPlanInputs, member, premium_amount]);
 
 	const calculatePremium = useCallback(() => {
-		const { coverage, coverage_level, isRiderAdded } = beazleyPlanInputs;
-		let standeredPremiumAmount = 0;
-		let riderPremiumAmount = 0;
-		if (coverage && coverage_level && paycheck) {
-			standeredPremiumAmount =
-				beazleyPlan.premium_amount.standard_premium[coverage as keyof BeazleyStanderdPlanCoverage][
-					coverage_level as keyof BeazleyPlanCoverageLevel
-				][paycheck.pay_frequency as keyof PaycheckFrequency];
-			setPremiumAmount(standeredPremiumAmount);
-			if (coverage && isRiderAdded && paycheck) {
-				riderPremiumAmount =
-					beazleyPlan.premium_amount.rider_premium[coverage as keyof BeazleyRiderPlanCoverage][
-						paycheck.pay_frequency as keyof PaycheckFrequency
-					];
-				setClinicCardAmount(riderPremiumAmount);
-			}
-			setTotalPremiumAmount(standeredPremiumAmount + riderPremiumAmount);
+		const { coverage, benefit_amount } = macPlanInputs;
+		let macPremiumAmount = 0;
+		if (coverage && benefit_amount && paycheck) {
+			macPremiumAmount =
+				macPlan.premium_amount[coverage as keyof MacCoverage][benefit_amount as keyof MacBenefitAmount][
+					paycheck.pay_frequency as keyof PaycheckFrequency
+				];
+			setPremiumAmount(macPremiumAmount);
+			setTotalPremiumAmount(macPremiumAmount);
 			setCurrentEnrollment(
 				Object.assign(
 					{},
 					{
-						plan_name: "Beazley Indementy",
+						plan_name: "Mac Plan",
 						status: "Current",
-						premium_amount: Number((standeredPremiumAmount + riderPremiumAmount).toFixed(2))
+						premium_amount: Number(macPremiumAmount.toFixed(2))
 					}
 				)
 			);
 		}
-	}, [
-		beazleyPlan.premium_amount.rider_premium,
-		beazleyPlan.premium_amount.standard_premium,
-		beazleyPlanInputs,
-		paycheck,
-		setCurrentEnrollment
-	]);
+	}, [macPlan.premium_amount, macPlanInputs, paycheck, setCurrentEnrollment]);
 
 	useEffect(() => {
 		calculatePremium();
@@ -251,8 +205,8 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 			const dependentCoverage = getKemperCancerEligibleDependents(dependents);
 			console.log("dependentCoverage", dependentCoverage);
 			setEligibleDependents(Object.assign([], dependentCoverage.dependents));
-			setBeazleyPlan((prevBeazleyPlanDetails: BeazleyPlanDetails) => {
-				return Object.assign({}, prevBeazleyPlanDetails, {
+			setMacPlan((macPlanDetails: MacPlanDetails) => {
+				return Object.assign({}, macPlanDetails, {
 					coverage: dependentCoverage.coverage
 				});
 			});
@@ -265,10 +219,7 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 		<div className="kemper-cancer-form plan-form">
 			<div className="paper-form-container">
 				<Paper className="theme-border-radius paper-container" elevation={1}>
-					<PlanHeader
-						planName="Beazley Group Limited Indemnity Insurance Policy"
-						effectiveDate={start_date}
-					/>
+					<PlanHeader planName="Mac Insurance Policy" effectiveDate={start_date} />
 					<div className="plan-content">
 						<div className="theme-plan-section-margin" />
 						<div className="header-container">
@@ -291,9 +242,9 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
 										name="coverage"
-										onChange={(event: SelectChangeEvent) => handleBeazleyInputChange(event)}
+										onChange={(event: SelectChangeEvent) => handleMacPlanInputChange(event)}
 									>
-										{beazleyPlan.coverage.map((option: string, index: number) => {
+										{macPlan.coverage.map((option: string, index: number) => {
 											return (
 												<MenuItem value={option} key={index}>
 													{option}
@@ -305,16 +256,16 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 							</Grid>
 							<Grid item xl={5} lg={5} md={5} sm={6} xs={6}>
 								<div className="details-form-row">
-									<div className="details-form-label  required">Coverage Level</div>
+									<div className="details-form-label  required">Benefit Amount</div>
 									<Select
 										input={<CustomSelectInput />}
 										style={{ width: "100%" }}
-										name="coverage_level"
-										onChange={(event: SelectChangeEvent) => handleBeazleyInputChange(event)}
+										name="benefit_amount"
+										onChange={(event: SelectChangeEvent) => handleMacPlanInputChange(event)}
 									>
-										<MenuItem value={"Plan 2"}>PLAN 2</MenuItem>
-										<MenuItem value={"Plan 3"}>PLAN 3</MenuItem>
-										<MenuItem value={"Plan 4 with RX"}>PLAN 4 WITH RX</MenuItem>
+										<MenuItem value={1500}>1500</MenuItem>
+										<MenuItem value={3000}>3000</MenuItem>
+										<MenuItem value={5000}>5000</MenuItem>
 									</Select>
 								</div>
 							</Grid>
@@ -327,42 +278,6 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 								</div>
 							</Grid>
 						</Grid>
-					</div>
-					<div className="plan-content">
-						<div className="theme-plan-section-margin" />
-						<div className="header-container header-container-new">
-							<div className="theme-plan-header">Rider Benefits</div>
-						</div>
-						<div>
-							<div
-								className="theme-plan-sub-header plan-text"
-								style={{ borderLeftColor: theme.primary_color }}
-							>
-								Clinic Card
-							</div>
-							<Grid className="grid-container" container columnSpacing={2}>
-								<Grid item xl={10} lg={10} md={10} sm={6} xs={6} className="margin-adjust-33">
-									<input
-										type="checkbox"
-										name="isRiderAdded"
-										onChange={(event: SelectChangeEvent) => handleClinicCardChange(event)}
-									></input>
-									<label className="details-form-label required">Clinic Card</label>
-								</Grid>
-								<Grid item xl={2} lg={2} md={2} sm={6} xs={6}>
-									<div className="details-form-row">
-										<div className="details-form-label required align-center">Premium</div>
-										<div className="show-premium">
-											{beazleyPlanInputs.coverage &&
-											beazleyPlanInputs.coverage_level &&
-											beazleyPlanInputs.isRiderAdded
-												? `$${clinic_card_amount}`
-												: "$0.00"}
-										</div>
-									</div>
-								</Grid>
-							</Grid>
-						</div>
 					</div>
 					<div className="theme-plan-inner-section-margin" />
 
@@ -427,4 +342,4 @@ const BeazleyIndemnityForm = (): JSX.Element => {
 	);
 };
 
-export default BeazleyIndemnityForm;
+export default MacPlanForm;

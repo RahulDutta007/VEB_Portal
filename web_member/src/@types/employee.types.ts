@@ -15,6 +15,12 @@ export enum RelationshipEnum {
 	"STEP CHILD"
 }
 
+export type ShortTermDisabilityDependent = {
+	dependent_benefit: string | null;
+	family_member: string | null;
+	premium: number;
+};
+
 export type Employee = {
 	_id: string;
 	member_id: string | null; // This Id is mapped with Group HR (Group Specific)

@@ -17,6 +17,7 @@ import BeazleyIndemnityForm from "./plans/beazley/indemnity/form/IndemnityForm";
 import KemperWholeLifeInsuranceForm from "./plans/kemper/wholeLife/form/WholeLifeInsuranceForm";
 import KemperShortTermDisabilityForm from "./plans/kemper/shortTermDisability/form/ShortTermDisabilityForm";
 import FiveStarFamilyProtectionForm from "./plans/fiveStar/familyProtection/form/FamilyProtectionForm";
+import BeamVisionForm from "./plans/beam/vision/form/VisionForm";
 import DoctorAndRxForm from "./plans/doc/docAndRx/form/DocAndRx";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -24,6 +25,7 @@ import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import Slide from "@mui/material/Slide";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -36,12 +38,15 @@ import KemperWholeLifeBranding from "./plans/kemper/wholeLife/branding/Branding"
 import KemperSTDBranding from "./plans/kemper/shortTermDisability/branding/Branding";
 import KemperCriticalIllnessBranding from "./plans/kemper/criticalIllness/branding/Branding";
 import KemperAccidentBranding from "./plans/kemper/accident/branding/Branding";
+import BeamVisionBranding from "./plans/beam/vision/branding/Branding";
 import { DocRxBranding, KemperHIBranding } from "..";
 import BeazleyGLIBranding from "./plans/beazley/indemnity/branding/Branding";
 import FiveStarBranding from "./plans/fiveStar/familyProtection/branding/Branding";
 import EnrollmentTabLabel from "./enrollmentTabLabel/EnrollmentTabLabel";
 import { Member } from "../../../@types/member.types";
 import { DEPENDENTS } from "../../../constants/demo/employee";
+import MacPlanForm from "./plans/macPlan/form/macPlan";
+import React from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -83,6 +88,7 @@ const Enrollment = (): JSX.Element => {
 	const height = screen.height;
 	const [showOverallPremium, setShowOverallPremium] = useState(true);
 	const [togglePlan, setTogglePlan] = useState(false);
+	const [width, setWidth] = useState<number>(window.innerWidth);
 	const navigate = useNavigate();
 	const speedDialActions = [
 		// eslint-disable-next-line prettier/prettier
@@ -138,6 +144,13 @@ const Enrollment = (): JSX.Element => {
 			case "Doc and Rx": {
 				return stage === "0" ? <DocRxBranding /> : <DoctorAndRxForm />;
 			}
+			case "Mac": {
+				return stage === "0" ? <DocRxBranding /> : <MacPlanForm />;
+			}
+			case "Beam Vision": {
+				console.log(11111, stage);
+				return stage === "0" ? <BeamVisionBranding /> : <BeamVisionForm />;
+			}
 		}
 
 		// debugger;
@@ -178,6 +191,14 @@ const Enrollment = (): JSX.Element => {
 			{
 				plan_name: "Doc and Rx",
 				status: "WAIVED"
+			},
+			{
+				plan_name: "Beam Vision",
+				status: null
+			},
+			{
+				plan_name: "Mac",
+				status: "WAIVED"
 			}
 		];
 		setOpenEnrollments(Object.assign([], _openEnrollments));
@@ -216,6 +237,10 @@ const Enrollment = (): JSX.Element => {
 		setDependents(Object.assign([], _dependents));
 	}, []);
 
+	function handleWindowSizeChange() {
+		setWidth(window.innerWidth);
+	}
+
 	useEffect(() => {
 		getOpenEnrollments();
 		getOverallPremium();
@@ -235,6 +260,13 @@ const Enrollment = (): JSX.Element => {
 		}
 	}, [currentEnrollment]);
 
+	useEffect(() => {
+		window.addEventListener("resize", handleWindowSizeChange);
+		return () => {
+			window.removeEventListener("resize", handleWindowSizeChange);
+		};
+	}, []);
+
 	return (
 		<>
 			<div className="veb-enrollment">
@@ -248,59 +280,126 @@ const Enrollment = (): JSX.Element => {
 					}}
 				>
 					<div
-						className={!togglePlan ? "open-plan-list show-list" : "open-plan-list hide-list"}
+						className={
+							!togglePlan && width <= 768 ? "open-plan-list show-list" : "open-plan-list hide-list"
+						}
 						onClick={handleToggle}
 					>
+						<KeyboardArrowRightIcon className="arrow-icon" style={{ color: theme.button.color }} />
 						Show Plans
 					</div>
-					<div
-						className={!togglePlan ? "close-plan-list hide-list" : "close-plan-list show-list"}
-						onClick={handleToggle}
-					>
-						Hide Plans
-					</div>
-					<Tabs
-						orientation="vertical"
-						className={!togglePlan ? "tabs-cotainer" : "tabs-cotainer show-plan"}
-						// variant="scrollable"
-						//variant="fullWidth"
-						style={{
-							// boxShadow:
-							//"rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset",
-							boxShadow: "rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px",
-							borderTopLeftRadius: 20,
-							borderTopRightRadius: 20,
-							borderBottomLeftRadius: 20,
-							borderBottomRightRadius: 20,
-							color: theme.primary_color
-						}}
-						TabIndicatorProps={{
-							style: {
-								color: theme.primary_color,
-								backgroundColor: theme.primary_color
-							}
-						}}
-						value={value}
-						onChange={handleChange}
-					>
-						{openEnrollments.map((openEnrollment: OpenEnrollment, index: number) => {
-							const { plan_name, status } = openEnrollment;
-							return (
-								<Tab
-									key={index}
-									className={activeTab == plan_name ? "active-tab" : "default-tab"}
+					{/* <Slide direction="right" in={togglePlan} mountOnEnter unmountOnExit>
+						<div
+							className={!togglePlan ? "close-plan-list hide-list" : "close-plan-list show-list"}
+							onClick={handleToggle}
+						>
+							Hide Plans
+						</div>
+					</Slide> */}
+					{width <= 768 ? (
+						<Slide direction="right" in={togglePlan} mountOnEnter unmountOnExit>
+							<div className="show-plan">
+								<div className="close-plan-list show-list" onClick={handleToggle}>
+									Hide Plans
+								</div>
+								<Tabs
+									orientation="vertical"
+									className="tabs-container"
+									// variant="scrollable"
+									//variant="fullWidth"
 									style={{
-										height: (height - 500) / 6,
-										color: activeTab == plan_name ? theme.primary_color : undefined
+										// boxShadow:
+										//"rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset",
+										boxShadow:
+											"rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px",
+										borderTopLeftRadius: 20,
+										borderTopRightRadius: 20,
+										borderBottomLeftRadius: 20,
+										borderBottomRightRadius: 20,
+										color: theme.primary_color
 									}}
-									value={plan_name}
-									onClick={handleToggle}
-									label={<EnrollmentTabLabel planName={plan_name} status={status} carrier="Kemper" />}
-									{...a11yProps(0)}
-								/>
-							);
-						})}
-					</Tabs>
+									TabIndicatorProps={{
+										style: {
+											color: theme.primary_color,
+											backgroundColor: theme.primary_color
+										}
+									}}
+									value={value}
+									onChange={handleChange}
+								>
+									{openEnrollments.map((openEnrollment: OpenEnrollment, index: number) => {
+										const { plan_name, status } = openEnrollment;
+										return (
+											<Tab
+												key={index}
+												className={activeTab == plan_name ? "active-tab" : "default-tab"}
+												style={{
+													height: (height - 500) / 6,
+													color: activeTab == plan_name ? theme.primary_color : undefined
+												}}
+												value={plan_name}
+												onClick={handleToggle}
+												label={
+													<EnrollmentTabLabel
+														planName={plan_name}
+														status={status}
+														carrier="Kemper"
+													/>
+												}
+												{...a11yProps(0)}
+											/>
+										);
+									})}
+								</Tabs>
+							</div>
+						</Slide>
+					) : (
+						<Tabs
+							orientation="vertical"
+							className={!togglePlan ? "tabs-cotainer" : "tabs-cotainer show-plan"}
+							// variant="scrollable"
+							//variant="fullWidth"
+							style={{
+								// boxShadow:
+								//"rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset",
+								boxShadow: "rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px",
+								borderTopLeftRadius: 20,
+								borderTopRightRadius: 20,
+								borderBottomLeftRadius: 20,
+								borderBottomRightRadius: 20,
+								color: theme.primary_color
+							}}
+							TabIndicatorProps={{
+								style: {
+									color: theme.primary_color,
+									backgroundColor: theme.primary_color
+								}
+							}}
+							value={value}
+							onChange={handleChange}
+						>
+							{openEnrollments.map((openEnrollment: OpenEnrollment, index: number) => {
+								const { plan_name, status } = openEnrollment;
+								return (
+									<Tab
+										key={index}
+										className={activeTab == plan_name ? "active-tab" : "default-tab"}
+										style={{
+											height: (height - 500) / 6,
+											color: activeTab == plan_name ? theme.primary_color : undefined
+										}}
+										value={plan_name}
+										onClick={handleToggle}
+										label={
+											<EnrollmentTabLabel planName={plan_name} status={status} carrier="Kemper" />
+										}
+										{...a11yProps(0)}
+									/>
+								);
+							})}
+						</Tabs>
+					)}
+
 					<div className="form-container">{renderPlan()}</div>
 				</Box>
 				{showOverallPremium ? (
