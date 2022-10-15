@@ -96,22 +96,22 @@ export type VisionPlanDetails = {
 	premium_amount: VisionPlanPremiumAmount;
 };
 
-export type CriticalIllnessCoverageLevel = {
-	"With Cancer": number | null;
-	"Without Cancer": number | null;
+export type CriticalIllnessBenefitLevel = {
+	10000.0: STDAgeGroups;
+	20000.0: STDAgeGroups;
+	30000.0: STDAgeGroups;
 };
 
-export type CriticalIllnessBenefitLevel = {
-	10000.0: CriticalIllnessCoverageLevel;
-	20000.0: CriticalIllnessCoverageLevel;
-	30000.0: CriticalIllnessCoverageLevel;
+export type CriticalIllnessCoverageLevel = {
+	"With Cancer": CriticalIllnessBenefitLevel;
+	"Without Cancer": CriticalIllnessBenefitLevel;
 };
 
 export type CriticalIllnessPlanCoverage = {
-	"Employee Only": CriticalIllnessBenefitLevel;
-	"Employee & Spouse": CriticalIllnessBenefitLevel;
-	"Employee & Dependent": CriticalIllnessBenefitLevel;
-	"Employee & Family": CriticalIllnessBenefitLevel;
+	"Employee Only": CriticalIllnessCoverageLevel;
+	"Employee & Spouse": CriticalIllnessCoverageLevel;
+	"Employee & Dependent": CriticalIllnessCoverageLevel;
+	"Employee & Family": CriticalIllnessCoverageLevel;
 };
 
 export type CriticalIllnessPlanPremiumAmount = {

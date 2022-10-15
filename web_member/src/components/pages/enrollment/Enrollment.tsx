@@ -127,7 +127,11 @@ const Enrollment = (): JSX.Element => {
 				return stage === "0" ? <KemperSTDBranding /> : <KemperShortTermDisabilityForm />;
 			}
 			case "Critical Illness Group": {
-				return stage === "0" ? <KemperCriticalIllnessBranding /> : <KemperCriticalIllnessForm />;
+				return stage === "0" ? (
+					<KemperCriticalIllnessBranding />
+				) : (
+					<KemperCriticalIllnessForm dependents={dependents} />
+				);
 			}
 			case "Accident": {
 				return stage === "0" ? <KemperAccidentBranding /> : <KemperAccidentForm dependents={dependents} />;

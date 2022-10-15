@@ -15,14 +15,35 @@ import { useCallback } from "react";
 
 import "./criticalIllness.css";
 import { CriticalIllnessPremium } from "../../../../../../../@types/criticalIllnessPrimium.types";
-import { CriticalIllnessPlanDetails } from "../../../../../../../@types/plan.types";
+import {
+	CriticalIllnessBenefitLevel,
+	CriticalIllnessCoverageLevel,
+	CriticalIllnessPlanCoverage,
+	CriticalIllnessPlanDetails,
+	PaycheckFrequency,
+	STDAgeGroups
+} from "../../../../../../../@types/plan.types";
 import { dollarize } from "../../../../../../../utils/commonFunctions/dollarize";
 import { getCriticalIllnessPremium } from "../../../../../../../utils/commonFunctions/plan";
-import calculateAge from "../../../../../../../utils/commonFunctions/age";
+import { calculateAge, calculateAgeGroup } from "../../../../../../../constants/calculateAge";
+import {
+	Enrollment,
+	EnrollmentCommonDetails,
+	EnrollmentStandardDetails
+} from "../../../../../../../@types/enrollment.types";
+import { getKemperCancerEligibleDependents } from "../../../../../../../utils/commonFunctions/eligibleDependents";
+import { PlanFormProps } from "../../../../../../../@types/components/enrollment.types";
+import { getCoveredDependents } from "../../../../../../../utils/commonFunctions/coveredDependents";
+import { Member } from "../../../../../../../@types/member.types";
 
-const KemperCriticalIllnessForm = (): JSX.Element => {
+const KemperCriticalIllnessForm = ({ dependents }: PlanFormProps): JSX.Element => {
 	const [writingNumber, setWritingNumber] = useState(1408);
 	const [prevWritingNumber, setPrevWritingNumber] = useState(1408);
+	const [plan, setPlan] = useState({
+		_id: "123zxkbnkabb3w2123",
+		plan_name: "Critical Illness",
+		plan_code: "HI"
+	});
 	const [criticalIllnessPlanDetails, setCriticalIllnessPlanDetails] = useState<CriticalIllnessPlanDetails>({
 		benefit_amount: [10000.0, 20000.0, 30000.0],
 		coverage: ["Employee Only", "Employee & Spouse", "Employee & Dependent", "Employee & Family"],
@@ -30,59 +51,363 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 		premium_amount: {
 			standard_premium: {
 				"Employee Only": {
-					10000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
+					"With Cancer": {
+						10000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						20000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						30000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						}
 					},
-					20000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
-					},
-					30000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
+					"Without Cancer": {
+						10000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						20000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						30000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						}
 					}
 				},
 				"Employee & Spouse": {
-					10000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
+					"With Cancer": {
+						10000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						20000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						30000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						}
 					},
-					20000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
-					},
-					30000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
+					"Without Cancer": {
+						10000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						20000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						30000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						}
 					}
 				},
 				"Employee & Dependent": {
-					10000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
+					"With Cancer": {
+						10000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						20000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						30000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						}
 					},
-					20000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
-					},
-					30000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
+					"Without Cancer": {
+						10000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						20000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						30000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						}
 					}
 				},
 				"Employee & Family": {
-					10000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
+					"With Cancer": {
+						10000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						20000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						30000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						}
 					},
-					20000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
-					},
-					30000.0: {
-						"With Cancer": null,
-						"Without Cancer": null
+					"Without Cancer": {
+						10000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						20000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						},
+						30000.0: {
+							"18-49": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"50-59": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							},
+							"60-64": {
+								WEEKLY: 65.59,
+								MONTHLY: 65.59
+							}
+						}
 					}
 				}
 			}
@@ -100,19 +425,20 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 		benefit_amount: null
 	});
 	const { theme } = useContext(ThemeContext);
-	const { member } = useContext(AuthContext);
-
-	const handlePlanInputChange = useCallback(
-		(event: SelectChangeEvent<unknown>, child: React.ReactNode) => {
-			const { name, value } = event.target;
-			setCriticalIllnessPlanInputs(
-				Object.assign({}, criticalIllnessPlanInputs, {
-					[name]: value
-				})
-			);
-		},
-		[criticalIllnessPlanInputs]
+	const { member, paycheck, groupOwner } = useContext(AuthContext);
+	const [memberAge, setMemberAge] = useState<number>(
+		calculateAge(member?.date_of_birth === undefined ? new Date() : new Date(member?.date_of_birth))
 	);
+	const [eligibleDependents, setEligibleDependents] = useState<Member[]>([]);
+
+	const handlePlanInputChange = (event: SelectChangeEvent<unknown>, child: React.ReactNode) => {
+		const { name, value } = event.target;
+		setCriticalIllnessPlanInputs(
+			Object.assign({}, criticalIllnessPlanInputs, {
+				[name]: value
+			})
+		);
+	};
 
 	const handleWritingNumberChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,15 +458,100 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 		if (
 			coverage !== null &&
 			coverage_level !== null &&
-			coverage_level !== null &&
 			benefit_amount !== null &&
-			member?.date_of_birth
+			member?.date_of_birth &&
+			paycheck
 		) {
-			const age = calculateAge(member?.date_of_birth, new Date());
-			const _standardPremium = getCriticalIllnessPremium(coverage, coverage_level, benefit_amount, age);
-			setStanderdPremium(_standardPremium);
+			const calculatePremiumAmount =
+				criticalIllnessPlanDetails.premium_amount.standard_premium[
+					coverage as keyof CriticalIllnessPlanCoverage
+				][coverage_level as keyof CriticalIllnessCoverageLevel][
+					benefit_amount as keyof CriticalIllnessBenefitLevel
+				][calculateAgeGroup(memberAge) as keyof STDAgeGroups][
+					paycheck.pay_frequency as keyof PaycheckFrequency
+				];
+			//const calculatePremiumAmount = 23;
+			setStanderdPremium(calculatePremiumAmount);
 		}
-	}, [criticalIllnessPlanInputs, member?.date_of_birth]);
+	}, [
+		criticalIllnessPlanDetails.premium_amount.standard_premium,
+		criticalIllnessPlanInputs,
+		member?.date_of_birth,
+		memberAge,
+		paycheck
+	]);
+
+	const handleValidation = useCallback((): boolean => {
+		const { coverage, coverage_level, benefit_amount } = criticalIllnessPlanInputs;
+		if (coverage === null && coverage_level === null && benefit_amount === null) {
+			alert("Please fill all required fields");
+			return false;
+		} else {
+			return true;
+		}
+	}, [criticalIllnessPlanInputs]);
+
+	const handleActivateButtonClick = useCallback(() => {
+		const isValid = handleValidation();
+		if (isValid === false) {
+			return;
+		}
+		if (
+			member &&
+			criticalIllnessPlanInputs.coverage &&
+			criticalIllnessPlanInputs.coverage_level &&
+			criticalIllnessPlanInputs.benefit_amount
+		) {
+			const enrollmentCommonDetails: EnrollmentCommonDetails = {
+				agent_id: null,
+				location_number: member.location_number,
+				location_name: member.location.location_name,
+				group_number: member.group_number,
+				group_name: member.group.name,
+				plan_object_id: plan._id,
+				plan_code: plan.plan_code,
+				enrollment_status: "APPROVED",
+				insured_object_id: member._id,
+				insured_SSN: member.SSN,
+				unenrolled_reason: null,
+				waive_reason: null,
+				termination_reason: null,
+				enrollment_date: "01/23/22",
+				effective_date: "01/23/22",
+				termination_date: null,
+				open_enrollment_id: "0xqwe123123"
+			};
+			console.log("enrollmentCommonDetails", enrollmentCommonDetails);
+			const enrollmentStandardDetails: EnrollmentStandardDetails[] = [
+				{
+					member_object_id: member._id,
+					member_SSN: member.SSN,
+					premium_amount: standerdPremium,
+					coverage_code: criticalIllnessPlanInputs.coverage
+				}
+			];
+			console.log("eligible xxxx", eligibleDependents);
+			const coveredDependents = getCoveredDependents(criticalIllnessPlanInputs.coverage, eligibleDependents);
+			console.log("coveredDependents", coveredDependents);
+			const member_SSNs = [...coveredDependents.dep_SSNs, member.SSN];
+			const enrollment: Enrollment = {
+				standard_details: enrollmentStandardDetails.concat(coveredDependents.enrollmentStandardDetails),
+				common_details: enrollmentCommonDetails,
+				dep_SSNs: member_SSNs
+			};
+			console.log("enrollment", enrollment);
+		}
+	}, [
+		criticalIllnessPlanInputs.benefit_amount,
+		criticalIllnessPlanInputs.coverage,
+		criticalIllnessPlanInputs.coverage_level,
+		eligibleDependents,
+		handleValidation,
+		member,
+		plan._id,
+		plan.plan_code,
+		standerdPremium
+	]);
 
 	useEffect(() => {
 		calculatePremium();
@@ -150,6 +561,13 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 		criticalIllnessPlanInputs.coverage_level,
 		criticalIllnessPlanInputs.benefit_amount
 	]);
+
+	useEffect(() => {
+		console.log("UE1");
+		const dependentCoverage = getKemperCancerEligibleDependents(dependents);
+		console.log("dependentCoverage", dependentCoverage);
+		setEligibleDependents(Object.assign([], dependentCoverage.dependents));
+	}, [dependents]);
 
 	return (
 		<Suspense fallback={<div />}>
@@ -294,7 +712,10 @@ const KemperCriticalIllnessForm = (): JSX.Element => {
 							</Grid>
 						</Grid>
 						<div className="theme-plan-inner-section-margin-2" />
-						<LazyPlanActions waiveButtonCallback={() => null} activateButtonCallback={() => null} />
+						<LazyPlanActions
+							waiveButtonCallback={() => null}
+							activateButtonCallback={handleActivateButtonClick}
+						/>
 					</Paper>
 				</div>
 			</div>
